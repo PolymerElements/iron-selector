@@ -160,6 +160,8 @@ Fired when an item element is tapped.
       /**
        * Returns the currently selected element. In multi-selection this returns
        * an array of selected elements.
+       * Note that you should not use this to set the selection. Instead use
+       * `selected`.
        * 
        * @attribute selectedItem
        * @type Object
@@ -170,6 +172,8 @@ Fired when an item element is tapped.
       /**
        * In single selection, this returns the model associated with the
        * selected element.
+       * Note that you should not use this to set the selection. Instead use 
+       * `selected`.
        * 
        * @attribute selectedModel
        * @type Object
@@ -179,6 +183,8 @@ Fired when an item element is tapped.
 
       /**
        * In single selection, this returns the selected index.
+       * Note that you should not use this to set the selection. Instead use
+       * `selected`.
        *
        * @attribute selectedIndex
        * @type number
