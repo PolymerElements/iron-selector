@@ -4,5 +4,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#master",
     "core-selection": "Polymer/core-selection#master"
+  },
+  "devDependencies": {
+    "polymer-test-tools": "Polymer/polymer-test-tools#master"
   }
 }
