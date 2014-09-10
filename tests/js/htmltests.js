@@ -5,4 +5,5 @@ htmlSuite('core-selector', function() {
   htmlTest('html/core-selector-next-previous.html');
   htmlTest('html/core-selector-next-previous-wrap.html');
   htmlTest('html/core-selector-selected-attr-prop.html');
+  htmlTest('html/core-selector-template-repeat.html');
 });
