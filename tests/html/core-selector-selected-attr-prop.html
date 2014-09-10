@@ -9,7 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <html>
 <head>
-  <title>core-selector-activate-event</title>
+  <title>core-selector-selected-attr-prop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <script src="../../../platform/platform.js"></script>
   <script src="../../../polymer-test-tools/chai/chai.js"></script>
@@ -26,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <core-selector id="selector" selected="0">
+  <core-selector id="selector" selected="2" selectedProperty="myprop">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -39,16 +40,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     document.addEventListener('polymer-ready', function() {
       var assert = chai.assert;
       var s = document.querySelector('#selector');
-      s.addEventListener("core-activate", function(event) {
-        assert.equal(event.detail.item, s.children[1]);
-        assert.equal(s.selected, 1);
+      // select Item 4
+      s.selected = 4;
+      Platform.flush();
+      setTimeout(function() {
+        // check Item2's attribute and property (should be unselect)
+        assert.isFalse(s.children[2].hasAttribute('active'));
+        assert.notEqual(s.children[2].myprop, true);
+        // check Item4's attribute and property
+        assert.isTrue(s.children[4].hasAttribute('active'));
+        assert.isTrue(s.children[4].myprop);
         done();
-      });
-      assert.equal(s.selected, '0');
-      requestAnimationFrame(function() {
-        // select Item 2
-        s.children[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-      });
+      }, 50);
     });
 
   </script>

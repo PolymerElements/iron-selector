@@ -76,7 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // set selected
       s.selected = 'item5';
       Platform.flush();
-      requestAnimationFrame(function() {
+      setTimeout(function() {
         // check core-select event
         assert.equal(selectEventCounter, 1);
         // check selected class
@@ -87,11 +87,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         selectEventCounter = 0;
         s.selected = 'item5';
         Platform.flush();
-        requestAnimationFrame(function() {
+        setTimeout(function() {
           assert.equal(selectEventCounter, 0);
           done();
-        });
-      });
+        }, 50);
+      }, 50);
     });
 
   </script>
