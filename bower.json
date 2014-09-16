@@ -6,6 +6,6 @@
     "core-selection": "Polymer/core-selection#master"
   },
   "devDependencies": {
-    "polymer-test-tools": "Polymer/polymer-test-tools#master"
+    "web-component-tester": "Polymer/web-component-tester#^0.5.1"
   }
 }
