@@ -60,8 +60,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else {
             selectEventCounter--;
           }
-          // check selectedItem in core-select event
-          assert.equal(this.selectedItem.length, selectEventCounter);
         });
         // set selected
         s.selected = [0, 2];
@@ -79,8 +77,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
           // check selected
           assert.equal(s.selected.length, 1);
-          assert.isFalse(s.children[0].classList.contains('core-selected'));
-          done();
+          asyncPlatformFlush(function() {
+            assert.equal(selectEventCounter, 1);
+            assert.isFalse(s.children[0].classList.contains('core-selected'));
+            // add selected
+            s.selected.push(3);
+            s.selected.push(4);
+            // check core-select event
+            asyncPlatformFlush(function() {
+              assert.equal(selectEventCounter, 3);
+              var first = s.selected[0]
+              // set mutli to false
+              s.multi = false;
+              asyncPlatformFlush(function() {
+                assert.isNotArray(s.selected); 
+                assert.equal(s.selected, first);
+                done();
+              });
+            });
+          });
         });
       });
 
