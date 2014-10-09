@@ -86,16 +86,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // check core-select event
             asyncPlatformFlush(function() {
               assert.equal(selectEventCounter, 3);
-              var first = s.selected[0]
-              // set mutli to false
-              s.multi = false;
-              asyncPlatformFlush(function() {
-                assert.isNotArray(s.selected); 
-                assert.equal(s.selected, first);
-                done();
-              });
+              done();
             });
           });
+        });
+      });
+      
+      test('toggle multi to false', function(done) {
+        // set selected
+        s.selected = [0, 2];
+        var first = s.selected[0];
+        // set mutli to false, so to make it single-selection
+        s.multi = false;
+        asyncPlatformFlush(function() {
+          // selected should not be an array
+          assert.isNotArray(s.selected);
+          // selected should be the first value in the old array
+          assert.equal(s.selected, first);
+          done();
         });
       });
 
