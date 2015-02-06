@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!--
 `core-selector` is an element which can be used to manage a list of elements
-that can be selected.
+that can be selected.  Tapping on the item will make the item selected.
 
 Example:
 
@@ -27,7 +27,7 @@ Example:
       }
     </style>
     ...
-    <core-selector selected="0>
+    <core-selector selected="0">
       <div>Item 1</div>
       <div>Item 2</div>
       <div>Item 3</div>
@@ -39,12 +39,17 @@ Example:
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="core-selectable.html">
 
 <script>
 
   Polymer({
 
     is: 'core-selector',
+
+    mixins: [
+      'core-selectable'
+    ],
 
     published: {
 
@@ -59,140 +64,66 @@ Example:
         notify: true
       },
 
+      target: Object,
+
       activateEvent: String
 
     },
 
     bind: {
       selected: 'selectedChanged',
-      item: 'itemChanged',
+      target: 'targetChanged',
       activateEvent: 'activateEventChanged'
-    },
-
-    selectedClass: 'core-selected',
-
-    selectedAttribute: '',
-
-    excludedLocalNames: {
-      'template': 1
     },
 
     configure: function() {
       this._activateListener = this.activateHandler.bind(this);
-      this.observeItems();
       return {
+        target: this,
         activateEvent: 'click'
       }
     },
 
     detached: function() {
-      this.removeListener(this.activateEvent);
+      this.removeListener(this.target, this.activateEvent);
+    },
+
+    addListener: function(target, eventName) {
+      if (target && eventName) {
+        target.addEventListener(eventName, this._activateListener);
+      }
+    },
+
+    removeListener: function(target, eventName) {
+      if (target && eventName) {
+        target.removeEventListener(eventName, this._activateListener);
+      }
+    },
+
+    targetChanged: function(target, old) {
+      this.removeListener(old, this.activateEvent);
+      this.addListener(target, this.activateEvent);
+      this.observeItems();
     },
 
     activateEventChanged: function(eventName, old) {
-      this.removeListener(old);
-      this.addListener(eventName);
-    },
-
-    addListener: function(eventName) {
-      if (eventName) {
-        this.addEventListener(eventName, this._activateListener);
-      }
-    },
-
-    removeListener: function(eventName) {
-      if (eventName) {
-        this.removeEventListener(eventName, this._activateListener);
-      }
-    },
-
-    selectedChanged: function(selected) {
-      this._setItem(this.items[selected]);
-    },
-
-    itemChanged: function(item, old) {
-      this.selected = this.items.indexOf(item);
-      if (this.selectedAttribute) {
-        this.attributeFollows(this.selectedAttribute, item, old);
-      }
-      if (this.selectedClass) {
-        this.classFollows(this.selectedClass, item, old);
-      }
-    },
-
-    /**
-     * Returns an array of selectable items.
-     *
-     * @property items
-     */
-    get items() {
-      if (!this._items) {
-        var nodes;
-        if (this.selectable) {
-          nodes = this.querySelectorAll(this.selectable);
-        } else {
-          nodes = this.children;
-        }
-        this._items = Array.prototype.filter.call(nodes,
-            this.filterItem.bind(this));
-      }
-      return this._items;
-    },
-
-    filterItem: function(node) {
-      return node.localName && !this.excludedLocalNames[node.localName];
-    },
-
-    observeItems: function() {
-      var observation = function() {
-        this.updateItems();
-      }.bind(this);
-      var observer = new MutationObserver(observation);
-      observer.observe(this, {
-        childList: true,
-        subtree: true
-      });
-    },
-
-    updateItems: function() {
-      this._items = null;
-      if (this.selected >= 0) {
-        this._selectedEffector();
-      }
+      this.removeListener(this.target, old);
+      this.addListener(this.target, eventName);
     },
 
     activateHandler: function(e) {
       var t = e.target;
       var items = this.items;
-      while (t && t != this) {
-        var i = Array.prototype.indexOf.call(items, t);
+      while (t && t != this.target) {
+        var i = items.indexOf(t);
         if (i >= 0) {
-          if (!this.fire('core-activate', null, t).defaultPrevented) {
-            this._setItem(t);
+          if (!this.fire('core-activate', {selected: i}, t).defaultPrevented) {
+            this.selected = i;
           }
           return;
         }
         t = t.parentNode;
       }
-    },
-
-    /**
-     * Selects the previous item.
-     *
-     * @method selectPrevious
-     */
-    selectPrevious: function() {
-      this.selected =
-        (Number(this.index) - 1 + this.items.length) % this.items.length;
-    },
-
-    /**
-     * Selects the next item.
-     *
-     * @method selectNext
-     */
-    selectNext: function() {
-      this.selected = (Number(this.index) + 1) % this.items.length;
     }
 
   });
