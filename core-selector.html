@@ -111,6 +111,10 @@ Example:
       this.addListener(this.target, eventName);
     },
 
+    selectedChanged: function(selected, old) {
+      this._selectedChanged(selected, old);
+    },
+
     activateHandler: function(e) {
       var t = e.target;
       var items = this.items;

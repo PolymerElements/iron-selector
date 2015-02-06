@@ -18,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   FIXME(ffu): currently the element must bind the `selected` property to `selectedChanged`, e.g.
 
       bind: {
-        selected: 'selectedChanged'
+        selected: '_selectedChanged'
       },
 
   @group Polymer Mixins
@@ -39,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /* `selected` property change handler */
-      selectedChanged: function(selected) {
+      _selectedChanged: function(selected) {
         this.updateItem(this.items[selected]);
       },
 
@@ -97,8 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method selectPrevious
        */
       selectPrevious: function() {
-        this.selected =
-          (Number(this.index) - 1 + this.items.length) % this.items.length;
+        this.selected = (Number(this.selected) - 1 + this.items.length) % this.items.length;
       },
 
       /**
@@ -107,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method selectNext
        */
       selectNext: function() {
-        this.selected = (Number(this.index) + 1) % this.items.length;
+        this.selected = (Number(this.selected) + 1) % this.items.length;
       }
 
     };
