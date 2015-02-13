@@ -120,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       childrenComposed: function() {
         var nodes = [];
         Array.prototype.forEach.call(this.children, function(n) {
-          if (n instanceof HTMLContentElement) {
+          if (n.localname === 'content') {
             nodes = nodes.concat(this.lightDom.distributedNodes(n));
           } else {
             nodes.push(n);
