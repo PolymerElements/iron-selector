@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   FIXME(ffu): should probably move it to its own repo.
   `core-selectable` is a mixin that can be used to manage a list of elements
   that can be selected.
-  FIXME(ffu): currently the element must bind the `selected` property to `selectedChanged`, e.g.
+  FIXME(ffu): currently the element must bind the `selected` property to `_selectedChanged`, e.g.
 
       bind: {
         selected: '_selectedChanged'
@@ -32,7 +32,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectedClass: 'core-selected',
 
       /* The attribute to set on elements when selected */
-      selectedAttribute: '',
+      /* selectedAttribute: 'active', */
+
+      /* If you want to use the attribute value of an element for `selected` instead of
+      using the index, set `attrForSelected` to the name of the attribute. */
+      /* attrForSelected: 'name', */
 
       excludedLocalNames: {
         'template': 1
@@ -40,22 +44,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* `selected` property change handler */
       _selectedChanged: function(selected) {
-        this.updateItem(this.items[selected]);
+        this.updateItem(this.valueToItem(this.selected));
       },
 
       updateItem: function(item) {
-        if (this.selectedAttribute) {
-          this.attributeFollows(this.selectedAttribute, item, this.item);
-        }
-        if (this.selectedClass) {
-          this.classFollows(this.selectedClass, item, this.item);
-        }
+        this.applySelection(item, true);
+        this.applySelection(this.item, false);
         this._setItem(item);
+      },
+
+      valueToItem: function(value) {
+        return (value == null) ? null : this.items[this.valueToIndex(value)];
+      },
+
+      valueToIndex: function(value) {
+        if (this.attrForSelected) {
+          for (var i = 0, item; item = this.items[i]; i++) {
+            if (this.valueForItem(item) == value) {
+              return i;
+            }
+          }
+        } else {
+          return value;
+        }
+      },
+
+      indexToValue: function(index) {
+        if (this.attrForSelected) {
+          var item = this.items[index];
+          if (item) {
+            return this.valueForItem(item);
+          }
+        } else {
+          return index;
+        }
+      },
+
+      valueForItem: function(item) {
+        return item[this.attrForSelected] || item.getAttribute(this.attrForSelected);
       },
 
       // if `item` is published and readOnly, this will be overridden by the generated _setItem
       _setItem: function(item) {
         this.item = item;
+      },
+
+      applySelection: function(item, isSelected) {
+        if (!item) {
+          return;
+        }
+        if (this.selectedClass) {
+          this.toggleClass(this.selectedClass, isSelected, item);
+        }
+        if (this.selectedAttribute) {
+          this.toggleAttribute(this.selectedAttribute, isSelected, item);
+        }
       },
 
       /**
@@ -65,9 +108,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @type Array
        */
       get items() {
+        if (!this.itemFilter) {
+          this.itemFilter = this.filterItem.bind(this);
+        }
         var t = this.target || this;
-        var nodes = this.selectable ? t.querySelectorAll(this.selectable) : t.children;
-        return Array.prototype.filter.call(nodes, this.filterItem.bind(this));
+        var nodes = this.selectable ? t.querySelectorAllComposed(this.selectable) :
+            t.childrenComposed();
+        return Array.prototype.filter.call(nodes, this.itemFilter);
+      },
+
+      childrenComposed: function() {
+        var nodes = [];
+        Array.prototype.forEach.call(this.children, function(n) {
+          if (n instanceof HTMLContentElement) {
+            nodes = nodes.concat(this.lightDom.distributedNodes(n));
+          } else {
+            nodes.push(n);
+          }
+        }, this);
+        return nodes;
       },
 
       filterItem: function(node) {
@@ -78,15 +137,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this._observer) {
           this._observer.disconnect();
         }
-        this._observer = new MutationObserver(this.updateSelected.bind(this));
+        this._observer = new MutationObserver(this.effectSelected.bind(this));
         this._observer.observe(this.target, {
           childList: true,
           subtree: true
         });
       },
 
-      updateSelected: function() {
-        if (this.selected >= 0) {
+      effectSelected: function() {
+        if (this.selected) {
           this._selectedEffector();
         }
       },
@@ -97,7 +156,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method selectPrevious
        */
       selectPrevious: function() {
-        this.selected = (Number(this.selected) - 1 + this.items.length) % this.items.length;
+        var length = this.items.length;
+        this.selected = (Number(this.valueToIndex(this.selected)) - 1 + length) % length;
       },
 
       /**
@@ -106,7 +166,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method selectNext
        */
       selectNext: function() {
-        this.selected = (Number(this.selected) + 1) % this.items.length;
+        this.selected = (Number(this.valueToIndex(this.selected)) + 1) % this.items.length;
       }
 
     };
