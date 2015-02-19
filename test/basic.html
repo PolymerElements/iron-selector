@@ -1,16 +1,18 @@
 <!doctype html>
 <!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+
 <html>
 <head>
-  <meta charset="UTF-8">
+
   <title>core-selector-basic</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <script src="../../webcomponentsjs/webcomponents.js"></script>
@@ -32,21 +34,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <core-selector id="selector1">
+    <div>Item 0</div>
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
     <div>Item 4</div>
-    <div>Item 5</div>
   </core-selector>
 
   <br><br>
 
-  <core-selector id="selector2" selected="item3" selectedClass="my-selected" valueattr="id">
+  <core-selector id="selector2" selected="item2" attrForSelected="id">
+    <div id="item0">Item 0</div>
     <div id="item1">Item 1</div>
     <div id="item2">Item 2</div>
     <div id="item3">Item 3</div>
     <div id="item4">Item 4</div>
-    <div id="item5">Item 5</div>
   </core-selector>
 
   <script>
@@ -65,12 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.equal(s1.selectedClass, 'core-selected');
         });
 
-        test('to a single-select', function() {
-          assert.isFalse(s1.multi);
-        });
-
-        test('to name as valueattr', function() {
-          assert.equal(s1.valueattr, 'name');
+        test('to name as attrForSelected', function() {
+          assert.equal(s1.attrForSelected, undefined);
         });
 
         test('as many items as children', function() {
@@ -79,43 +77,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('honors the selected attribute', function() {
-        assert.equal(s2.selected, 'item3');
-        assert.equal(s2.selectedIndex, 2);
-        assert.equal(s2.selectedItem, document.querySelector('#item3'));
+        assert.equal(s2.selected, 'item2');
+        assert.equal(s2.item, document.querySelector('#item2'));
       });
 
-      test('honors the selectedClass attribute', function() {
-        assert.equal(s2.selectedClass, 'my-selected');
-        assert.isTrue(document.querySelector('#item3').classList.contains('my-selected'));
-      });
-
-      test('allows assignment to selected', function(done) {
-        // setup listener for core-select event
-        var selectEventCounter = 0;
-        s2.addEventListener('core-select', function(e) {
-          if (e.detail.isSelected) {
-            selectEventCounter++;
-            // selectedItem and detail.item should be the same
-            assert.equal(e.detail.item, s2.selectedItem);
-          }
+      test('allows assignment to selected', function() {
+        // setup listener for selected-changed event
+        var selectedEventCounter = 0;
+        s2.addEventListener('selected-changed', function(e) {
+          selectedEventCounter++;
         });
         // set selected
-        s2.selected = 'item5';
-        asyncPlatformFlush(function() {
-          // check core-select event
-          assert.equal(selectEventCounter, 1);
-          // check selected class
-          assert.isTrue(s2.children[4].classList.contains('my-selected'));
-          // check selectedItem
-          assert.equal(s2.selectedItem, s2.children[4]);
-          // selecting the same value shouldn't fire core-select
-          selectEventCounter = 0;
-          s2.selected = 'item5';
-          flush(function() {
-            assert.equal(selectEventCounter, 0);
-            done();
-          });
-        });
+        s2.selected = 'item4';
+        // check core-select event
+        assert.equal(selectedEventCounter, 1);
+        // check selected class
+        assert.isTrue(s2.children[4].classList.contains('core-selected'));
+        // check item
+        assert.equal(s2.item, s2.children[4]);
+        // selecting the same value shouldn't fire core-select
+        selectedEventCounter = 0;
+        s2.selected = 'item4';
+        assert.equal(selectedEventCounter, 0);
       });
 
     });

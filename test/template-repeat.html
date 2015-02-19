@@ -9,8 +9,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <html>
 <head>
-  <meta charset="UTF-8">
+
   <title>core-selector-template-repeat</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <script src="../../webcomponentsjs/webcomponents.js"></script>
@@ -28,31 +29,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <core-selector id="selector" selected="1">
-    <template id="itemsTemplate" repeat="{{items}}">
-      <div name="{{}}">{{}}</div>
+    <template id="t" is="x-repeat">
+      <div name="{{item}}">{{item}}</div>
     </template>
   </core-selector>
 
   <script>
 
     var s = document.querySelector('#selector');
-    var t = document.querySelector('#itemsTemplate');
+    var t = document.querySelector('#t');
 
     suite('<template repeat...>', function() {
 
       test('supports repeated children', function(done) {
-        t.model = {items: ['Item1', 'Item2', 'Item3', "Item4"]};
-        asyncPlatformFlush(function() {
-          // check items
-          assert.equal(s.items.length, 4);
-          assert.equal(s.selected, 1);
-          // check selectedItem
-          var item = s.selectedItem;
+        t.items = ['Item0', 'Item1', 'Item2', "Item3"];
+        // check items
+        assert.equal(s.items.length, 4);
+        assert.equal(s.selected, 1);
+        setTimeout(function() {
+          // check selected item
+          var item = s.item;
           assert.equal(s.items[1], item);
           // check selected class
           assert.isTrue(item.classList.contains('core-selected'));
           done();
-        });
+        }.bind(this));
       });
 
     });

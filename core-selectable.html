@@ -48,9 +48,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       updateItem: function(item) {
-        this.applySelection(item, true);
-        this.applySelection(this.item, false);
-        this._setItem(item);
+        if (item != this.item) {
+          this.applySelection(item, true);
+          this.applySelection(this.item, false);
+          this._setItem(item);
+        }
       },
 
       valueToItem: function(value) {
@@ -120,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       childrenComposed: function() {
         var nodes = [];
         Array.prototype.forEach.call(this.children, function(n) {
-          if (n.localname === 'content') {
+          if (n.localName === 'content') {
             nodes = nodes.concat(this.lightDom.distributedNodes(n));
           } else {
             nodes.push(n);

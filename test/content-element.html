@@ -1,4 +1,3 @@
-<!doctype html>
 <!--
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -8,29 +7,37 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<html>
-<head>
+<link rel="import" href="../core-selector.html">
 
-  <meta charset="utf-8">
-  <title>Tests</title>
-  <script src="../../web-component-tester/browser.js"></script>
+<dom-module id="test-content-element">
 
-</head>
-<body>
+  <template>
 
-  <script>
+    <core-selector id="selector" selected="{{selected}}" selectable="{{selectable}}" attrForSelected="id">
+      <content></content>
+    </core-selector>
 
-    WCT.loadSuites([
-      'activate-event.html',
-      'basic.html',
-      /* 'multi.html', */
-      'next-previous.html',
-      'selected-attr-prop.html',
-      'template-repeat.html',
-      'content.html'
-    ]);
+  </template>
 
-  </script>
+</dom-module>
 
-</body>
-</html>
+<script>
+
+  Polymer({
+
+    is: 'test-content-element',
+
+    published: {
+
+      selectable: String,
+
+      selected: {
+        type: String,
+        notify: true
+      }
+
+    }
+
+  });
+
+</script>

@@ -1,22 +1,26 @@
 <!doctype html>
 <!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+
 <html>
 <head>
-  <meta charset="UTF-8">
+
   <title>core-selector-content</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
-  <link rel="import" href="../core-selector.html">
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <link rel="import" href="content-element.html">
 
   <style>
     .core-selected {
@@ -27,70 +31,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <polymer-element name="test-core-selector" noscript attributes="selected">
-    <template>
-      <core-selector id="selector" selected="{{selected}}" valueattr="id">
-        <content></content>
-      </core-selector>
-    </template>
-  </polymer-element>
-
-  <test-core-selector selected="item0">
+  <test-content-element selected="item0">
     <div id="item0">item0</div>
     <div id="item1">item1</div>
     <div id="item2">item2</div>
     <div id="item3">item3</div>
-  </test-core-selector>
+  </test-content-element>
 
   <script>
-  
-    var s = document.querySelector('test-core-selector');
+
+    var s = document.querySelector('test-content-element');
 
     suite('content', function() {
-      
-      test('get selected', function(done) {
-        asyncPlatformFlush(function() {
-          // check selected class
-          assert.isTrue(s.children[0].classList.contains('core-selected'));
-          done();
-        });
+
+      test('attribute selected', function() {
+        // check selected class
+        assert.isTrue(s.querySelector('#item0').classList.contains('core-selected'));
       });
 
-      test('set selected', function(done) {
+      test('set selected', function() {
         // set selected
         s.selected = 'item1';
-        asyncPlatformFlush(function() {
-          // check selected class
-          assert.isTrue(s.children[1].classList.contains('core-selected'));
-          done();
-        });
+        // check selected class
+        assert.isTrue(s.querySelector('#item1').classList.contains('core-selected'));
       });
-      
+
       test('get items', function() {
-        assert.equal(s.$.selector.items.length, s.children.length);
+        assert.equal(s.$.selector.items.length, 4);
       });
-      
-      test('activate event', function(done) {
-        s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-        asyncPlatformFlush(function() {
-          // check selected class
-          assert.isTrue(s.children[2].classList.contains('core-selected'));
-          done();
-        });
+
+      test('activate event', function() {
+        var item = s.querySelector('#item2');
+        item.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        // check selected class
+        assert.isTrue(item.classList.contains('core-selected'));
       });
-      
-      test('add item dynamically', function(done) {
+
+      test('add item dynamically', function() {
         var item = document.createElement('div');
         item.id = 'item4';
         item.textContent = 'item4';
-        s.appendChild(item);
+        s.lightDom.appendChild(item);
         // set selected
         s.selected = 'item4';
-        asyncPlatformFlush(function() {
-          // check selected class
-          assert.isTrue(s.children[4].classList.contains('core-selected'));
-          done();
-        });
+        // check items length
+        assert.equal(s.$.selector.items.length, 5);
+        // check selected class
+        assert.isTrue(s.querySelector('#item4').classList.contains('core-selected'));
       });
 
     });
