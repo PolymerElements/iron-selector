@@ -15,11 +15,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   FIXME(ffu): should probably move it to its own repo.
   `core-selectable` is a mixin that can be used to manage a list of elements
   that can be selected.
-  FIXME(ffu): currently the element must bind the `selected` property to `_selectedChanged`, e.g.
+  FIXME(ffu): currently the element using `core-selectable` must bind the `selected` property to
+  `_selectedChanged`, e.g.
 
       bind: {
         selected: '_selectedChanged'
       },
+
+   Also, the element must manually call the `selectableAttached` from the element's
+   `attached` callback.
 
   @group Polymer Mixins
   @element core-selectable
@@ -28,30 +32,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   modulate('core-selectable', function() {
     return {
 
+      /* Gets or sets the selected item. The default is to use the index of the item */
+      /* selected */
+
+      /* The item that is selected */
+      /* selectedItem */
+
+      /* If you want to use the attribute value of an element for `selected` instead of
+      using the index, set `attrForSelected` to the name of the attribute. */
+      /* attrForSelected: 'name' */
+
       /* The class to set on elements when selected */
       selectedClass: 'core-selected',
 
       /* The attribute to set on elements when selected */
       /* selectedAttribute: 'active', */
 
-      /* If you want to use the attribute value of an element for `selected` instead of
-      using the index, set `attrForSelected` to the name of the attribute. */
-      /* attrForSelected: 'name', */
-
       excludedLocalNames: {
         'template': 1
       },
 
-      /* `selected` property change handler */
-      _selectedChanged: function(selected) {
-        this.updateItem(this.valueToItem(this.selected));
+      /**
+       * User must call from `attached` callback
+       *
+       * @method selectableAttached
+       */
+      selectableAttached: function() {
+        this.observeContent(this);
+        this.observeItems(this);
       },
 
-      updateItem: function(item) {
-        if (item != this.item) {
+      /* `selected` property change handler */
+      _selectedChanged: function(selected) {
+        this.updateSelectedItem(this.valueToItem(this.selected));
+      },
+
+      updateSelectedItem: function(item) {
+        if (item != this.selectedItem) {
           this.applySelection(item, true);
-          this.applySelection(this.item, false);
-          this._setItem(item);
+          this.applySelection(this.selectedItem, false);
+          this._setSelectedItem(item);
         }
       },
 
@@ -86,9 +106,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return item[this.attrForSelected] || item.getAttribute(this.attrForSelected);
       },
 
-      // if `item` is published and readOnly, this will be overridden by the generated _setItem
-      _setItem: function(item) {
-        this.item = item;
+      // if `selectedItem` is published and readOnly, this will be overridden by the generated _setItem
+      _setSelectedItem: function(item) {
+        this.selectedItem = item;
       },
 
       applySelection: function(item, isSelected) {
@@ -113,15 +133,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this.itemFilter) {
           this.itemFilter = this.filterItem.bind(this);
         }
-        var t = this.target || this;
-        var nodes = this.selectable ? t.querySelectorAllComposed(this.selectable) :
-            t.childrenComposed();
+        var nodes = this.childrenComposed();
         return Array.prototype.filter.call(nodes, this.itemFilter);
+      },
+
+      indexOf: function(item) {
+        return this.items.indexOf(item);
       },
 
       childrenComposed: function() {
         var nodes = [];
-        Array.prototype.forEach.call(this.children, function(n) {
+        Array.prototype.forEach.call(this.lightDom.children(), function(n) {
           if (n.localName === 'content') {
             nodes = nodes.concat(this.lightDom.distributedNodes(n));
           } else {
@@ -132,15 +154,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       filterItem: function(node) {
-        return node != this && node.localName && !this.excludedLocalNames[node.localName];
+        var n = node.localName, s = this.selectable;
+        return n && !this.excludedLocalNames[n] && !s || s === n;
       },
 
-      observeItems: function() {
-        if (this._observer) {
-          this._observer.disconnect();
+      // observe content changes under the given node.
+      observeContent: function(node) {
+        var content = node.querySelector('content');
+        if (content && content.parentElement === node) {
+          this.observeItems(node.host);
         }
-        this._observer = new MutationObserver(this.effectSelected.bind(this));
-        this._observer.observe(this.target, {
+      },
+
+      observeItems: function(node) {
+        var observer = new MutationObserver(this.effectSelected.bind(this));
+        observer.observe(node, {
           childList: true,
           subtree: true
         });

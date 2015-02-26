@@ -17,7 +17,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
+  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../core-selector.html">
 
   <style>
@@ -33,52 +35,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <core-selector id="selector1">
-    <div>Item 0</div>
-    <div>Item 1</div>
-    <div>Item 2</div>
-    <div>Item 3</div>
-    <div>Item 4</div>
-  </core-selector>
+  <test-fixture id="defaults">
+    <template>
+      <core-selector>
+        <div>Item 0</div>
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+        <div>Item 4</div>
+      </core-selector>
+    </template>
+  </test-fixture>
 
   <br><br>
 
-  <core-selector id="selector2" selected="item2" attrForSelected="id">
-    <div id="item0">Item 0</div>
-    <div id="item1">Item 1</div>
-    <div id="item2">Item 2</div>
-    <div id="item3">Item 3</div>
-    <div id="item4">Item 4</div>
-  </core-selector>
+  <test-fixture id="basic">
+    <template>
+      <core-selector selected="item2" attrForSelected="id">
+        <div id="item0">Item 0</div>
+        <div id="item1">Item 1</div>
+        <div id="item2">Item 2</div>
+        <div id="item3">Item 3</div>
+        <div id="item4">Item 4</div>
+      </core-selector>
+    </template>
+  </test-fixture>
 
   <script>
 
-    var s1 = document.querySelector('#selector1');
-    var s2 = document.querySelector('#selector2');
+    suite('defaults', function() {
+
+      var s1;
+
+      setup(function () {
+        s1 = fixture('defaults');
+      });
+
+      test('to nothing selected', function() {
+        assert.equal(s1.selected, null);
+      });
+
+      test('to core-selected as selectedClass', function() {
+        assert.equal(s1.selectedClass, 'core-selected');
+      });
+
+      test('to name as attrForSelected', function() {
+        assert.equal(s1.attrForSelected, undefined);
+      });
+
+      test('as many items as children', function() {
+        assert.equal(s1.items.length, 5);
+      });
+    });
 
     suite('basic', function() {
 
-      suite('defaults', function() {
-        test('to nothing selected', function() {
-          assert.equal(s1.selected, null);
-        });
+      var s2;
 
-        test('to core-selected as selectedClass', function() {
-          assert.equal(s1.selectedClass, 'core-selected');
-        });
-
-        test('to name as attrForSelected', function() {
-          assert.equal(s1.attrForSelected, undefined);
-        });
-
-        test('as many items as children', function() {
-          assert.equal(s1.items.length, 5);
-        });
+      setup(function () {
+        s2 = fixture('basic');
       });
 
-      test('honors the selected attribute', function() {
+      test('honors the attrForSelected attribute', function() {
+        assert.equal(s2.attrForSelected, 'id');
         assert.equal(s2.selected, 'item2');
-        assert.equal(s2.item, document.querySelector('#item2'));
+        assert.equal(s2.selectedItem, document.querySelector('#item2'));
       });
 
       test('allows assignment to selected', function() {
@@ -94,10 +115,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check selected class
         assert.isTrue(s2.children[4].classList.contains('core-selected'));
         // check item
-        assert.equal(s2.item, s2.children[4]);
-        // selecting the same value shouldn't fire core-select
-        selectedEventCounter = 0;
-        s2.selected = 'item4';
+        assert.equal(s2.selectedItem, s2.children[4]);
+      });
+
+      test('set selected to old value', function() {
+        // setup listener for selected-changed event
+        var selectedEventCounter = 0;
+        s2.addEventListener('selected-changed', function(e) {
+          selectedEventCounter++;
+        });
+        // selecting the same value shouldn't fire selected-changed
+        s2.selected = 'item2';
         assert.equal(selectedEventCounter, 0);
       });
 

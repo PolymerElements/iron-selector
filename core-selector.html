@@ -70,64 +70,93 @@ Example:
 
     published: {
 
+      /**
+       * If you want to use the attribute value of an element for `selected` instead of the index,
+       * set this to the name of the attribute.
+       *
+       * @attribute attrForSelected
+       * @type String
+       */
       attrForSelected: String,
 
+      /**
+       * Gets or sets the selected element.  The default is to use the index of the item.
+       *
+       * @attribute selected
+       * @type String
+       */
       selected: {
         type: String,
         notify: true
       },
 
-      item: {
+      /**
+       * Returns the currently selected item.
+       *
+       * @attribute selectedItem
+       * @type Object
+       */
+      selectedItem: {
         type: Object,
         readOnly: true,
         notify: true
       },
 
-      target: Object,
+      /**
+       * The event that would be fired from the item to indicate it is being selected.  Set this
+       * to empty string or null if you don't want to listen for any events.
+       *
+       * @attribute activateEvent
+       * @type String
+       * @default 'click'
+       */
+      activateEvent: String,
 
-      activateEvent: String
+      /**
+       * If this is set, only items with local name that matches the `selectable` are selectable.
+       *
+       * @attribute selectable
+       * @type String
+       */
+      selectable: String
 
     },
 
     bind: {
       selected: 'selectedChanged',
-      target: 'targetChanged',
       activateEvent: 'activateEventChanged'
     },
 
     configure: function() {
       this._activateListener = this.activateHandler.bind(this);
       return {
-        target: this,
         activateEvent: 'click'
       }
     },
 
+    attached: function() {
+      this.selectableAttached();
+    },
+
     detached: function() {
-      this.removeListener(this.target, this.activateEvent);
+      this.removeListener(this.activateEvent);
     },
 
-    addListener: function(target, eventName) {
-      if (target && eventName) {
-        target.addEventListener(eventName, this._activateListener);
+    addListener: function(eventName) {
+      if (eventName) {
+        this.addEventListener(eventName, this._activateListener);
       }
     },
 
-    removeListener: function(target, eventName) {
-      if (target && eventName) {
-        target.removeEventListener(eventName, this._activateListener);
+    removeListener: function(eventName) {
+      if (eventName) {
+        this.removeEventListener(eventName, this._activateListener);
       }
-    },
-
-    targetChanged: function(target, old) {
-      this.removeListener(old, this.activateEvent);
-      this.addListener(target, this.activateEvent);
-      this.observeItems();
     },
 
     activateEventChanged: function(eventName, old) {
-      this.removeListener(this.target, old);
-      this.addListener(this.target, eventName);
+      this.removeListener(old);
+      this.addListener(eventName);
     },
 
     selectedChanged: function(selected, old) {
@@ -137,11 +166,11 @@ Example:
     activateHandler: function(e) {
       var t = e.target;
       var items = this.items;
-      while (t && t != this.target) {
+      while (t && t != this) {
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this.indexToValue(i);
-          if (!this.fire('core-activate', {selected: value}).defaultPrevented) {
+          if (!this.fire('core-activate', {selected: value, selectedItem: t}).defaultPrevented) {
             this.selected = value;
           }
           return;

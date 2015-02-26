@@ -39,21 +39,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var s = document.querySelector('#selector');
     var t = document.querySelector('#t');
 
-    suite('<template repeat...>', function() {
+    suite('<template is="x-repeat">', function() {
 
       test('supports repeated children', function(done) {
         t.items = ['Item0', 'Item1', 'Item2', "Item3"];
-        // check items
-        assert.equal(s.items.length, 4);
-        assert.equal(s.selected, 1);
         setTimeout(function() {
+          // check items
+          assert.equal(s.items.length, 4);
+          assert.equal(s.selected, 1);
           // check selected item
-          var item = s.item;
+          var item = s.selectedItem;
           assert.equal(s.items[1], item);
           // check selected class
           assert.isTrue(item.classList.contains('core-selected'));
           done();
-        }.bind(this));
+        });
       });
 
     });
