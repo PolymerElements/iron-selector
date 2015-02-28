@@ -80,10 +80,20 @@ Example:
       attrForSelected: String,
 
       /**
-       * Gets or sets the selected element.  The default is to use the index of the item.
+       * If true, multiple selections are allowed.
+       *
+       * @attribute multi
+       * @type Boolean
+       * @default false
+       */
+      multi: Boolean,
+
+      /**
+       * Gets or sets the selected element. The default is to use the index of the item.  In
+       * multi-selection this should be an array of values.
        *
        * @attribute selected
-       * @type String
+       * @type String|Array
        */
       selected: {
         type: String,
@@ -91,10 +101,11 @@ Example:
       },
 
       /**
-       * Returns the currently selected item.
+       * Returns the currently selected item. In multi-selection this returns an array of
+       * selected items.
        *
        * @attribute selectedItem
-       * @type Object
+       * @type Object|Array
        */
       selectedItem: {
         type: Object,
@@ -123,13 +134,15 @@ Example:
     },
 
     bind: {
+      multi: 'multiChanged',
       selected: 'selectedChanged',
       activateEvent: 'activateEventChanged'
     },
 
     configure: function() {
-      this._activateListener = this.activateHandler.bind(this);
+      this._bindActivateHandler = this.activateHandler.bind(this);
       return {
+        multi: false,
         activateEvent: 'click'
       }
     },
@@ -144,19 +157,24 @@ Example:
 
     addListener: function(eventName) {
       if (eventName) {
-        this.addEventListener(eventName, this._activateListener);
+        this.addEventListener(eventName, this._bindActivateHandler);
       }
     },
 
     removeListener: function(eventName) {
       if (eventName) {
-        this.removeEventListener(eventName, this._activateListener);
+        this.removeEventListener(eventName, this._bindActivateHandler);
       }
     },
 
     activateEventChanged: function(eventName, old) {
       this.removeListener(old);
       this.addListener(eventName);
+    },
+
+    multiChanged: function(multi) {
+      this.selection.multi = multi;
+      this.selectedChanged(this.selected);
     },
 
     selectedChanged: function(selected, old) {
@@ -170,8 +188,8 @@ Example:
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this.indexToValue(i);
-          if (!this.fire('core-activate', {selected: value, selectedItem: t}).defaultPrevented) {
-            this.selected = value;
+          if (!this.fire('core-activate', {value: value, item: t}).defaultPrevented) {
+            this.select(value);
           }
           return;
         }
