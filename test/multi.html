@@ -16,7 +16,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
+  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../core-selector.html">
 
   <style>
@@ -28,19 +30,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <core-selector id="selector" multi>
-    <div>Item 0</div>
-    <div>Item 1</div>
-    <div>Item 2</div>
-    <div>Item 3</div>
-    <div>Item 4</div>
-  </core-selector>
+  <test-fixture id="test">
+    <template>
+      <core-selector multi>
+        <div>Item 0</div>
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+        <div>Item 4</div>
+      </core-selector>
+    </template>
+  </test-fixture>
 
   <script>
 
-    var s = document.querySelector('#selector');
-
     suite('multi', function() {
+
+      var s;
+
+      setup(function () {
+        s = fixture('test');
+      });
 
       test('honors the multi attribute', function() {
         assert.isTrue(s.multi);
@@ -52,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.items.length, 5);
       });
 
-      test('allows multi-selection', function() {
+      test('set multi-selection via selected property', function() {
         // set selected
         s.selected = [0, 2];
         // check selected class
@@ -64,7 +74,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selectedItem[1], s.children[2]);
       });
 
-      test('core-select/deselect events', function() {
+      test('set multi-selection via tap', function() {
+        // set selected
+        s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        s.children[2].dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        // check selected class
+        assert.isTrue(s.children[0].classList.contains('core-selected'));
+        assert.isTrue(s.children[2].classList.contains('core-selected'));
+        // check selectedItem
+        assert.equal(s.selectedItem.length, 2);
+        assert.equal(s.selectedItem[0], s.children[0]);
+        assert.equal(s.selectedItem[1], s.children[2]);
+      });
+
+      test('fire core-select/deselect events', function() {
         // setup listener for core-select event
         var selectEventCounter = 0;
         s.addEventListener('core-select', function(e) {
@@ -75,21 +98,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.addEventListener('core-deselect', function(e) {
           deselectEventCounter++;
         });
-        // tap on already selected element should deselect it
+        // tap to select an item
+        s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        // check events
+        assert.equal(selectEventCounter, 1);
+        assert.equal(deselectEventCounter, 0);
+        // tap on already selected item should deselect it
         s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
         // check selected
-        assert.equal(s.selected.length, 1);
-        assert.equal(selectEventCounter, 0);
-        assert.equal(deselectEventCounter, 1);
+        assert.equal(s.selected.length, 0);
+        // check class
         assert.isFalse(s.children[0].classList.contains('core-selected'));
-        // tap on it again should select it
-        s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
-        // check selected
+        // check events
         assert.equal(selectEventCounter, 1);
         assert.equal(deselectEventCounter, 1);
       });
 
-      test('toggle multi to false', function() {
+      test('toggle multi from true to false', function() {
         // set selected
         s.selected = [0, 2];
         var first = s.selected[0];
@@ -97,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.multi = false;
         // selected should not be an array
         assert.isNotArray(s.selected);
-        // selected should be the first value in the old array
+        // selected should be the first value from the old array
         assert.equal(s.selected, first);
       });
 

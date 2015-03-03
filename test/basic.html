@@ -79,12 +79,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s1.selectedClass, 'core-selected');
       });
 
-      test('to name as attrForSelected', function() {
-        assert.equal(s1.attrForSelected, undefined);
+      test('to false as multi', function() {
+        assert.isFalse(s1.multi);
+      });
+
+      test('to click as activateEvent', function() {
+        assert.equal(s1.activateEvent, 'click');
+      });
+
+      test('to nothing as attrForSelected', function() {
+        assert.equal(s1.attrForSelected, null);
       });
 
       test('as many items as children', function() {
-        assert.equal(s1.items.length, 5);
+        assert.equal(s1.items.length, s1.querySelectorAll('div').length);
       });
     });
 
@@ -103,6 +111,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('allows assignment to selected', function() {
+        // set selected
+        s2.selected = 'item4';
+        // check selected class
+        assert.isTrue(s2.children[4].classList.contains('core-selected'));
+        // check item
+        assert.equal(s2.selectedItem, s2.children[4]);
+      });
+
+      test('fire core-select when selected is set', function() {
         // setup listener for core-select event
         var selectedEventCounter = 0;
         s2.addEventListener('core-select', function(e) {
@@ -112,10 +129,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s2.selected = 'item4';
         // check core-select event
         assert.equal(selectedEventCounter, 1);
-        // check selected class
-        assert.isTrue(s2.children[4].classList.contains('core-selected'));
-        // check item
-        assert.equal(s2.selectedItem, s2.children[4]);
       });
 
       test('set selected to old value', function() {
