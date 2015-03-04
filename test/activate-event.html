@@ -65,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // attach core-activate listener
         s.addEventListener("core-activate", function(event) {
-          assert.equal(event.detail.value, '1');
+          assert.equal(event.detail.selected, '1');
           assert.equal(event.detail.item, s.children[1]);
           done();
         });
@@ -79,7 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // attach core-activate listener
         s.addEventListener("core-activate", function(event) {
-          assert.equal(event.detail.value, '0');
+          assert.equal(event.detail.selected, '0');
           assert.equal(event.detail.item, s.children[0]);
           done();
         });
@@ -99,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('activates on mousedown and fires core-activate', function(done) {
         // attach core-activate listener
         s.addEventListener("core-activate", function(event) {
-          assert.equal(event.detail.value, '2');
+          assert.equal(event.detail.selected, '2');
           assert.equal(event.detail.item, s.children[2]);
           done();
         });

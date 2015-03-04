@@ -188,7 +188,7 @@ Example:
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this.indexToValue(i);
-          if (!this.fire('core-activate', {value: value, item: t}).defaultPrevented) {
+          if (!this.fire('core-activate', {selected: value, item: t}).defaultPrevented) {
             this.select(value);
           }
           return;
