@@ -12,7 +12,8 @@
     "polymer": "Polymer/polymer#0.8-preview"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^1.1.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#master"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#master",
+    "web-component-tester": "Polymer/web-component-tester#^2.2.3",
+    "test-fixture": "Polymer/test-fixture#master"
   }
 }
