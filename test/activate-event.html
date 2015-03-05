@@ -119,6 +119,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selected, '0');
       });
 
+      test('activates on click and preventDefault', function() {
+        // attach core-activate listener
+        s.addEventListener("core-activate", function(event) {
+          event.preventDefault();
+        });
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        // shouldn't got selected since we preventDefault in core-activate
+        assert.equal(s.selected, '0');
+      });
+
     });
 
   </script>

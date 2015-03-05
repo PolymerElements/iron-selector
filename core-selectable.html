@@ -26,7 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
      Also, the element must manually call the `selectableAttached` from the element's
-     `attached` callback.
+     `attached` callback and `selectableDetached` from the element's `detached` callback.
+     callback.
 
     @group Polymer Mixins
     @element core-selectable
@@ -61,12 +62,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          * @method selectableAttached
          */
         selectableAttached: function() {
-          this.observeContent(this);
-          this.observeItems(this);
+          this._observer = this.observeItems(this);
+          this._contentObserver = this.observeContent(this);
+        },
+
+        /**
+         * User must call from `detached` callback.
+         *
+         * @method selectableDetached
+         */
+        selectableDetached: function() {
+          if (this._observer) {
+            this._observer.disconnect();
+          }
+          if (this._contentObserver) {
+            this._contentObserver.disconnect();
+          }
         },
 
         /* `selected` property change handler */
-        _selectedChanged: function(selected, old) {
+        _selectedChanged: function(selected) {
           this.validateSelected();
           if (this.multi) {
             this.selection.clear();
@@ -177,37 +192,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (!this.itemFilter) {
             this.itemFilter = this.filterItem.bind(this);
           }
-          var nodes = this.childrenComposed();
+          var nodes = Polymer.dom.queryDistributedElements(this.selectable || '*', this);
           return Array.prototype.filter.call(nodes, this.itemFilter);
         },
 
+        /**
+         * Returns the index of the given item.
+         *
+         * @method indexOf
+         * @param {Object} item
+         * @returns Returns the index of the item
+         */
         indexOf: function(item) {
           return this.items.indexOf(item);
         },
 
-        childrenComposed: function() {
-          var nodes = [];
-          var c$ = this.lightDom.children();
-          for (var i = 0, n; n = c$[i]; i++) {
-            if (n.localName === 'content') {
-              nodes = nodes.concat(this.lightDom.distributedNodes(n));
-            } else {
-              nodes.push(n);
-            }
-          }
-          return nodes;
-        },
-
         filterItem: function(node) {
-          var n = node.localName, s = this.selectable;
-          return n && !this.excludedLocalNames[n] && !s || s === n;
+          return !this.excludedLocalNames[node.localName];
         },
 
         // observe content changes under the given node.
         observeContent: function(node) {
           var content = node.querySelector('content');
           if (content && content.parentElement === node) {
-            this.observeItems(node.host);
+            return this.observeItems(node.host);
           }
         },
 
@@ -222,6 +230,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             childList: true,
             subtree: true
           });
+          return observer;
         },
 
         toggleSelected: function(value) {

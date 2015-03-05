@@ -68,7 +68,7 @@ Example:
       'core-selectable'
     ],
 
-    published: {
+    properties: {
 
       /**
        * If you want to use the attribute value of an element for `selected` instead of the index,
@@ -86,7 +86,11 @@ Example:
        * @type Boolean
        * @default false
        */
-      multi: Boolean,
+      multi: {
+        type: Boolean,
+        value: false,
+        observer: 'multiChanged'
+      },
 
       /**
        * Gets or sets the selected element. The default is to use the index of the item.  In
@@ -97,7 +101,8 @@ Example:
        */
       selected: {
         type: String,
-        notify: true
+        notify: true,
+        observer: 'selectedChanged'
       },
 
       /**
@@ -121,7 +126,11 @@ Example:
        * @type String
        * @default 'click'
        */
-      activateEvent: String,
+      activateEvent: {
+        type: String,
+        value: 'click',
+        observer: 'activateEventChanged'
+      },
 
       /**
        * If this is set, only items with local name that matches the `selectable` are selectable.
@@ -133,18 +142,8 @@ Example:
 
     },
 
-    bind: {
-      multi: 'multiChanged',
-      selected: 'selectedChanged',
-      activateEvent: 'activateEventChanged'
-    },
-
-    configure: function() {
+    created: function() {
       this._bindActivateHandler = this.activateHandler.bind(this);
-      return {
-        multi: false,
-        activateEvent: 'click'
-      }
     },
 
     attached: function() {
@@ -152,6 +151,7 @@ Example:
     },
 
     detached: function() {
+      this.selectableDetached();
       this.removeListener(this.activateEvent);
     },
 
