@@ -12,262 +12,256 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <script>
 
-  using('core-selection', function(CoreSelection) {
+  /**
+  FIXME(ffu): should probably move it to its own repo.
+  `core-selectable` is a mixin that can be used to manage a list of elements
+  that can be selected.
+  FIXME(ffu): currently the element using `core-selectable` must bind the `selected` property to
+  `_selectedChanged`, e.g.
+
+      bind: {
+        selected: '_selectedChanged'
+      },
+
+   Also, the element must manually call the `selectableAttached` from the element's
+   `attached` callback and `selectableDetached` from the element's `detached` callback.
+   callback.
+
+  @group Polymer Mixins
+  @element core-selectable
+  @homepage github.io
+  */
+  Polymer.Core.Selectable = {
+
+    /* Gets or sets the selected item. The default is to use the index of the item */
+    /* selected */
+
+    /* The item that is selected */
+    /* selectedItem */
+
+    /* If you want to use the attribute value of an element for `selected` instead of
+    using the index, set `attrForSelected` to the name of the attribute. */
+    /* attrForSelected: 'name' */
+
+    /* The class to set on elements when selected */
+    selectedClass: 'core-selected',
+
+    /* The attribute to set on elements when selected */
+    /* selectedAttribute: 'active', */
+
+    excludedLocalNames: {
+      'template': 1
+    },
 
     /**
-    FIXME(ffu): should probably move it to its own repo.
-    `core-selectable` is a mixin that can be used to manage a list of elements
-    that can be selected.
-    FIXME(ffu): currently the element using `core-selectable` must bind the `selected` property to
-    `_selectedChanged`, e.g.
+     * User must call from `attached` callback.
+     *
+     * @method selectableAttached
+     */
+    selectableAttached: function() {
+      this._observer = this.observeItems(this);
+      this._contentObserver = this.observeContent(this);
+    },
 
-        bind: {
-          selected: '_selectedChanged'
-        },
+    /**
+     * User must call from `detached` callback.
+     *
+     * @method selectableDetached
+     */
+    selectableDetached: function() {
+      if (this._observer) {
+        this._observer.disconnect();
+      }
+      if (this._contentObserver) {
+        this._contentObserver.disconnect();
+      }
+    },
 
-     Also, the element must manually call the `selectableAttached` from the element's
-     `attached` callback and `selectableDetached` from the element's `detached` callback.
-     callback.
-
-    @group Polymer Mixins
-    @element core-selectable
-    @homepage github.io
-    */
-    modulate('core-selectable', function() {
-      return {
-
-        /* Gets or sets the selected item. The default is to use the index of the item */
-        /* selected */
-
-        /* The item that is selected */
-        /* selectedItem */
-
-        /* If you want to use the attribute value of an element for `selected` instead of
-        using the index, set `attrForSelected` to the name of the attribute. */
-        /* attrForSelected: 'name' */
-
-        /* The class to set on elements when selected */
-        selectedClass: 'core-selected',
-
-        /* The attribute to set on elements when selected */
-        /* selectedAttribute: 'active', */
-
-        excludedLocalNames: {
-          'template': 1
-        },
-
-        /**
-         * User must call from `attached` callback.
-         *
-         * @method selectableAttached
-         */
-        selectableAttached: function() {
-          this._observer = this.observeItems(this);
-          this._contentObserver = this.observeContent(this);
-        },
-
-        /**
-         * User must call from `detached` callback.
-         *
-         * @method selectableDetached
-         */
-        selectableDetached: function() {
-          if (this._observer) {
-            this._observer.disconnect();
+    /* `selected` property change handler */
+    _selectedChanged: function(selected) {
+      this.validateSelected();
+      if (this.multi) {
+        this.selection.clear();
+        if (this.selected) {
+          for (var i = 0; i < this.selected.length; i++) {
+            this.selection.setItemSelected(this.valueToItem(this.selected[i]), true);
           }
-          if (this._contentObserver) {
-            this._contentObserver.disconnect();
-          }
-        },
-
-        /* `selected` property change handler */
-        _selectedChanged: function(selected) {
-          this.validateSelected();
-          if (this.multi) {
-            this.selection.clear();
-            if (this.selected) {
-              for (var i = 0; i < this.selected.length; i++) {
-                this.selection.setItemSelected(this.valueToItem(this.selected[i]), true);
-              }
-            }
-          } else {
-            this.selection.select(this.valueToItem(this.selected));
-          }
-          this._setSelectedItem(this.selection.get());
-        },
-
-        /**
-         * Selects the given value. If the `multi` property is true, then the selected state of the
-         * `value` will be toggled; otherwise the `value` will be selected.
-         *
-         * @method select
-         * @param {String} value the value to select.
-         */
-        select: function(value) {
-          if (this.multi) {
-            if (this.selected) {
-              this.toggleSelected(value);
-            } else {
-              this.selected = [value];
-            }
-          } else {
-            this.selected = value;
-          }
-        },
-
-        get selection() {
-          if (!this._selection) {
-            this._selection = new CoreSelection(this.applySelection.bind(this));
-          }
-          return this._selection;
-        },
-
-        validateSelected: function() {
-          // convert to an array for multi-selection
-          if (this.multi && !Array.isArray(this.selected) &&
-              this.selected != null) {
-            this.selected = [this.attrForSelected ? this.selected : Number(this.selected)];
-          // use the first selected in the array for single-selection
-          } else if (!this.multi && Array.isArray(this.selected)) {
-            var s = this.selected[0];
-            this.selection.clear([this.valueToItem(s)]);
-            this.selected = s;
-          }
-        },
-
-        valueToItem: function(value) {
-          return (value == null) ? null : this.items[this.valueToIndex(value)];
-        },
-
-        valueToIndex: function(value) {
-          if (this.attrForSelected) {
-            for (var i = 0, item; item = this.items[i]; i++) {
-              if (this.valueForItem(item) == value) {
-                return i;
-              }
-            }
-          } else {
-            return Number(value);
-          }
-        },
-
-        indexToValue: function(index) {
-          if (this.attrForSelected) {
-            var item = this.items[index];
-            if (item) {
-              return this.valueForItem(item);
-            }
-          } else {
-            return index;
-          }
-        },
-
-        valueForItem: function(item) {
-          return item[this.attrForSelected] || item.getAttribute(this.attrForSelected);
-        },
-
-        // if `selectedItem` is published and readOnly, this will be overridden by the
-        // generated _setSelectedItem
-        _setSelectedItem: function(item) {
-          this.selectedItem = item;
-        },
-
-        applySelection: function(item, isSelected) {
-          if (this.selectedClass) {
-            this.toggleClass(this.selectedClass, isSelected, item);
-          }
-          if (this.selectedAttribute) {
-            this.toggleAttribute(this.selectedAttribute, isSelected, item);
-          }
-          this.fire('core-' + (isSelected ? 'select' : 'deselect'), {item: item});
-        },
-
-        /**
-         * Returns an array of selectable items.
-         *
-         * @property items
-         * @type Array
-         */
-        get items() {
-          if (!this.itemFilter) {
-            this.itemFilter = this.filterItem.bind(this);
-          }
-          var nodes = Polymer.dom.queryDistributedElements(this.selectable || '*', this);
-          return Array.prototype.filter.call(nodes, this.itemFilter);
-        },
-
-        /**
-         * Returns the index of the given item.
-         *
-         * @method indexOf
-         * @param {Object} item
-         * @returns Returns the index of the item
-         */
-        indexOf: function(item) {
-          return this.items.indexOf(item);
-        },
-
-        filterItem: function(node) {
-          return !this.excludedLocalNames[node.localName];
-        },
-
-        // observe content changes under the given node.
-        observeContent: function(node) {
-          var content = node.querySelector('content');
-          if (content && content.parentElement === node) {
-            return this.observeItems(node.host);
-          }
-        },
-
-        // observe items change under the given node.
-        observeItems: function(node) {
-          var observer = new MutationObserver(function() {
-            if (this.selected != null) {
-              this._selectedEffector();
-            }
-          }.bind(this));
-          observer.observe(node, {
-            childList: true,
-            subtree: true
-          });
-          return observer;
-        },
-
-        toggleSelected: function(value) {
-          var i = this.selected.indexOf(value);
-          if (i < 0) {
-            this.selected.push(value);
-          } else {
-            this.selected.splice(i, 1);
-          }
-          this.selection.setItemSelected(this.valueToItem(value), i < 0);
-          this._setSelectedItem(this.selection.get());
-        },
-
-        /**
-         * Selects the previous item.
-         *
-         * @method selectPrevious
-         */
-        selectPrevious: function() {
-          var length = this.items.length;
-          var index = (Number(this.valueToIndex(this.selected)) - 1 + length) % length;
-          this.selected = this.indexToValue(index);
-        },
-
-        /**
-         * Selects the next item.
-         *
-         * @method selectNext
-         */
-        selectNext: function() {
-          var index = (Number(this.valueToIndex(this.selected)) + 1) % this.items.length;
-          this.selected = this.indexToValue(index);
         }
+      } else {
+        this.selection.select(this.valueToItem(this.selected));
+      }
+      this._setSelectedItem(this.selection.get());
+    },
 
-      };
-    });
+    /**
+     * Selects the given value. If the `multi` property is true, then the selected state of the
+     * `value` will be toggled; otherwise the `value` will be selected.
+     *
+     * @method select
+     * @param {String} value the value to select.
+     */
+    select: function(value) {
+      if (this.multi) {
+        if (this.selected) {
+          this.toggleSelected(value);
+        } else {
+          this.selected = [value];
+        }
+      } else {
+        this.selected = value;
+      }
+    },
 
-  });
+    get selection() {
+      if (!this._selection) {
+        this._selection = new CoreSelection(this.applySelection.bind(this));
+      }
+      return this._selection;
+    },
+
+    validateSelected: function() {
+      // convert to an array for multi-selection
+      if (this.multi && !Array.isArray(this.selected) &&
+          this.selected != null) {
+        this.selected = [this.attrForSelected ? this.selected : Number(this.selected)];
+      // use the first selected in the array for single-selection
+      } else if (!this.multi && Array.isArray(this.selected)) {
+        var s = this.selected[0];
+        this.selection.clear([this.valueToItem(s)]);
+        this.selected = s;
+      }
+    },
+
+    valueToItem: function(value) {
+      return (value == null) ? null : this.items[this.valueToIndex(value)];
+    },
+
+    valueToIndex: function(value) {
+      if (this.attrForSelected) {
+        for (var i = 0, item; item = this.items[i]; i++) {
+          if (this.valueForItem(item) == value) {
+            return i;
+          }
+        }
+      } else {
+        return Number(value);
+      }
+    },
+
+    indexToValue: function(index) {
+      if (this.attrForSelected) {
+        var item = this.items[index];
+        if (item) {
+          return this.valueForItem(item);
+        }
+      } else {
+        return index;
+      }
+    },
+
+    valueForItem: function(item) {
+      return item[this.attrForSelected] || item.getAttribute(this.attrForSelected);
+    },
+
+    // if `selectedItem` is published and readOnly, this will be overridden by the
+    // generated _setSelectedItem
+    _setSelectedItem: function(item) {
+      this.selectedItem = item;
+    },
+
+    applySelection: function(item, isSelected) {
+      if (this.selectedClass) {
+        this.toggleClass(this.selectedClass, isSelected, item);
+      }
+      if (this.selectedAttribute) {
+        this.toggleAttribute(this.selectedAttribute, isSelected, item);
+      }
+      this.fire('core-' + (isSelected ? 'select' : 'deselect'), {item: item});
+    },
+
+    /**
+     * Returns an array of selectable items.
+     *
+     * @property items
+     * @type Array
+     */
+    get items() {
+      if (!this.itemFilter) {
+        this.itemFilter = this.filterItem.bind(this);
+      }
+      var nodes = Polymer.dom.queryDistributedElements(this.selectable || '*', this);
+      return Array.prototype.filter.call(nodes, this.itemFilter);
+    },
+
+    /**
+     * Returns the index of the given item.
+     *
+     * @method indexOf
+     * @param {Object} item
+     * @returns Returns the index of the item
+     */
+    indexOf: function(item) {
+      return this.items.indexOf(item);
+    },
+
+    filterItem: function(node) {
+      return !this.excludedLocalNames[node.localName];
+    },
+
+    // observe content changes under the given node.
+    observeContent: function(node) {
+      var content = node.querySelector('content');
+      if (content && content.parentElement === node) {
+        return this.observeItems(node.host);
+      }
+    },
+
+    // observe items change under the given node.
+    observeItems: function(node) {
+      var observer = new MutationObserver(function() {
+        if (this.selected != null) {
+          this._selectedEffector();
+        }
+      }.bind(this));
+      observer.observe(node, {
+        childList: true,
+        subtree: true
+      });
+      return observer;
+    },
+
+    toggleSelected: function(value) {
+      var i = this.selected.indexOf(value);
+      if (i < 0) {
+        this.selected.push(value);
+      } else {
+        this.selected.splice(i, 1);
+      }
+      this.selection.setItemSelected(this.valueToItem(value), i < 0);
+      this._setSelectedItem(this.selection.get());
+    },
+
+    /**
+     * Selects the previous item.
+     *
+     * @method selectPrevious
+     */
+    selectPrevious: function() {
+      var length = this.items.length;
+      var index = (Number(this.valueToIndex(this.selected)) - 1 + length) % length;
+      this.selected = this.indexToValue(index);
+    },
+
+    /**
+     * Selects the next item.
+     *
+     * @method selectNext
+     */
+    selectNext: function() {
+      var index = (Number(this.valueToIndex(this.selected)) + 1) % this.items.length;
+      this.selected = this.indexToValue(index);
+    }
+
+  };
 
 </script>
