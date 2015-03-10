@@ -189,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (!this.itemFilter) {
         this.itemFilter = this.filterItem.bind(this);
       }
-      var nodes = Polymer.dom.queryDistributedElements(this.selectable || '*', this);
+      var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       return Array.prototype.filter.call(nodes, this.itemFilter);
     },
 
