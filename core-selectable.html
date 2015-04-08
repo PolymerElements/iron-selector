@@ -220,7 +220,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     observeItems: function(node) {
       var observer = new MutationObserver(function() {
         if (this.selected != null) {
-          this._selectedEffector();
+          this.selectedChanged(this.selected);
         }
       }.bind(this));
       observer.observe(node, {
