@@ -90,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var item = document.createElement('div');
         item.id = 'item4';
         item.textContent = 'item4';
-        Polymer.dom.appendChild(item, s1);
+        Polymer.dom(s1).appendChild(item);
         Polymer.dom.flush();
         // set selected
         s1.selected = 'item4';
@@ -131,7 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var item = document.createElement('item');
         item.id = 'item4';
         item.textContent = 'item4';
-        Polymer.dom.appendChild(item, s2);
+        Polymer.dom(s2).appendChild(item);
         Polymer.dom.flush();
         // set selected
         s2.selected = 'item4';
