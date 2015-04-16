@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>core-selector-template-repeat</title>
+  <title>iron-selector-template-repeat</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -20,10 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../core-selector.html">
+  <link rel="import" href="../iron-selector.html">
 
   <style>
-    .core-selected {
+    .iron-selected {
       background: #ccc;
     }
   </style>
@@ -33,11 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="test">
     <template>
-      <core-selector id="selector" selected="1">
+      <iron-selector id="selector" selected="1">
         <template id="t" is="x-repeat">
           <div id$="[[item.name]]">{{item.name}}</div>
         </template>
-      </core-selector>
+      </iron-selector>
     </template>
   </test-fixture>
 
@@ -63,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var item = s.selectedItem;
           assert.equal(s.items[1], item);
           // check selected class
-          assert.isTrue(item.classList.contains('core-selected'));
+          assert.isTrue(item.classList.contains('iron-selected'));
           done();
         });
       });
@@ -83,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // check selected (should still honor the selected)
             assert.equal(s.selected, 1);
             // check selected class
-            assert.isTrue(s.querySelector('#bar').classList.contains('core-selected'));
+            assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));
             done();
           });
         });
@@ -98,7 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var item = s.selectedItem;
           assert.equal(s.items[3], item);
           // check selected class
-          assert.isTrue(item.classList.contains('core-selected'));
+          assert.isTrue(item.classList.contains('iron-selected'));
           done();
         });
       });

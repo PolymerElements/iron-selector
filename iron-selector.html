@@ -8,17 +8,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-`core-selector` is an element which can be used to manage a list of elements
+`iron-selector` is an element which can be used to manage a list of elements
 that can be selected.  Tapping on the item will make the item selected.  The `selected` indicates
 which item is being selected.  The default is to use the index of the item.
 
 Example:
 
-    <core-selector selected="0">
+    <iron-selector selected="0">
       <div>Item 1</div>
       <div>Item 2</div>
       <div>Item 3</div>
-    </core-selector>
+    </iron-selector>
 
 If you want to use the attribute value of an element for `selected` instead of the index,
 set `attrForSelected` to the name of the attribute.  For example, if you want to select item by
@@ -26,43 +26,43 @@ set `attrForSelected` to the name of the attribute.  For example, if you want to
 
 Example:
 
-    <core-selector attr-for-selected="name" selected="foo">
+    <iron-selector attr-for-selected="name" selected="foo">
       <div name="foo">Foo</div>
       <div name="bar">Bar</div>
       <div name="zot">Zot</div>
-    </core-selector>
+    </iron-selector>
 
-`core-selector` is not styled. Use the `core-selected` CSS class to style the selected element.
+`iron-selector` is not styled. Use the `iron-selected` CSS class to style the selected element.
 
 Example:
 
     <style>
-      .core-selected {
+      .iron-selected {
         background: #eee;
       }
     </style>
 
     ...
 
-    <core-selector selected="0">
+    <iron-selector selected="0">
       <div>Item 1</div>
       <div>Item 2</div>
       <div>Item 3</div>
-    </core-selector>
+    </iron-selector>
 
 @group Polymer Core Elements
-@element core-selector
+@element iron-selector
 @homepage github.io
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="core-selectable.html">
+<link rel="import" href="iron-selectable.html">
 
 <script>
 
   Polymer({
 
-    is: 'core-selector',
+    is: 'iron-selector',
 
     mixins: [
       Polymer.Core.Selectable
@@ -188,7 +188,7 @@ Example:
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this.indexToValue(i);
-          if (!this.fire('core-activate', {selected: value, item: t}).defaultPrevented) {
+          if (!this.fire('iron-activate', {selected: value, item: t}).defaultPrevented) {
             this.select(value);
           }
           return;

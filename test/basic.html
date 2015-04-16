@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>core-selector-basic</title>
+  <title>iron-selector-basic</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -20,10 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../core-selector.html">
+  <link rel="import" href="../iron-selector.html">
 
   <style>
-    .core-selected {
+    .iron-selected {
       background: #ccc;
     }
 
@@ -37,13 +37,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="defaults">
     <template>
-      <core-selector>
+      <iron-selector>
         <div>Item 0</div>
         <div>Item 1</div>
         <div>Item 2</div>
         <div>Item 3</div>
         <div>Item 4</div>
-      </core-selector>
+      </iron-selector>
     </template>
   </test-fixture>
 
@@ -51,13 +51,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="basic">
     <template>
-      <core-selector selected="item2" attr-for-selected="id">
+      <iron-selector selected="item2" attr-for-selected="id">
         <div id="item0">Item 0</div>
         <div id="item1">Item 1</div>
         <div id="item2">Item 2</div>
         <div id="item3">Item 3</div>
         <div id="item4">Item 4</div>
-      </core-selector>
+      </iron-selector>
     </template>
   </test-fixture>
 
@@ -75,8 +75,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s1.selected, null);
       });
 
-      test('to core-selected as selectedClass', function() {
-        assert.equal(s1.selectedClass, 'core-selected');
+      test('to iron-selected as selectedClass', function() {
+        assert.equal(s1.selectedClass, 'iron-selected');
       });
 
       test('to false as multi', function() {
@@ -114,30 +114,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // set selected
         s2.selected = 'item4';
         // check selected class
-        assert.isTrue(s2.children[4].classList.contains('core-selected'));
+        assert.isTrue(s2.children[4].classList.contains('iron-selected'));
         // check item
         assert.equal(s2.selectedItem, s2.children[4]);
       });
 
-      test('fire core-select when selected is set', function() {
-        // setup listener for core-select event
+      test('fire iron-select when selected is set', function() {
+        // setup listener for iron-select event
         var selectedEventCounter = 0;
-        s2.addEventListener('core-select', function(e) {
+        s2.addEventListener('iron-select', function(e) {
           selectedEventCounter++;
         });
         // set selected
         s2.selected = 'item4';
-        // check core-select event
+        // check iron-select event
         assert.equal(selectedEventCounter, 1);
       });
 
       test('set selected to old value', function() {
-        // setup listener for core-select event
+        // setup listener for iron-select event
         var selectedEventCounter = 0;
-        s2.addEventListener('core-select', function(e) {
+        s2.addEventListener('iron-select', function(e) {
           selectedEventCounter++;
         });
-        // selecting the same value shouldn't fire core-select
+        // selecting the same value shouldn't fire iron-select
         s2.selected = 'item2';
         assert.equal(selectedEventCounter, 0);
       });
