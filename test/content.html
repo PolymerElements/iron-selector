@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>core-selector-content</title>
+  <title>iron-selector-content</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="content-element.html">
 
   <style>
-    .core-selected {
+    .iron-selected {
       background: #ccc;
     }
   </style>
@@ -65,14 +65,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('attribute selected', function() {
         // check selected class
-        assert.isTrue(s1.querySelector('#item0').classList.contains('core-selected'));
+        assert.isTrue(s1.querySelector('#item0').classList.contains('iron-selected'));
       });
 
       test('set selected', function() {
         // set selected
         s1.selected = 'item1';
         // check selected class
-        assert.isTrue(s1.querySelector('#item1').classList.contains('core-selected'));
+        assert.isTrue(s1.querySelector('#item1').classList.contains('iron-selected'));
       });
 
       test('get items', function() {
@@ -83,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var item = s1.querySelector('#item2');
         item.dispatchEvent(new CustomEvent('click', {bubbles: true}));
         // check selected class
-        assert.isTrue(item.classList.contains('core-selected'));
+        assert.isTrue(item.classList.contains('iron-selected'));
       });
 
       test('add item dynamically', function() {
@@ -97,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check items length
         assert.equal(s1.$.selector.items.length, 5);
         // check selected class
-        assert.isTrue(s1.querySelector('#item4').classList.contains('core-selected'));
+        assert.isTrue(s1.querySelector('#item4').classList.contains('iron-selected'));
       });
 
     });
@@ -106,14 +106,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('attribute selected', function() {
         // check selected class
-        assert.isTrue(s2.querySelector('#item0').classList.contains('core-selected'));
+        assert.isTrue(s2.querySelector('#item0').classList.contains('iron-selected'));
       });
 
       test('set selected', function() {
         // set selected
         s2.selected = 'item1';
         // check selected class
-        assert.isTrue(s2.querySelector('#item1').classList.contains('core-selected'));
+        assert.isTrue(s2.querySelector('#item1').classList.contains('iron-selected'));
       });
 
       test('get items', function() {
@@ -124,7 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var item = s2.querySelector('#item2');
         item.dispatchEvent(new CustomEvent('click', {bubbles: true}));
         // check selected class
-        assert.isTrue(item.classList.contains('core-selected'));
+        assert.isTrue(item.classList.contains('iron-selected'));
       });
 
       test('add item dynamically', function() {
@@ -138,7 +138,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check items length
         assert.equal(s2.$.selector.items.length, 5);
         // check selected class
-        assert.isTrue(s2.querySelector('#item4').classList.contains('core-selected'));
+        assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
       });
 
     });
@@ -151,11 +151,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // check selected
           assert.equal(s3.selected, 'item0');
           // check selected class
-          assert.isTrue(s3.querySelector('#item0').classList.contains('core-selected'));
+          assert.isTrue(s3.querySelector('#item0').classList.contains('iron-selected'));
           // set selected
           s3.selected = 'item2';
           // check selected class
-          assert.isTrue(s3.querySelector('#item2').classList.contains('core-selected'));
+          assert.isTrue(s3.querySelector('#item2').classList.contains('iron-selected'));
           done();
         });
       });

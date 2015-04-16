@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>core-selector-activate-event</title>
+  <title>iron-selector-activate-event</title>
   <meta charset="UTF-8">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
@@ -19,10 +19,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../core-selector.html">
+  <link rel="import" href="../iron-selector.html">
 
   <style>
-    .core-selected {
+    .iron-selected {
       background: #ccc;
     }
   </style>
@@ -32,13 +32,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="test">
     <template>
-      <core-selector id="selector" selected="0">
+      <iron-selector id="selector" selected="0">
         <div>Item 0</div>
         <div>Item 1</div>
         <div>Item 2</div>
         <div>Item 3</div>
         <div>Item 4</div>
-      </core-selector>
+      </iron-selector>
     </template>
   </test-fixture>
 
@@ -60,11 +60,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selected, '1');
       });
 
-      test('activates on click and fires core-activate', function(done) {
+      test('activates on click and fires iron-activate', function(done) {
         assert.equal(s.selected, '0');
 
-        // attach core-activate listener
-        s.addEventListener("core-activate", function(event) {
+        // attach iron-activate listener
+        s.addEventListener("iron-activate", function(event) {
           assert.equal(event.detail.selected, '1');
           assert.equal(event.detail.item, s.children[1]);
           done();
@@ -74,11 +74,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.children[1].dispatchEvent(new CustomEvent('click', {bubbles: true}));
       });
 
-      test('click on already selected and fires core-activate', function(done) {
+      test('click on already selected and fires iron-activate', function(done) {
         assert.equal(s.selected, '0');
 
-        // attach core-activate listener
-        s.addEventListener("core-activate", function(event) {
+        // attach iron-activate listener
+        s.addEventListener("iron-activate", function(event) {
           assert.equal(event.detail.selected, '0');
           assert.equal(event.detail.item, s.children[0]);
           done();
@@ -96,9 +96,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selected, '2');
       });
 
-      test('activates on mousedown and fires core-activate', function(done) {
-        // attach core-activate listener
-        s.addEventListener("core-activate", function(event) {
+      test('activates on mousedown and fires iron-activate', function(done) {
+        // attach iron-activate listener
+        s.addEventListener("iron-activate", function(event) {
           assert.equal(event.detail.selected, '2');
           assert.equal(event.detail.item, s.children[2]);
           done();
@@ -120,13 +120,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('activates on click and preventDefault', function() {
-        // attach core-activate listener
-        s.addEventListener("core-activate", function(event) {
+        // attach iron-activate listener
+        s.addEventListener("iron-activate", function(event) {
           event.preventDefault();
         });
         // select Item 2
         s.children[2].dispatchEvent(new CustomEvent('click', {bubbles: true}));
-        // shouldn't got selected since we preventDefault in core-activate
+        // shouldn't got selected since we preventDefault in iron-activate
         assert.equal(s.selected, '0');
       });
 

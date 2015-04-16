@@ -8,15 +8,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="core-selection.html">
+<link rel="import" href="iron-selection.html">
 
 <script>
 
   /**
   FIXME(ffu): should probably move it to its own repo.
-  `core-selectable` is a mixin that can be used to manage a list of elements
+  `iron-selectable` is a mixin that can be used to manage a list of elements
   that can be selected.
-  FIXME(ffu): currently the element using `core-selectable` must bind the `selected` property to
+  FIXME(ffu): currently the element using `iron-selectable` must bind the `selected` property to
   `_selectedChanged`, e.g.
 
       bind: {
@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    callback.
 
   @group Polymer Mixins
-  @element core-selectable
+  @element iron-selectable
   @homepage github.io
   */
   Polymer.Core.Selectable = {
@@ -44,7 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /* attrForSelected: 'name' */
 
     /* The class to set on elements when selected */
-    selectedClass: 'core-selected',
+    selectedClass: 'iron-selected',
 
     /* The attribute to set on elements when selected */
     /* selectedAttribute: 'active', */
@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     get selection() {
       if (!this._selection) {
-        this._selection = new CoreSelection(this.applySelection.bind(this));
+        this._selection = new IronSelection(this.applySelection.bind(this));
       }
       return this._selection;
     },
@@ -176,7 +176,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.selectedAttribute) {
         this.toggleAttribute(this.selectedAttribute, isSelected, item);
       }
-      this.fire('core-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
     },
 
     /**

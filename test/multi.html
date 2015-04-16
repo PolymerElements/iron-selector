@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>core-selector-multi</title>
+  <title>iron-selector-multi</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -20,10 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../core-selector.html">
+  <link rel="import" href="../iron-selector.html">
 
   <style>
-    .core-selected {
+    .iron-selected {
       background: #ccc;
     }
   </style>
@@ -33,13 +33,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="test">
     <template>
-      <core-selector multi>
+      <iron-selector multi>
         <div>Item 0</div>
         <div>Item 1</div>
         <div>Item 2</div>
         <div>Item 3</div>
         <div>Item 4</div>
-      </core-selector>
+      </iron-selector>
     </template>
   </test-fixture>
 
@@ -59,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('has sane defaults', function() {
         assert.equal(s.selected, undefined);
-        assert.equal(s.selectedClass, 'core-selected');
+        assert.equal(s.selectedClass, 'iron-selected');
         assert.equal(s.items.length, 5);
       });
 
@@ -67,8 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // set selected
         s.selected = [0, 2];
         // check selected class
-        assert.isTrue(s.children[0].classList.contains('core-selected'));
-        assert.isTrue(s.children[2].classList.contains('core-selected'));
+        assert.isTrue(s.children[0].classList.contains('iron-selected'));
+        assert.isTrue(s.children[2].classList.contains('iron-selected'));
         // check selectedItem
         assert.equal(s.selectedItem.length, 2);
         assert.equal(s.selectedItem[0], s.children[0]);
@@ -80,23 +80,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
         s.children[2].dispatchEvent(new CustomEvent('click', {bubbles: true}));
         // check selected class
-        assert.isTrue(s.children[0].classList.contains('core-selected'));
-        assert.isTrue(s.children[2].classList.contains('core-selected'));
+        assert.isTrue(s.children[0].classList.contains('iron-selected'));
+        assert.isTrue(s.children[2].classList.contains('iron-selected'));
         // check selectedItem
         assert.equal(s.selectedItem.length, 2);
         assert.equal(s.selectedItem[0], s.children[0]);
         assert.equal(s.selectedItem[1], s.children[2]);
       });
 
-      test('fire core-select/deselect events', function() {
-        // setup listener for core-select event
+      test('fire iron-select/deselect events', function() {
+        // setup listener for iron-select event
         var selectEventCounter = 0;
-        s.addEventListener('core-select', function(e) {
+        s.addEventListener('iron-select', function(e) {
           selectEventCounter++;
         });
         // setup listener for core-deselect event
         var deselectEventCounter = 0;
-        s.addEventListener('core-deselect', function(e) {
+        s.addEventListener('iron-deselect', function(e) {
           deselectEventCounter++;
         });
         // tap to select an item
@@ -109,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check selected
         assert.equal(s.selected.length, 0);
         // check class
-        assert.isFalse(s.children[0].classList.contains('core-selected'));
+        assert.isFalse(s.children[0].classList.contains('iron-selected'));
         // check events
         assert.equal(selectEventCounter, 1);
         assert.equal(deselectEventCounter, 1);

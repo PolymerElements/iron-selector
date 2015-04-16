@@ -11,21 +11,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
   <head>
 
-    <title>core-selector</title>
+    <title>iron-selector</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../core-selector.html">
+    <link rel="import" href="../iron-selector.html">
 
     <style>
 
-      core-selector > * {
+      iron-selector > * {
         padding: 16px;
       }
 
-      .core-selected {
+      .iron-selected {
         background-color: #ddd;
       }
 
@@ -35,20 +35,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <body>
 
     <h3>Example 1</h3>
-    <core-selector selected="0">
+    <iron-selector selected="0">
       <div>Item 0</div>
       <div>Item 1</div>
       <div>Item 2</div>
       <div>Item 3</div>
       <div>Item 4</div>
-    </core-selector>
+    </iron-selector>
 
     <h3>Example 2</h3>
-    <core-selector selected="foo" attr-for-selected="name">
+    <iron-selector selected="foo" attr-for-selected="name">
       <div name="foo">Foo</div>
       <div name="bar">Bar</div>
       <div name="zot">Zot</div>
-    </core-selector>
+    </iron-selector>
 
   </body>
 </html>
