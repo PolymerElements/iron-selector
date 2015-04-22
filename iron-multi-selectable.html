@@ -60,6 +60,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_updateSelected(attrForSelected, selectedValues)'
       ],
 
+      /**
+       * Selects the given value. If the `multi` property is true, then the selected state of the
+       * `value` will be toggled; otherwise the `value` will be selected.
+       *
+       * @method select
+       * @param {String} value the value to select.
+       */
+      select: function(value) {
+        if (this.multi) {
+          if (this.selectedValues) {
+            this._toggleSelected(value);
+          } else {
+            this.selectedValues = [value];
+          }
+        } else {
+          this.selected = value;
+        }
+      },
+
       multiChanged: function(multi) {
         this._selection.multi = multi;
       },
@@ -88,25 +107,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this._setSelectedItems([s]);
           this._setSelectedItem(s);
-        }
-      },
-
-      /**
-       * Selects the given value. If the `multi` property is true, then the selected state of the
-       * `value` will be toggled; otherwise the `value` will be selected.
-       *
-       * @method select
-       * @param {String} value the value to select.
-       */
-      select: function(value) {
-        if (this.multi) {
-          if (this.selectedValues) {
-            this._toggleSelected(value);
-          } else {
-            this.selectedValues = [value];
-          }
-        } else {
-          this.selected = value;
         }
       },
 

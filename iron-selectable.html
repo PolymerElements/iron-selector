@@ -52,8 +52,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
-       * The event that would be fired from the item to indicate it is being selected.  Set this
-       * to empty string or null if you don't want to listen for any events.
+       * The event that fires from items when they are selected. Selectable
+       * will listen for this event from items and update the selection state.
+       * Set to empty string to listen to no events.
        *
        * @attribute activateEvent
        * @type String
@@ -66,7 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
-       * If this is set, only items with local name that matches the `selectable` are selectable.
+       * This is a CSS selector sting.  If this is set, only items that matches the CSS selector
+       * are selectable.
        *
        * @attribute selectable
        * @type String
@@ -126,27 +128,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this._removeListener(this.activateEvent);
     },
 
-    _addListener: function(eventName) {
-      this.addEventListener(eventName, this._bindActivateHandler);
-    },
-
-    _removeListener: function(eventName) {
-      this.removeEventListener(eventName, this._bindActivateHandler);
-    },
-
-    _activateEventChanged: function(eventName, old) {
-      this._removeListener(old);
-      this._addListener(eventName);
-    },
-
-    _updateSelected: function() {
-      this._selectSelected(this.selected);
-    },
-
-    _selectSelected: function(selected) {
-      this._selection.select(this._valueToItem(this.selected));
-    },
-
     /**
      * Returns an array of selectable items.
      *
@@ -156,10 +137,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     get items() {
       var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       return Array.prototype.filter.call(nodes, this._bindFilterItem);
-    },
-
-    _filterItem: function(node) {
-      return !this.excludedLocalNames[node.localName];
     },
 
     /**
@@ -202,6 +179,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     selectNext: function() {
       var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
       this.selected = this._indexToValue(index);
+    },
+
+    _addListener: function(eventName) {
+      this.addEventListener(eventName, this._bindActivateHandler);
+    },
+
+    _removeListener: function(eventName) {
+      this.removeEventListener(eventName, this._bindActivateHandler);
+    },
+
+    _activateEventChanged: function(eventName, old) {
+      this._removeListener(old);
+      this._addListener(eventName);
+    },
+
+    _updateSelected: function() {
+      this._selectSelected(this.selected);
+    },
+
+    _selectSelected: function(selected) {
+      this._selection.select(this._valueToItem(this.selected));
+    },
+
+    _filterItem: function(node) {
+      return !this.excludedLocalNames[node.localName];
     },
 
     _valueToItem: function(value) {
@@ -279,13 +281,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this._indexToValue(i);
-          if (!this.fire('iron-activate',
-              {selected: value, item: t}, {cancelable: true}).defaultPrevented) {
-            this.select(value);
-          }
+          this._itemActivate(value, t);
           return;
         }
         t = t.parentNode;
+      }
+    },
+
+    _itemActivate: function(value, item) {
+      if (!this.fire('iron-activate',
+          {selected: value, item: item}, {cancelable: true}).defaultPrevented) {
+        this.select(value);
       }
     }
 
