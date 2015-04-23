@@ -64,7 +64,7 @@ Example:
 
     is: 'iron-selector',
 
-    mixins: [
+    behaviors: [
       Polymer.Core.Selectable
     ],
 
@@ -77,7 +77,10 @@ Example:
        * @attribute attrForSelected
        * @type String
        */
-      attrForSelected: String,
+      attrForSelected: {
+        type:     String,
+        observer: 'attrForSelectedChanged',
+      },
 
       /**
        * If true, multiple selections are allowed.
@@ -146,12 +149,7 @@ Example:
       this._bindActivateHandler = this.activateHandler.bind(this);
     },
 
-    attached: function() {
-      this.selectableAttached();
-    },
-
     detached: function() {
-      this.selectableDetached();
       this.removeListener(this.activateEvent);
     },
 
@@ -181,6 +179,10 @@ Example:
       this._selectedChanged(selected, old);
     },
 
+    attrForSelectedChanged: function(attrForSelected, old) {
+      this._selectedChanged(this.selected);
+    },
+
     activateHandler: function(e) {
       var t = e.target;
       var items = this.items;
@@ -188,7 +190,7 @@ Example:
         var i = items.indexOf(t);
         if (i >= 0) {
           var value = this.indexToValue(i);
-          if (!this.fire('iron-activate', {selected: value, item: t}).defaultPrevented) {
+          if (!this.fire('iron-activate', {selected: value, item: t}, {cancelable: true}).defaultPrevented) {
             this.select(value);
           }
           return;

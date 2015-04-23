@@ -53,22 +53,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'template': 1
     },
 
-    /**
-     * User must call from `attached` callback.
-     *
-     * @method selectableAttached
-     */
-    selectableAttached: function() {
+    attached: function() {
       this._observer = this.observeItems(this);
       this._contentObserver = this.observeContent(this);
     },
 
-    /**
-     * User must call from `detached` callback.
-     *
-     * @method selectableDetached
-     */
-    selectableDetached: function() {
+    detached: function() {
       if (this._observer) {
         this._observer.disconnect();
       }
