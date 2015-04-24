@@ -58,34 +58,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('has sane defaults', function() {
-        assert.equal(s.selected, undefined);
+        assert.equal(s.selectedValues, undefined);
         assert.equal(s.selectedClass, 'iron-selected');
         assert.equal(s.items.length, 5);
       });
 
       test('set multi-selection via selected property', function() {
-        // set selected
-        s.selected = [0, 2];
+        // set selectedValues
+        s.selectedValues = [0, 2];
         // check selected class
         assert.isTrue(s.children[0].classList.contains('iron-selected'));
         assert.isTrue(s.children[2].classList.contains('iron-selected'));
-        // check selectedItem
-        assert.equal(s.selectedItem.length, 2);
-        assert.equal(s.selectedItem[0], s.children[0]);
-        assert.equal(s.selectedItem[1], s.children[2]);
+        // check selectedItems
+        assert.equal(s.selectedItems.length, 2);
+        assert.equal(s.selectedItems[0], s.children[0]);
+        assert.equal(s.selectedItems[1], s.children[2]);
       });
 
       test('set multi-selection via tap', function() {
-        // set selected
+        // set selectedValues
         s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
         s.children[2].dispatchEvent(new CustomEvent('click', {bubbles: true}));
         // check selected class
         assert.isTrue(s.children[0].classList.contains('iron-selected'));
         assert.isTrue(s.children[2].classList.contains('iron-selected'));
-        // check selectedItem
-        assert.equal(s.selectedItem.length, 2);
-        assert.equal(s.selectedItem[0], s.children[0]);
-        assert.equal(s.selectedItem[1], s.children[2]);
+        // check selectedItems
+        assert.equal(s.selectedItems.length, 2);
+        assert.equal(s.selectedItems[0], s.children[0]);
+        assert.equal(s.selectedItems[1], s.children[2]);
       });
 
       test('fire iron-select/deselect events', function() {
@@ -106,8 +106,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(deselectEventCounter, 0);
         // tap on already selected item should deselect it
         s.children[0].dispatchEvent(new CustomEvent('click', {bubbles: true}));
-        // check selected
-        assert.equal(s.selected.length, 0);
+        // check selectedValues
+        assert.equal(s.selectedValues.length, 0);
         // check class
         assert.isFalse(s.children[0].classList.contains('iron-selected'));
         // check events
@@ -115,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(deselectEventCounter, 1);
       });
 
-      test('toggle multi from true to false', function() {
+      /* test('toggle multi from true to false', function() {
         // set selected
         s.selected = [0, 2];
         var first = s.selected[0];
@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isNotArray(s.selected);
         // selected should be the first value from the old array
         assert.equal(s.selected, first);
-      });
+      }); */
 
     });
 
