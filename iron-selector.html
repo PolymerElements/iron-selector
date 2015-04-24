@@ -56,7 +56,7 @@ Example:
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="iron-selectable.html">
+<link rel="import" href="iron-multi-selectable.html">
 
 <script>
 
@@ -65,139 +65,8 @@ Example:
     is: 'iron-selector',
 
     behaviors: [
-      Polymer.Core.Selectable
-    ],
-
-    properties: {
-
-      /**
-       * If you want to use the attribute value of an element for `selected` instead of the index,
-       * set this to the name of the attribute.
-       *
-       * @attribute attrForSelected
-       * @type String
-       */
-      attrForSelected: {
-        type:     String,
-        observer: 'attrForSelectedChanged',
-      },
-
-      /**
-       * If true, multiple selections are allowed.
-       *
-       * @attribute multi
-       * @type Boolean
-       * @default false
-       */
-      multi: {
-        type: Boolean,
-        value: false,
-        observer: 'multiChanged'
-      },
-
-      /**
-       * Gets or sets the selected element. The default is to use the index of the item.  In
-       * multi-selection this should be an array of values.
-       *
-       * @attribute selected
-       * @type String|Array
-       */
-      selected: {
-        type: String,
-        notify: true,
-        observer: 'selectedChanged'
-      },
-
-      /**
-       * Returns the currently selected item. In multi-selection this returns an array of
-       * selected items.
-       *
-       * @attribute selectedItem
-       * @type Object|Array
-       */
-      selectedItem: {
-        type: Object,
-        readOnly: true,
-        notify: true
-      },
-
-      /**
-       * The event that would be fired from the item to indicate it is being selected.  Set this
-       * to empty string or null if you don't want to listen for any events.
-       *
-       * @attribute activateEvent
-       * @type String
-       * @default 'click'
-       */
-      activateEvent: {
-        type: String,
-        value: 'click',
-        observer: 'activateEventChanged'
-      },
-
-      /**
-       * If this is set, only items with local name that matches the `selectable` are selectable.
-       *
-       * @attribute selectable
-       * @type String
-       */
-      selectable: String
-
-    },
-
-    created: function() {
-      this._bindActivateHandler = this.activateHandler.bind(this);
-    },
-
-    detached: function() {
-      this.removeListener(this.activateEvent);
-    },
-
-    addListener: function(eventName) {
-      if (eventName) {
-        this.addEventListener(eventName, this._bindActivateHandler);
-      }
-    },
-
-    removeListener: function(eventName) {
-      if (eventName) {
-        this.removeEventListener(eventName, this._bindActivateHandler);
-      }
-    },
-
-    activateEventChanged: function(eventName, old) {
-      this.removeListener(old);
-      this.addListener(eventName);
-    },
-
-    multiChanged: function(multi) {
-      this.selection.multi = multi;
-      this.selectedChanged(this.selected);
-    },
-
-    selectedChanged: function(selected, old) {
-      this._selectedChanged(selected, old);
-    },
-
-    attrForSelectedChanged: function(attrForSelected, old) {
-      this._selectedChanged(this.selected);
-    },
-
-    activateHandler: function(e) {
-      var t = e.target;
-      var items = this.items;
-      while (t && t != this) {
-        var i = items.indexOf(t);
-        if (i >= 0) {
-          var value = this.indexToValue(i);
-          if (!this.fire('iron-activate', {selected: value, item: t}, {cancelable: true}).defaultPrevented) {
-            this.select(value);
-          }
-          return;
-        }
-        t = t.parentNode;
-      }
-    }
+      Polymer.IronMultiSelectableBehavior
+    ]
 
   });
 

@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
 
       iron-selector > * {
-        padding: 16px;
+        padding: 8px;
       }
 
       .iron-selected {
@@ -34,7 +34,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body>
 
-    <h3>Example 1</h3>
+    <h3>Basic</h3>
+
     <iron-selector selected="0">
       <div>Item 0</div>
       <div>Item 1</div>
@@ -43,7 +44,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div>Item 4</div>
     </iron-selector>
 
-    <h3>Example 2</h3>
+    <h3>Multi-select</h3>
+
+    <iron-selector multi selected-values='[0,2]'>
+      <div>Item 0</div>
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+      <div>Item 4</div>
+    </iron-selector>
+
+    <h3>Example</h3>
+
     <iron-selector selected="foo" attr-for-selected="name">
       <div name="foo">Foo</div>
       <div name="bar">Bar</div>
