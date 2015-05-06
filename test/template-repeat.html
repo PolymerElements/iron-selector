@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <test-fixture id="test">
     <template>
       <iron-selector id="selector" selected="1">
-        <template id="t" is="x-repeat">
+        <template id="t" is="dom-repeat">
           <div id$="[[item.name]]">{{item.name}}</div>
         </template>
       </iron-selector>
@@ -43,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
-    suite('x-repeat', function() {
+    suite('dom-repeat', function() {
 
       var s, t;
 
