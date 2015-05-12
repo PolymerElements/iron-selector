@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script>
 
   Polymer.IronMultiSelectableBehavior = [
-    Polymer.IronSelectableBehavior, {
+    {
 
       properties: {
 
@@ -121,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._selection.setItemSelected(this._valueToItem(value), unselected);
       }
 
-    }
+    }, Polymer.IronSelectableBehavior
   ];
 
 </script>
