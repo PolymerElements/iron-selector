@@ -13,7 +13,7 @@
   "keywords": [
     "web-components",
     "polymer",
-    "iron"
+    "selector"
   ],
   "repository": {
     "type": "git",
