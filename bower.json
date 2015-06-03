@@ -19,6 +19,8 @@
     "type": "git",
     "url": "git://github.com/PolymerElements/iron-selector.git"
   },
+  "homepage": "https://github.com/PolymerElements/iron-selector",
+  "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0"
   },
