@@ -15,6 +15,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /** @polymerBehavior */
   Polymer.IronSelectableBehavior = {
 
+      /**
+       *  Fired when iron-selector is activated (selected or deselected).
+       *  It is fired before the selected items are changed.
+       *  Cancel the event to abort selection.
+       *
+       * @event iron-activate
+       *
+       **/
+      /**
+       *  Fired when an item is selected
+       *
+       * @event iron-select
+       *
+       **/
+      /**
+       *  Fired when an item is deselected
+       *
+       * @event iron-deselect
+       *
+       **/
+
     properties: {
 
       /**
