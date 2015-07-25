@@ -61,11 +61,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.selectedValues) {
           this._toggleSelected(value);
         } else {
-          this.selectedValues = [value];
+          this.set('selectedValues',[value]);
         }
-      } else {
-        this.selected = value;
-      }
+      } else this.set('selected', value);
     },
 
     multiChanged: function(multi) {
@@ -82,6 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _selectMulti: function(values) {
       this._selection.clear();
+      this.selected=values[values.length-1];
       if (values) {
         for (var i = 0; i < values.length; i++) {
           this._selection.setItemSelected(this._valueToItem(values[i]), true);
@@ -103,9 +102,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var i = this.selectedValues.indexOf(value);
       var unselected = i < 0;
       if (unselected) {
-        this.selectedValues.push(value);
+        this.push('selectedValues',value);
+        this.set('selected',value);
       } else {
-        this.selectedValues.splice(i, 1);
+        this.splice('selectedValues',i,1);
+        this.set('selected',this.selectedValues[this.selectedValues.length-1]||null);
       }
       this._selection.setItemSelected(this._valueToItem(value), unselected);
     }
