@@ -99,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
-       * The set of excluded elements where the key is the `localName` 
+       * The set of excluded elements where the key is the `localName`
        * of the element that will be ignored from the item list.
        *
        * @type {object}
@@ -149,9 +149,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     get items() {
       var nodes;
       if (this.selectable)
-          nodes = Polymer.dom(this).querySelectorAll(this.selectable);
+          nodes = this.querySelectorAll(this.selectable);
       else
-          nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
+          nodes = Polymer.dom(this).queryDistributedElements('*');
       return Array.prototype.filter.call(nodes, this._bindFilterItem);
     },
 
