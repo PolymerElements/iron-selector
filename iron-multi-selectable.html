@@ -80,12 +80,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _selectMulti: function(values) {
       this._selection.clear();
-      //this.selected=values[values.length-1];
       if (values) {
         for (var i = 0; i < values.length; i++) {
           this._selection.setItemSelected(this._valueToItem(values[i]), true);
         }
       }
+    },
+
+    _observeItems: function(node) {
+      var observer = new MutationObserver(function() {
+        if ((this.multi && this.selectedValues && this.selectedValues.length) || this.selected != null)  {
+          this._updateSelected();
+        }
+      }.bind(this));
+      observer.observe(node, {
+        childList: true,
+        subtree: true
+      });
+      return observer;
     },
 
     _selectionChange: function() {
