@@ -80,7 +80,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </iron-selector>
         </div>
       </div>
+
+      <div>
+        <h3>Example</h3>
+        <div class="horizontal-section">
+          <iron-selector selected="0">
+            <template id="rep" is="dom-repeat" as="item">
+              <div class="view" data-value$="[[item.value]]" data-index$="[[index]]">[[item.text]]</div>
+            </template>
+            <div class="view" data-value="Item 4" data-index="4">Item 4</div>
+          </iron-selector>
+        </div>
+      </div>
     </div>
 
   </body>
+  <script>
+    window.addEventListener('WebComponentsReady',function() {
+        r=document.querySelector('#rep');
+        r.set('items',[{value:0,text:"Item 0"},{value:1,text:"Item 1"},{value:2,text:"Item 2"},{value:3,text:"Item 3"}]);
+    });
+  </script>
 </html>
