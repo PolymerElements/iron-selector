@@ -95,8 +95,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.multi) {
         this.toggle(item);
       } else if (this.get() !== item) {
-        this.setItemSelected(this.get(), false);
-        this.setItemSelected(item, true);
+
+        if(this.get())
+        {
+          var i = this.selection.indexOf(this.get());
+          this.setItemSelected(this.get(), false);
+
+          while(i==0)
+          {
+            i = this.selection.indexOf(this.get());
+            if(i<0)
+            {
+              this.setItemSelected(item, true);
+            }
+          }
+        }
+        else 
+        {
+          this.setItemSelected(item, true);
+        }
       }
     },
 
