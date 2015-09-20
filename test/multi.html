@@ -115,6 +115,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(deselectEventCounter, 1);
       });
 
+      test('notify multi-selection values', function() {
+        // check that bound value was updated
+        var selected;
+        s.addEventListener('selected-values-changed', function(e) {
+          if (e.detail.path) {
+            if (e.detail.path === 'selectedValues.splices') {
+              e.detail.value.indexSplices.forEach(function(s) {
+                selected = s.object;
+              });
+            }
+          } else if (e.detail.value) {
+            selected = e.detail.value;
+          }
+        });
+        // set selectedValues
+        s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        assert.equal(selected.length, 1);
+        s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        assert.equal(selected.length, 2);
+      });
+
       /* test('toggle multi from true to false', function() {
         // set selected
         s.selected = [0, 2];
