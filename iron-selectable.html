@@ -41,9 +41,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /**
        * If you want to use the attribute value of an element for `selected` instead of the index,
        * set this to the name of the attribute.
-       *
-       * @attribute attrForSelected
-       * @type {string}
        */
       attrForSelected: {
         type: String,
@@ -52,9 +49,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /**
        * Gets or sets the selected element. The default is to use the index of the item.
-       *
-       * @attribute selected
-       * @type {string}
        */
       selected: {
         type: String,
@@ -63,9 +57,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /**
        * Returns the currently selected item.
-       *
-       * @attribute selectedItem
-       * @type {Object}
        */
       selectedItem: {
         type: Object,
@@ -77,10 +68,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * The event that fires from items when they are selected. Selectable
        * will listen for this event from items and update the selection state.
        * Set to empty string to listen to no events.
-       *
-       * @attribute activateEvent
-       * @type {string}
-       * @default 'tap'
        */
       activateEvent: {
         type: String,
@@ -91,17 +78,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /**
        * This is a CSS selector string.  If this is set, only items that match the CSS selector
        * are selectable.
-       *
-       * @attribute selectable
-       * @type {string}
        */
       selectable: String,
 
       /**
        * The class to set on elements when selected.
-       *
-       * @attribute selectedClass
-       * @type {string}
        */
       selectedClass: {
         type: String,
@@ -110,9 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /**
        * The attribute to set on elements when selected.
-       *
-       * @attribute selectedAttribute
-       * @type {string}
        */
       selectedAttribute: {
         type: String,
@@ -123,10 +101,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * The set of excluded elements where the key is the `localName` 
        * of the element that will be ignored from the item list.
        *
-       * @type {object}
        * @default {template: 1}
        */
-
       excludedLocalNames: {
         type: Object,
         value: function() {
