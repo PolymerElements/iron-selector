@@ -16,25 +16,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   Polymer.IronSelectableBehavior = {
 
       /**
-       *  Fired when iron-selector is activated (selected or deselected).
-       *  It is fired before the selected items are changed.
-       *  Cancel the event to abort selection.
+       * Fired when iron-selector is activated (selected or deselected).
+       * It is fired before the selected items are changed.
+       * Cancel the event to abort selection.
        *
        * @event iron-activate
-       *
-       **/
+       */
+
       /**
-       *  Fired when an item is selected
+       * Fired when an item is selected
        *
        * @event iron-select
-       *
-       **/
+       */
+
       /**
-       *  Fired when an item is deselected
+       * Fired when an item is deselected
        *
        * @event iron-deselect
+       */
+
+      /**
+       * Fired when the list of selectable items changes (e.g., items are
+       * added or removed). The detail of the event is a list of mutation
+       * records that describe what changed.
        *
-       **/
+       * @event iron-items-changed
+       */
 
     properties: {
 
@@ -271,7 +278,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // observe items change under the given node.
     _observeItems: function(node) {
+      // TODO(cdata): Update this when we get distributed children changed.
       var observer = new MutationObserver(function(mutations) {
+        // Let other interested parties know about the change so that
+        // we don't have to recreate mutation observers everywher.
         this.fire('iron-items-changed', mutations, {
           bubbles: false,
           cancelable: false
