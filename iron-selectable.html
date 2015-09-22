@@ -271,7 +271,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // observe items change under the given node.
     _observeItems: function(node) {
-      var observer = new MutationObserver(function() {
+      var observer = new MutationObserver(function(mutations) {
+        this.fire('iron-items-changed', mutations, {
+          bubbles: false,
+          cancelable: false
+        });
+
         if (this.selected != null) {
           this._updateSelected();
         }
