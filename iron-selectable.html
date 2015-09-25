@@ -136,6 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (!this.selectedItem && this.selected) {
         this._updateSelected(this.attrForSelected,this.selected)
       }
+      this._addListener(this.activateEvent);
     },
 
     detached: function() {
