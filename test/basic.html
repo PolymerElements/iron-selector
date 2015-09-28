@@ -100,8 +100,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s1.selected = 4;
         expect(s1.items.length).to.be.equal(5);
         s1.removeChild(lastElement);
-        expect(s1.items.length).to.be.equal(4);
-        expect(s1.selected).to.not.exist;
+        Polymer.Base.async(function() {
+          expect(s1.items.length).to.be.equal(4);
+          expect(s1.selected).to.not.exist;
+          done();
+        }, 1);
       });
     });
 
@@ -178,7 +181,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(s2.selected).to.be.equal('item2');
           var item2 = s2.querySelector('#item2');
           s2.removeChild(item2);
-          expect(s2.selected).to.not.exist;
+          Polymer.Base.async(function() {
+            expect(s2.selected).to.not.exist;
+            done();
+          }, 1);
         });
         
       });
