@@ -153,10 +153,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             changeCount++;
           });
 
-          s2.appendChild(newItem);
+          Polymer.dom(s2).appendChild(newItem);
 
           Polymer.Base.async(function() {
-            s2.removeChild(newItem);
+            Polymer.dom(s2).removeChild(newItem);
 
             Polymer.Base.async(function() {
               expect(changeCount).to.be.equal(2);
