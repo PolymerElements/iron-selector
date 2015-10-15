@@ -160,7 +160,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @type Array
      */
     get items() {
-      var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
+      var nodes;
+      if (this.selectable)
+          nodes = this.querySelectorAll(this.selectable);
+      else
+          nodes = Polymer.dom(this).queryDistributedElements('*');
       return Array.prototype.filter.call(nodes, this._bindFilterItem);
     },
 

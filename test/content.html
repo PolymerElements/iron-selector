@@ -49,15 +49,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-content-element id="selector3" selected="item0">
     <template is="dom-repeat" id="t">
-      <div id$="[[item.name]]">[[item.name]]</div>
+      <item id$="[[item.name]]">[[item.name]]</item>
     </template>
   </test-content-element>
 
+  <template is="dom-bind" id="app">
+  <test-content-element id="selector4" selectable="item" selected="main1-item0">
+    <template is="dom-repeat" id="t1" items="[[mainitems]]" as="main">
+        <div id$="[[_concatNames(main,'item0')]]">[[_concatNames(main,'item0')]]</div>
+        <template is="dom-repeat" items="[[subitems]]" as="sub">
+          <item id$="[[_concatNames(main,sub)]]">[[_concatNames(main,sub)]]</item>
+        </template>
+    </template>
+  </test-content-element>
+  </template>
+
   <script>
+
+  window.addEventListener('WebComponentsReady',function() {
 
     var s1 = document.querySelector('#selector1');
     var s2 = document.querySelector('#selector2');
     var s3 = document.querySelector('#selector3');
+
+    var app = document.querySelector('#app');
+    app.mainitems=[{name:'main1'}, {name: 'main2'}, {name: 'main3'}, {name: 'main4'}];
+    app.subitems=[{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+    app._concatNames=function(n1,n2) { return n1.name+"-"+(n2.name||n2); }
 
     var t = document.querySelector('#t');
 
@@ -143,6 +161,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     });
 
+    suite('content in repeat with selectable', function() {
+      var s4;
+      setup(function() {
+        s4 = app.$.selector4;//("#selector4");
+      });
+      test('attribute selected', function() {
+        // check selected class
+        assert.isTrue(s4.querySelector('item#main1-item0').classList.contains('iron-selected'));
+      });
+
+      test('set selected', function() {
+        // set selected
+        s4.selected = 'main2-item0';
+        // check selected class
+        assert.isTrue(s4.querySelector('item#main2-item0').classList.contains('iron-selected'));
+      });
+
+      test('get items', function() {
+        assert.equal(s4.$.selector.items.length, 16);
+      });
+
+      test('activate event', function() {
+        var item = s4.querySelector('item#main1-item2');
+        item.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        // check selected class
+        assert.isTrue(item.classList.contains('iron-selected'));
+      });
+
+      test('not activate event', function() {
+        var item = s4.querySelector('div#main2-item0');
+        item.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        // check selected class
+        assert.isFalse(item.classList.contains('iron-selected'));
+      });
+
+      test('add item dynamically', function() {
+        var item = document.createElement('item');
+        item.id = 'newItem';
+        item.textContent = 'New Item';
+        Polymer.dom(s4).appendChild(item);
+        Polymer.dom.flush();
+        // set selected
+        s4.selected = 'newItem';
+        // check items length
+        assert.equal(s4.$.selector.items.length, 17);
+        // check selected class
+        assert.isTrue(s4.querySelector('item#newItem').classList.contains('iron-selected'));
+      });
+
+    });
+
     suite('content with dom-repeat', function() {
 
       test('supports repeated children', function(done) {
@@ -161,6 +230,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
     });
+  });
 
   </script>
 

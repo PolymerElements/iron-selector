@@ -92,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('set selected to something else', function(done) {
         setTimeout(function() {
           // set selected to something else
-          s.selected = 3;
+          s.set('selected', 3);
           // check selected item
           var item = s.selectedItem;
           assert.equal(s.items[3], item);
