@@ -145,7 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     attached: function() {
       this._observer = this._observeItems(this);
       this._updateItems();
-      if (!this.selectedItem && this.selected) {
+      if (!this._shouldUpdateSelection) {
         this._updateSelected(this.attrForSelected,this.selected)
       }
       this._addListener(this.activateEvent);
@@ -198,6 +198,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     selectNext: function() {
       var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
       this.selected = this._indexToValue(index);
+    },
+
+    get _shouldUpdateSelection() {
+      return this.selected != null;
     },
 
     _addListener: function(eventName) {
@@ -289,10 +293,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this._updateItems();
 
-        if (this.selected != null) {
+        if (this._shouldUpdateSelection) {
           this._updateSelected();
         }
-      }.bind(this));
+      });
     },
 
     _activateHandler: function(e) {
