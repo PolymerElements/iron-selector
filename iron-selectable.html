@@ -276,7 +276,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.toggleAttribute(this.selectedAttribute, isSelected, item);
       }
       this._selectionChange();
-      this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      var eventSuffix = isSelected ? 'select' : 'deselect';
+      // fire iron-select/deselect on iron-selectable element
+      this.fire('iron-' + eventSuffix, {item: item});
+      // fire iron-item-select/deselect on item
+      item.dispatchEvent(new CustomEvent('iron-item-' + eventSuffix, {
+        bubbles: false,
+        cancelable: false
+      }));
     },
 
     _selectionChange: function() {

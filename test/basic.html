@@ -131,6 +131,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(selectedEventCounter, 1);
       });
 
+      test('fire iron-item-select/deselect on items when selected changes', function() {
+        // setup listener for iron-item-select event
+        var item2 = s2.querySelector('#item2'), selectedEventCounter2 = 0, deselectedEventCounter2 = 0,
+            item4 = s2.querySelector('#item4'), selectedEventCounter4 = 0, deselectedEventCounter4 = 0;
+
+        item2.addEventListener('iron-item-select', function(e) {
+          selectedEventCounter2++;
+        });
+        item2.addEventListener('iron-item-deselect', function(e) {
+          deselectedEventCounter2++;
+        });
+
+        item4.addEventListener('iron-item-select', function(e) {
+          selectedEventCounter4++;
+        });
+        item4.addEventListener('iron-item-deselect', function(e) {
+          deselectedEventCounter4++;
+        });
+
+        // set selected
+        s2.selected = 'item4'; // (fires select on 4 and deselect on 2)
+        s2.selected = 'item2'; // (fires select on 2 and deselect on 4)
+        s2.selected = 'item4'; // (fires select on 4 and deselect on 2)
+        s2.selected = 'item4'; // (don't fire anything)
+
+        // check iron-item-select/deselect events
+        assert.equal(selectedEventCounter2, 1);
+        assert.equal(deselectedEventCounter2, 2);
+        assert.equal(selectedEventCounter4, 2);
+        assert.equal(deselectedEventCounter4, 1);
+      });
+
+      test('fire iron-item-select/deselect on items when toggling items', function() {
+        // setup listener for iron-item-select event
+        var item2 = s2.querySelector('#item2'), selectedEventCounter2 = 0, deselectedEventCounter2 = 0,
+            item4 = s2.querySelector('#item4'), selectedEventCounter4 = 0, deselectedEventCounter4 = 0;
+
+        item2.addEventListener('iron-item-select', function(e) {
+          selectedEventCounter2++;
+        });
+        item2.addEventListener('iron-item-deselect', function(e) {
+          deselectedEventCounter2++;
+        });
+
+        item4.addEventListener('iron-item-select', function(e) {
+          selectedEventCounter4++;
+        });
+        item4.addEventListener('iron-item-deselect', function(e) {
+          deselectedEventCounter4++;
+        });
+
+        // set selected
+        item4.dispatchEvent(new CustomEvent('tap', {bubbles: true})); // (fires select on 4 and deselect on 2)
+        item2.dispatchEvent(new CustomEvent('tap', {bubbles: true})); // (fires select on 2 and deselect on 4)
+        item4.dispatchEvent(new CustomEvent('tap', {bubbles: true})); // (fires select on 4 and deselect on 2)
+        item4.dispatchEvent(new CustomEvent('tap', {bubbles: true})); // (don't fire anything)
+
+        // check iron-item-select/deselect events
+        assert.equal(selectedEventCounter2, 1);
+        assert.equal(deselectedEventCounter2, 2);
+        assert.equal(selectedEventCounter4, 2);
+        assert.equal(deselectedEventCounter4, 1);
+      });
+
       test('set selected to old value', function() {
         // setup listener for iron-select event
         var selectedEventCounter = 0;
