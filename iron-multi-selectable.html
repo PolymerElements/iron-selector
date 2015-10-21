@@ -86,11 +86,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _selectMulti: function(values) {
-      this._selection.clear();
       if (values) {
-        for (var i = 0; i < values.length; i++) {
-          this._selection.setItemSelected(this._valueToItem(values[i]), true);
+        var selectedItems = this._valuesToItems(values);
+        // clear all but the current selected items
+        this._selection.clear(selectedItems);
+        // select only those not selected yet
+        for (var i = 0; i < selectedItems.length; i++) {
+          if (!this._selection.isSelected(selectedItems[i])) {
+            this._selection.setItemSelected(selectedItems[i], true);
+          }
         }
+      } else {
+        this._selection.clear();
       }
     },
 
@@ -113,6 +120,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.splice('selectedValues',i,1);
       }
       this._selection.setItemSelected(this._valueToItem(value), unselected);
+    },
+
+    _valuesToItems: function(values) {
+      return (values == null) ? null : values.map(function(value) {
+        return this._valueToItem(value);
+      }, this);
     }
   };
 
