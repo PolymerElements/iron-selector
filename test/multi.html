@@ -167,7 +167,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('updates selection when dom changes', function(done) {
         var selectEventCounter = 0;
 
-        s = document.querySelector('#repeatedItems');
+        s = fixture('test');
 
         Polymer.Base.async(function() {
           var firstChild = Polymer.dom(s).querySelector(':first-child');
@@ -178,11 +178,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           expect(s.selectedItems.length).to.be.equal(2);
 
-          t.pop('items');
+          Polymer.dom(s).removeChild(lastChild);
 
           Polymer.Base.async(function() {
             expect(s.selectedItems.length).to.be.equal(1);
-          }, 1);
+            done();
+          });
         });
 
       });
