@@ -134,7 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     observers: [
-      '_updateSelected(attrForSelected, selected)'
+      '_selectSelected(attrForSelected, selected)'
     ],
 
     created: function() {
@@ -146,7 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this._observer = this._observeItems(this);
       this._updateItems();
       if (!this._shouldUpdateSelection) {
-        this._updateSelected(this.attrForSelected,this.selected)
+        this._selectSelected();
       }
       this._addListener(this.activateEvent);
     },
@@ -221,13 +221,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       nodes = Array.prototype.filter.call(nodes, this._bindFilterItem);
       this._setItems(nodes);
+      // Deselect anything that is no longer an item.
+      this._selection.clear(nodes);
     },
 
-    _updateSelected: function() {
-      this._selectSelected(this.selected);
-    },
-
-    _selectSelected: function(selected) {
+    _selectSelected: function() {
       this._selection.select(this._valueToItem(this.selected));
     },
 
@@ -294,7 +292,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._updateItems();
 
         if (this._shouldUpdateSelection) {
-          this._updateSelected();
+          this._selectSelected();
         }
       });
     },
