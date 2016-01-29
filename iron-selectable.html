@@ -283,10 +283,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    _valueForItem: function(item) {
-      var propValue = item[Polymer.CaseMap.dashToCamelCase(this.attrForSelected)];
-      return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
-    },
+    _valueForItem: (function() {
+      var lastAttrForSelected = undefined;
+      var lastPropertyNameForSelected = undefined;
+
+      return function(item) {
+        var attrForSelected = this.attrForSelected;
+        var propertyNameForSelected = lastPropertyNameForSelected;
+
+        if (lastAttrForSelected !== attrForSelected) {
+          lastAttrForSelected = attrForSelected;
+          lastPropertyNameForSelected = propertyNameForSelected =
+            Polymer.CaseMap.dashToCamelCase(attrForSelected);
+        }
+
+        var propValue = item[propertyNameForSelected];
+        return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
+      };
+    })(),
 
     _applySelection: function(item, isSelected) {
       if (this.selectedClass) {
