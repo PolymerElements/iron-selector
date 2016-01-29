@@ -94,6 +94,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('as many items as children', function() {
         assert.equal(s1.items.length, s1.querySelectorAll('div').length);
       });
+      
+      test('removing the last element when it is selected unsets the value', function() {
+        var lastElement = s1.querySelector(':last-child');
+        s1.selected = 4;
+        expect(s1.items.length).to.be.equal(5);
+        s1.removeChild(lastElement);
+        Polymer.Base.async(function() {
+          expect(s1.items.length).to.be.equal(4);
+          expect(s1.selected).to.not.exist;
+          done();
+        }, 1);
+      });
     });
 
     suite('basic', function() {
@@ -167,6 +179,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }, 1);
           }, 1);
         });
+        
+        test('removing the selected item unsets the selected value', function () {
+          expect(s2.selected).to.be.equal('item2');
+          var item2 = s2.querySelector('#item2');
+          s2.removeChild(item2);
+          Polymer.Base.async(function() {
+            expect(s2.selected).to.not.exist;
+            done();
+          }, 1);
+        });
+        
       });
 
       suite('dynamic selector', function() {
