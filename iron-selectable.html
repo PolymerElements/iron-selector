@@ -285,14 +285,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // observe items change under the given node.
     _observeItems: function(node) {
       return Polymer.dom(node).observeNodes(function(mutations) {
+        
+        this._updateItems();
+        
         // Let other interested parties know about the change so that
         // we don't have to recreate mutation observers everywher.
         this.fire('iron-items-changed', mutations, {
           bubbles: false,
           cancelable: false
         });
-
-        this._updateItems();
 
         if (this._shouldUpdateSelection) {
           this._updateSelected();
