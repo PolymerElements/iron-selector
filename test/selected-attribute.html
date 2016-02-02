@@ -43,6 +43,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="test-attr-change">
+    <template>
+      <iron-selector id="selector" attr-for-selected="data-x" selected="x-1">
+        <div data-x="x-1" data-y="y-1">1</div>
+        <div data-x="x-2" data-y="y-2">2</div>
+        <div data-x="x-3" data-y="y-3">3</div>
+      </iron-selector>
+    </template>
+  </test-fixture>
+
   <script>
 
     suite('selected attributes', function() {
@@ -62,6 +72,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.selected = 4;
         // now selected attribute should be there
         assert.isTrue(s.children[4].hasAttribute('myattr'));
+      });
+
+    });
+
+    suite('changing attrForSelected', function() {
+
+      var s;
+
+      setup(function () {
+        s = fixture('test-attr-change');
+      });
+
+      test('changing selectedAttribute', function() {
+        s.attrForSelected = 'data-y';
+        s.async(function() {
+          assert.equal(s.selected, 'y-1');
+          done();
+        });
       });
 
     });
