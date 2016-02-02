@@ -167,6 +167,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }, 1);
           }, 1);
         });
+        
+        test('items changed before iron-items-changed to fire', function(done) {
+          var newItem = document.createElement('div');
+
+          newItem.id = 'item999';
+
+          s2.addEventListener('iron-items-changed', function() {
+            assert.isTrue(s2.items.indexOf(newItem) >= 0);
+            done();
+          });
+
+          Polymer.dom(s2).appendChild(newItem);
+
+        });
       });
 
       suite('dynamic selector', function() {
