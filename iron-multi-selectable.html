@@ -79,14 +79,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateAttrForSelected: function() {
-      if (this._shouldUpdateSelection) {
-        if (this.multi) {
-          this.selectedValues = this.selectedItems.map(function(selectedItem) {
-            return this._indexToValue(this.indexOf(selectedItem));        
-          }, this);
-        } else {
-          this.selected = this._indexToValue(this.indexOf(this.selectedItem));        
-        }
+      if (!this.multi) {
+        Polymer.IronSelectableBehavior._updateAttrForSelected();
+      } else if (this._shouldUpdateSelection) {
+        this.selectedValues = this.selectedItems.map(function(selectedItem) {
+          return this._indexToValue(this.indexOf(selectedItem));        
+        }, this);
       }
     },
 
