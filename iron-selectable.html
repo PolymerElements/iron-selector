@@ -46,8 +46,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     properties: {
 
       /**
-       * If you want to use the attribute value of an element for `selected` instead of the index,
-       * set this to the name of the attribute.
+       * If you want to use an attribute value or property of an element for
+       * `selected` instead of the index, set this to the name of the attribute
+       * or property. The attribute or property name **must be given in
+       * hyphenated form**, even if the property is not reflected to an attribute.
+       * (Always use `attr-or-property-name` instead of `attrOrPropertyName`.)
        */
       attrForSelected: {
         type: String,
@@ -280,10 +283,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    _valueForItem: function(item) {
-      var propValue = item[this.attrForSelected];
-      return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
-    },
+    _valueForItem: (function() {
+      var lastAttrForSelected = undefined;
+      var lastPropertyNameForSelected = undefined;
+
+      return function(item) {
+        var attrForSelected = this.attrForSelected;
+        var propertyNameForSelected = lastPropertyNameForSelected;
+
+        if (lastAttrForSelected !== attrForSelected) {
+          lastAttrForSelected = attrForSelected;
+          lastPropertyNameForSelected = propertyNameForSelected =
+            Polymer.CaseMap.dashToCamelCase(attrForSelected);
+        }
+
+        var propValue = item[propertyNameForSelected];
+        return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
+      };
+    })(),
 
     _applySelection: function(item, isSelected) {
       if (this.selectedClass) {
