@@ -93,8 +93,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('set multi-selection via tap', function() {
         // set selectedValues
-        s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-        s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(s.children[0]);
+        MockInteractions.tap(s.children[2]);
         // check selected class
         assert.isTrue(s.children[0].classList.contains('iron-selected'));
         assert.isTrue(s.children[2].classList.contains('iron-selected'));
@@ -149,15 +149,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         // tap to select items 0 and 1 (both fire select)
-        items[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-        items[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(items[0]);
+        MockInteractions.tap(items[1]);
         
         // programatically select values 1 and 2 (2 fires select, 0 fires deselect)
         s.selectedValues = [1, 2];
 
         // tap to deselect items 1 and 2 (both fire deselect)
-        items[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-        items[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(items[1]);
+        MockInteractions.tap(items[2]);
 
         // check events
         assert.equal(selectEventCounters[0], 1);
@@ -176,19 +176,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isFalse(item1.classList.contains('iron-selected'));
 
         // tap to select item 0 (add iron-selected class)
-        item0.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(item0);
 
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isFalse(item1.classList.contains('iron-selected'));
         
         // tap to select item 1 (add iron-selected class)
-        item1.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(item1);
         
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isTrue(item1.classList.contains('iron-selected'));
 
         // tap to deselect item 1 (remove iron-selected class)
-        item1.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        MockInteractions.tap(item1);
         
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isFalse(item1.classList.contains('iron-selected'));
