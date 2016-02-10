@@ -172,34 +172,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     /**
-     * Selects the given value.
+     * Selects the given value if it's item is not disabled.
      *
      * @method select
      * @param {string|number} value the value to select.
+     * @returns Returns true if `value` could be selected.
      */
     select: function(value) {
+      if (this._isIneligibleForSelection(this._valueToItem(value))) {
+        return false;
+      }
       this.selected = value;
+      return true;
     },
 
     /**
-     * Selects the previous item.
+     * Selects the previous enabled item.
      *
      * @method selectPrevious
+     * @returns Returns true if any item could be selected.
      */
     selectPrevious: function() {
+      if (this.selected == null) {
+        return false;
+      }
+
       var length = this.items.length;
       var index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
-      this.selected = this._indexToValue(index);
+      var curr = index + 1;
+      while (index != curr) {
+        if (this.select(this._indexToValue(index))) {
+          break;
+        }
+        index = (index - 1 + length) % length;
+      }
+      return index != curr;
     },
 
     /**
-     * Selects the next item.
+     * Selects the next enabled item.
      *
      * @method selectNext
+     * @returns Returns true if any item could be selected.
      */
     selectNext: function() {
-      var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
-      this.selected = this._indexToValue(index);
+      if (this.selected == null) {
+        return false;
+      }
+
+      var length = this.items.length;
+      var index = (Number(this._valueToIndex(this.selected)) + 1 + length) % length;
+      var curr = index - 1;
+      while (index != curr) {
+        if (this.select(this._indexToValue(index))) {
+          break;
+        }
+        index = (index + 1 + length) % length;
+      }
+      return index != curr;
     },
 
     /**
@@ -242,10 +272,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateSelected: function() {
-      this._selectSelected(this.selected);
+      this._selectSelected();
     },
 
-    _selectSelected: function(selected) {
+    _selectSelected: function() {
       this._selection.select(this._valueToItem(this.selected));
     },
 
@@ -337,8 +367,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           {selected: value, item: item}, {cancelable: true}).defaultPrevented) {
         this.select(value);
       }
-    }
+    },
 
+    _isIneligibleForSelection: function(item) {
+      if (item) {
+        return item.hasAttribute('disabled');
+      }
+      return false;
+    }
   };
 
 </script>

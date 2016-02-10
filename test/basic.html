@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="item0">Item 0</div>
         <div id="item1">Item 1</div>
         <div id="item2">Item 2</div>
-        <div id="item3">Item 3</div>
+        <div id="item3" disabled>Item 3</div>
         <div id="item4">Item 4</div>
       </iron-selector>
     </template>
@@ -142,6 +142,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         // selecting the same value shouldn't fire iron-select
         s2.selected = 'item2';
+        assert.equal(selectedEventCounter, 0);
+      });
+
+      test('select disabled item', function() {
+        // setup listener for iron-select event
+        var selectedEventCounter = 0;
+        s2.addEventListener('iron-select', function(e) {
+          selectedEventCounter++;
+        });
+        // selecting a disabled item shouldn't change selected value
+        s2.select('item3');
+        assert.equal(s2.selected, 'item2');
         assert.equal(selectedEventCounter, 0);
       });
 
