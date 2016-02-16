@@ -84,6 +84,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       } else if (this._shouldUpdateSelection) {
         this.selectedValues = this.selectedItems.map(function(selectedItem) {
           return this._indexToValue(this.indexOf(selectedItem));        
+        }, this).filter(function(unfilteredValue) {
+          return unfilteredValue != null;
         }, this);
       }
     },
