@@ -55,9 +55,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="test-attr-change-multi">
     <template>
-      <iron-selector multi id="selector" 
-                     attr-for-selected="data-x" 
-                     selected-values='["x-1",""x-2"]'>
+      <iron-selector multi id="selector"
+                     attr-for-selected="data-x"
+                     selected-values='["x-1","x-2"]'>
         <div data-x="x-1" data-y="y-1">1</div>
         <div data-x="x-2" data-y="y-2">2</div>
         <div data-x="x-3" data-y="y-3">3</div>
@@ -96,12 +96,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s = fixture('test-attr-change');
       });
 
-      test('changing selectedAttribute', function(done) {
+      test('changing selectedAttribute', function() {
+        Polymer.dom.flush();
         s.attrForSelected = 'data-y';
-        s.async(function() {
-          assert.equal(s.selected, 'y-1');
-          done();
-        });
+        assert.equal(s.selected, 'y-1');
       });
 
     });
@@ -114,14 +112,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s = fixture('test-attr-change-multi');
       });
 
-      test('changing selectedAttribute', function(done) {
+      test('changing selectedAttribute', function() {
+        Polymer.dom.flush();
         s.attrForSelected = 'data-y';
-        s.async(function() {
-          assert.equal(s.selectedValues.length, 2);
-          assert.equal(s.selectedValues[0],'y-1');
-          assert.equal(s.selectedValues[1],'y-2');
-          done();
-        });
+        assert.equal(s.selectedValues.length, 2);
+        assert.equal(s.selectedValues[0],'y-1');
+        assert.equal(s.selectedValues[1],'y-2');
       });
 
     });
