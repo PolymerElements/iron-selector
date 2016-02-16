@@ -96,7 +96,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s = fixture('test-attr-change');
       });
 
-      test('changing selectedAttribute', function() {
+      test('changing selectedAttribute', function(done) {
         s.attrForSelected = 'data-y';
         s.async(function() {
           assert.equal(s.selected, 'y-1');
@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s = fixture('test-attr-change-multi');
       });
 
-      test('changing selectedAttribute', function() {
+      test('changing selectedAttribute', function(done) {
         s.attrForSelected = 'data-y';
         s.async(function() {
           assert.equal(s.selectedValues.length, 2);

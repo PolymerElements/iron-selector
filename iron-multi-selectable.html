@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _updateAttrForSelected: function() {
       if (!this.multi) {
-        Polymer.IronSelectableBehavior._updateAttrForSelected();
+        Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
       } else if (this._shouldUpdateSelection) {
         this.selectedValues = this.selectedItems.map(function(selectedItem) {
           return this._indexToValue(this.indexOf(selectedItem));        
