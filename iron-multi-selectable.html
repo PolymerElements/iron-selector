@@ -46,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     observers: [
-      '_updateSelected(attrForSelected, selectedValues)'
+      '_updateSelected(selectedValues)'
     ],
 
     /**
@@ -75,6 +75,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     get _shouldUpdateSelection() {
       return this.selected != null ||
         (this.selectedValues != null && this.selectedValues.length);
+    },
+
+    _updateAttrForSelected: function() {
+      if (!this.multi) {
+        Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
+      } else if (this._shouldUpdateSelection) {
+        this.selectedValues = this.selectedItems.map(function(selectedItem) {
+          return this._indexToValue(this.indexOf(selectedItem));        
+        }, this).filter(function(unfilteredValue) {
+          return unfilteredValue != null;
+        }, this);
+      }
     },
 
     _updateSelected: function() {
