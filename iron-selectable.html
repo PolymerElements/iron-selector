@@ -204,6 +204,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     /**
+     * Selects item given an index.
+     *
+     * @method selectIndex
+     */
+    selectIndex: function(index) {
+      this.selected = this._indexToValue(index);
+    },
+
+    /**
      * Force a synchronous update of the `items` property.
      *
      * NOTE: Consider listening for the `iron-items-changed` event to respond to
