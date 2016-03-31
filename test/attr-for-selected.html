@@ -72,6 +72,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="defaultAttribute">
+    <template>
+      <iron-selector attr-for-selected="some-attr" default-selected="default">
+        <div some-attr="value0">Item 0</div>
+        <div some-attr="value1">Item 1</div>
+        <div some-attr="default">Item 2</div>
+      </iron-selector>
+    </template>
+  </test-fixture>
+
   <script>
     suite('inline attributes', function() {
       var selector;
@@ -156,6 +166,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         testSelectItem(i);
+      });
+    });
+
+    suite('default attribute', function() {
+      var selector;
+      var items;
+
+      setup(function () {
+        selector = fixture('defaultAttribute');
+        items = Array.prototype.slice.apply(selector.querySelectorAll('div[some-attr]'));
+      });
+
+      test('setting non-existing value sets default', function() {
+        selector.select('non-existing-value');
+        assert.equal(selector.selected, 'default');
+        assert.equal(selector.selectedItem, items[2]);
+      });
+
+      test('setting non-existing value sets default', function() {
+        selector.multi = true;
+        selector.select(['non-existing-value']);
+        assert.deepEqual(selector.selectedValues, ['default']);
+        assert.deepEqual(selector.selectedItems, [items[2]]);
       });
     });
   </script>
