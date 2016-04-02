@@ -168,6 +168,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._updateSelected();
       }
       this._addListener(this.activateEvent);
+      // Resolve timing issue where attached would not be called,
+      // but selected was update with to defaultSelected
+      this._defaultSelected = this.defaultSelected;
     },
 
     detached: function() {
@@ -271,8 +274,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _selectSelected: function(selected) {
       this._selection.select(this._valueToItem(this.selected));
       // Since Number(0) is falsy, explicitly check for undefined
-      if (this.defaultSelected && (this._selection.get() === undefined)) {
-        this.selected = this.defaultSelected;
+      if (this._defaultSelected && (this._selection.get() === undefined)) {
+        this.selected = this._defaultSelected;
       }
     },
 

@@ -106,8 +106,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (var i = 0; i < selectedItems.length; i++) {
           this._selection.setItemSelected(selectedItems[i], true);
         }
-        if (this.defaultSelected && !this._selection.get().length) {
-          this.selectedValues = [this.defaultSelected];
+        if (this._defaultSelected && !this._selection.get().length) {
+          this.selectedValues = [this._defaultSelected];
         }
       } else {
         this._selection.clear();
