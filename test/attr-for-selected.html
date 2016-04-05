@@ -197,6 +197,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.deepEqual(selector.selectedValues, ['non-existing-value', 'value0']);
         assert.deepEqual(selector.selectedItems, [items[0]]);
       });
+
+      test('default element not found does not result in infinite loop', function(done) {
+        selector.fallbackSelection = 'non-existing-fallback';
+        selector.select('non-existing-value');
+        assert.equal(selector.selectedItem, undefined);
+        selector.multi = true;
+        selector.selectedValues = ['non-existing-value'];
+        assert.deepEqual(selector.selectedItems, [undefined]);
+        selector.fallbackSelection = 'default';
+        assert.deepEqual(selector.selectedItems, [items[2]])
+        done();
+      });
     });
   </script>
 

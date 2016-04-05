@@ -46,7 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     observers: [
-      '_updateSelected(selectedValues.splices)'
+      '_updateSelected(selectedValues.splices)',
+      '_setFallbackArray(fallbackSelection)'
     ],
 
     /**
@@ -97,6 +98,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
+    // Create one array at a time to prevent stackoverflow when the fallback
+    // is not a valid selector. If you would do this in _selectMulti then a
+    // new array will be created every time due to a different scope.
+    _setFallbackArray: function(fallbackSolution) {
+      this._fallbackArray = [fallbackSolution];
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
+    },
+
     _selectMulti: function(values) {
       if (values) {
         var selectedItems = this._valuesToItems(values);
@@ -108,7 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         // Check for items, since this array is populated only when attached
         if (this.fallbackSelection && this.items.length && !this._selection.get().length) {
-          this.selectedValues = [this.fallbackSelection];
+          this.selectedValues = this._fallbackArray;
         }
       } else {
         this._selection.clear();
