@@ -198,7 +198,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.deepEqual(selector.selectedItems, [items[0]]);
       });
 
-      test('default element not found does not result in infinite loop', function(done) {
+      test('default element not found does not result in infinite loop', function() {
         selector.fallbackSelection = 'non-existing-fallback';
         selector.select('non-existing-value');
         assert.equal(selector.selectedItem, undefined);
@@ -206,8 +206,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         selector.selectedValues = ['non-existing-value'];
         assert.deepEqual(selector.selectedItems, [undefined]);
         selector.fallbackSelection = 'default';
-        assert.deepEqual(selector.selectedItems, [items[2]])
-        done();
+        assert.deepEqual(selector.selectedItems, [items[2]]);
+      });
+
+      test('selection is updated after fallback is set', function() {
+        selector.fallbackSolution = undefined;
+        selector.select('non-existing-value');
+        selector.fallbackSelection = 'default';
+        assert.equal(selector.selectedItem, items[2]);
+      });
+
+      test('multi-selection is updated after fallback is set', function() {
+        selector.fallbackSolution = undefined;
+        selector.selectedValues = ['non-existing-value'];
+        selector.fallbackSolution = 'default';
+        assert.equal(selector.selectedItem, items[2]);
       });
     });
   </script>

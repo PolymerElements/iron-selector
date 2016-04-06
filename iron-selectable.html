@@ -153,7 +153,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     observers: [
       '_updateAttrForSelected(attrForSelected)',
-      '_updateSelected(selected)'
+      '_updateSelected(selected)',
+      '_checkFallback(fallbackSelection)'
     ],
 
     created: function() {
@@ -237,6 +238,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     get _shouldUpdateSelection() {
       return this.selected != null;
+    },
+
+    _checkFallback: function() {
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
     },
 
     _addListener: function(eventName) {
