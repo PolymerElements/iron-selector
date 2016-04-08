@@ -70,7 +70,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
 
       <div>
-        <h3>Example</h3>
+        <h3>Example with attr-for-selected</h3>
         <div class="horizontal-section">
           <iron-selector selected="foo" attr-for-selected="name">
             <div name="foo">Foo</div>
@@ -78,6 +78,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div name="baz">Baz</div>
             <div name="qux">Qux</div>
             <div name="quux">Quux</div>
+          </iron-selector>
+        </div>
+      </div>
+
+      <div>
+        <h3>Example with fallback-selection</h3>
+        <div class="horizontal-section">
+          <iron-selector selected="non-existing" attr-for-selected="name" fallback-selection="default">
+            <div name="foo">Foo</div>
+            <div name="bar">Bar</div>
+            <div name="baz">Baz</div>
+            <div name="qux">Qux</div>
+            <div name="quux">Quux</div>
+            <div name="default">Default</div>
           </iron-selector>
         </div>
       </div>
