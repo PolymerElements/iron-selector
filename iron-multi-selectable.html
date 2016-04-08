@@ -100,8 +100,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // Create one array at a time to prevent stackoverflow when the fallback
     // is not a valid selector. If you would do this in _selectMulti then a
     // new array will be created every time due to a different scope.
-    _checkFallback: function(fallbackSolution) {
-      this._fallbackArray = [fallbackSolution];
+    _checkFallback: function(fallbackSelection) {
+      this._fallbackArray = [fallbackSelection];
       if (this._shouldUpdateSelection) {
         this._updateSelected();
       }
