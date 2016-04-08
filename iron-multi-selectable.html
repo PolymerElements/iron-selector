@@ -97,16 +97,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    // Create one array at a time to prevent stackoverflow when the fallback
-    // is not a valid selector. If you would do this in _selectMulti then a
-    // new array will be created every time due to a different scope.
-    _checkFallback: function(fallbackSelection) {
-      this._fallbackArray = [fallbackSelection];
-      if (this._shouldUpdateSelection) {
-        this._updateSelected();
-      }
-    },
-
     _selectMulti: function(values) {
       if (values) {
         var selectedItems = this._valuesToItems(values);
@@ -118,7 +108,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         // Check for items, since this array is populated only when attached
         if (this.fallbackSelection && this.items.length && !this._selection.get().length) {
-          this.selectedValues = this._fallbackArray;
+          var fallback = this._valueToItem(this.fallbackSelection);
+          if (fallback) {
+            this.selectedValues = [this.fallbackSelection];
+          }
         }
       } else {
         this._selection.clear();
