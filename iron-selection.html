@@ -99,8 +99,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.multi) {
         this.toggle(item);
       } else if (this.get() !== item) {
-        this.setItemSelected(this.get(), false);
-        this.setItemSelected(item, true);
+        this._mutateAtomic(function() {
+          this.setItemSelected(this.get(), false);
+          this.setItemSelected(item, true);
+        }, this);
       }
     },
 
@@ -112,8 +114,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     toggle: function(item) {
       this.setItemSelected(item, !this.isSelected(item));
-    }
+    },
 
+    /**
+     * Runs an arbitrary function (`fn`) but postpones calls normally made to
+     * `selectCallback` until the function has returned. Additionally, when the
+     * postponed calls to `selectCallback` are made, only one call will be made
+     * per item and this call will be provided the *final* selection state of
+     * that item (after `fn`).
+     *
+     * @param {!Function} fn The function to run.
+     * @param {?Object} thisArg `fn` will be called with `thisArg` as its context.
+     */
+    _mutateAtomic: function(fn, thisArg) {
+      // TODO(bicknellr): Use Map when IE10 gets dropped.
+      var items = [];
+      var finalValues = [];
+
+      // Patch `selectCallback` with a function that records results to a map.
+      var originalSelectCallback = this.selectCallback;
+      this.selectCallback = function(item, isSelected) {
+        var index = items.indexOf(item);
+        if (index < 0) {
+          index = items.length;
+          items.push(item);
+        }
+        finalValues[index] = isSelected;
+      };
+
+      fn.call(thisArg);
+
+      // Restore `selectCallback` and call it with all end results from the map.
+      this.selectCallback = originalSelectCallback;
+      for (var i = 0; i < items.length; i++) {
+        this.selectCallback(items[i], finalValues[i]);
+      }
+    }
   };
 
 </script>

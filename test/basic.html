@@ -145,6 +145,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(selectedEventCounter, 1);
       });
 
+      test('`selectedItem` does not move through undefined between item changes', function() {
+        var selectedEventCounter = 0;
+        s2.addEventListener('selected-item-changed', function(e) {
+          console.log(e.detail.value);
+          if (e.detail.value === undefined) debugger;
+          selectedEventCounter++;
+        });
+
+        s2.selectNext();
+        s2.selectPrevious();
+        s2.selectNext();
+        assert.equal(selectedEventCounter, 3);
+
+        s2.selectPrevious();
+        s2.selectNext();
+        s2.selectPrevious();
+        assert.equal(selectedEventCounter, 6);
+      });
+
       test('set selected to old value', function() {
         // setup listener for iron-select event
         var selectedEventCounter = 0;
