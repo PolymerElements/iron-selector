@@ -186,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @returns Returns the index of the item
      */
     indexOf: function(item) {
-      return this.items.indexOf(item);
+      return this.items && this.items.indexOf(item);
     },
 
     /**
@@ -237,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     get _shouldUpdateSelection() {
-      return this.selected != null;
+      return this.selected != null && this.items;
     },
 
     _checkFallback: function() {
@@ -289,11 +289,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _valueToItem: function(value) {
-      return (value == null) ? null : this.items[this._valueToIndex(value)];
+      return (value == null) ? null : this.items && this.items[this._valueToIndex(value)];
     },
 
     _valueToIndex: function(value) {
-      if (this.attrForSelected) {
+      if (this.attrForSelected && this.items) {
         for (var i = 0, item; item = this.items[i]; i++) {
           if (this._valueForItem(item) == value) {
             return i;
@@ -305,7 +305,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _indexToValue: function(index) {
-      if (this.attrForSelected) {
+      if (this.attrForSelected && this.items) {
         var item = this.items[index];
         if (item) {
           return this._valueForItem(item);
