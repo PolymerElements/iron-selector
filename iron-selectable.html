@@ -151,6 +151,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
+    listeners: {
+      'dom-change': '_onDomChange'
+    },
+
     observers: [
       '_updateAttrForSelected(attrForSelected)',
       '_updateSelected(selected)',
@@ -346,19 +350,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // observe items change under the given node.
     _observeItems: function(node) {
-      return Polymer.dom(node).observeNodes(function(mutation) {
-        this._updateItems();
+      return Polymer.dom(node).observeNodes(this._onChildlistMutation.bind(this));
+    },
 
-        if (this._shouldUpdateSelection) {
-          this._updateSelected();
-        }
-
-        // Let other interested parties know about the change so that
-        // we don't have to recreate mutation observers everywhere.
-        this.fire('iron-items-changed', mutation, {
-          bubbles: false,
-          cancelable: false
+    _onDomChange: function(event) {
+      var localTarget = Polymer.dom(event).localTarget;
+      if (localTarget.parentNode === this) {
+        this._onChildlistMutation({
+          target: this,
+          addedNodes: [],
+          removedNodes: [],
         });
+      }
+    },
+
+    _onChildlistMutation: function(mutation) {
+      this._updateItems();
+
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
+
+      // Let other interested parties know about the change so that
+      // we don't have to recreate mutation observers everywhere.
+      this.fire('iron-items-changed', mutation, {
+        bubbles: false,
+        cancelable: false
       });
     },
 
