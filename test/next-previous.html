@@ -95,6 +95,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assertAndSelect('selectPrevious', 2);
         assert.equal(s.selected, 1);
       });
+
+      test('selectNext from unselected', function() {
+        s.selected = undefined;
+        assertAndSelect('selectNext', undefined);
+        assert.equal(s.selected, 0);
+      });
+
+      test('selectPrevious from unselected', function() {
+        s.selected = undefined;
+        assertAndSelect('selectPrevious', undefined);
+        assert.equal(s.selected, 2);
+      });
     });
 
     suite('next/previous attrForSelected', function() {
