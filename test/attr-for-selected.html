@@ -45,6 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div some-attr="value0">Item 0</div>
         <div some-attr="value1">Item 1</div>
         <div some-attr="value2">Item 2</div>
+        <div some-attr="default">Default</div>
       </iron-selector>
     </template>
   </test-fixture>
@@ -68,16 +69,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div some-attr="value3">Item 3</div>
         <attr-reflector>Item 4</attr-reflector>
         <div some-attr="value5">Item 5</div>
-      </iron-selector>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="defaultAttribute">
-    <template>
-      <iron-selector attr-for-selected="some-attr" fallback-selection="default">
-        <div some-attr="value0">Item 0</div>
-        <div some-attr="value1">Item 1</div>
-        <div some-attr="default">Item 2</div>
       </iron-selector>
     </template>
   </test-fixture>
@@ -174,24 +165,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var items;
 
       setup(function () {
-        selector = fixture('defaultAttribute');
+        selector = fixture('inlineAttributes');
         items = Array.prototype.slice.apply(selector.querySelectorAll('div[some-attr]'));
       });
 
       test('setting non-existing value sets default', function() {
+        selector.fallbackSelection = 'default';
         selector.select('non-existing-value');
         assert.equal(selector.selected, 'default');
-        assert.equal(selector.selectedItem, items[2]);
+        assert.equal(selector.selectedItem, items[3]);
       });
 
       test('setting non-existing value sets default', function() {
+        selector.fallbackSelection = 'default';
         selector.multi = true;
         selector.select(['non-existing-value']);
         assert.deepEqual(selector.selectedValues, ['default']);
-        assert.deepEqual(selector.selectedItems, [items[2]]);
+        assert.deepEqual(selector.selectedItems, [items[3]]);
       });
 
       test('default not used when there was at least one match', function() {
+        selector.fallbackSelection = 'default';
         selector.multi = true;
         selector.selectedValues = ['non-existing-value', 'value0'];
         assert.deepEqual(selector.selectedValues, ['non-existing-value', 'value0']);
@@ -204,23 +198,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(selector.selectedItem, undefined);
         selector.multi = true;
         selector.selectedValues = ['non-existing-value'];
-        assert.deepEqual(selector.selectedItems, [undefined]);
+        assert.deepEqual(selector.selectedItems, undefined);
         selector.fallbackSelection = 'default';
-        assert.deepEqual(selector.selectedItems, [items[2]]);
+        assert.deepEqual(selector.selectedItems, [items[3]]);
       });
 
       test('selection is updated after fallback is set', function() {
-        selector.fallbackSolution = undefined;
         selector.select('non-existing-value');
+        assert.equal(selector.selectedItem, undefined);
         selector.fallbackSelection = 'default';
-        assert.equal(selector.selectedItem, items[2]);
+        assert.equal(selector.selectedItem, items[3]);
       });
 
       test('multi-selection is updated after fallback is set', function() {
-        selector.fallbackSolution = undefined;
         selector.selectedValues = ['non-existing-value'];
-        selector.fallbackSolution = 'default';
-        assert.equal(selector.selectedItem, items[2]);
+        assert.equal(selector.selectedItem, undefined);
+        selector.fallbackSelection = 'default';
+        assert.equal(selector.selectedItem, items[3]);
+      });
+
+      test('fires iron-fallback-selection-triggered', function() {
+        selector.fallbackSelection = 'default';
+        var spy = sinon.spy();
+        selector.addEventListener('iron-fallback-selection-triggered', spy);
+        selector.select('non-existing-value');
+        assert.equal(spy.callCount, 1, 'iron-fallback-selection-triggered must only be fired once');
+        assert.equal(spy.getCall(0).args[0].detail, 'default', 'iron-fallback-selection-triggered must supply the fallback-selection');
       });
     });
   </script>
