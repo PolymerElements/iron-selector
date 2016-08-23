@@ -69,6 +69,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     multiChanged: function(multi) {
+      if (!this._isReady) return;
+
       this._selection.multi = multi;
     },
 
@@ -77,7 +79,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         (this.selectedValues != null && this.selectedValues.length);
     },
 
-    _updateAttrForSelected: function() {
+    _updateAttrForSelected: function(attrForSelected) {
+      if (!this._isReady) return;
+
       if (!this.multi) {
         Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
       } else if (this._shouldUpdateSelection) {
@@ -89,7 +93,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    _updateSelected: function() {
+    _updateSelected: function(selected) {
+      if (!this._isReady) return;
+
       if (this.multi) {
         this._selectMulti(this.selectedValues);
       } else {

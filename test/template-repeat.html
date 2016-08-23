@@ -30,13 +30,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <template is="dom-bind">
-    <iron-selector id="selector" selected="1">
-      <template id="t" is="dom-repeat">
-        <div id$="[[item.name]]">{{item.name}}</div>
-      </template>
-    </iron-selector>
-  </template>
+  <dom-bind id="scope">
+    <template>
+      <iron-selector id="selector" selected="1">
+        <dom-repeat id="t">
+          <template>
+            <div id$="[[item.name]]">{{item.name}}</div>
+          </template>
+        </dom-repeat>
+      </iron-selector>
+    </template>
+  </dom-bind>
 
   <script>
 
@@ -45,10 +49,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var scope, s, t;
 
       setup(function() {
-        scope = document.querySelector('template[is="dom-bind"]');
+        scope = document.getElementById('scope');
         s = scope.$.selector;
         t = scope.$.t;
+
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        t.render();
+        Polymer.dom.flush();
       });
 
       teardown(function() {
@@ -56,7 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('supports repeated items', function() {
-        t.render();
         // check items
         assert.equal(s.items.length, 4);
         // check selected
@@ -69,7 +75,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('update items', function() {
-        t.render();
         // check items
         assert.equal(s.items.length, 4);
         // check selected
@@ -77,6 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // update items
         t.items = [{name:'foo'}, {name: 'bar'}];
         t.render();
+        Polymer.dom.flush();
         // check items
         assert.equal(s.items.length, 2);
         // check selected (should still honor the selected)
@@ -86,7 +92,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('set selected to something else', function() {
-        t.render();
         // set selected to something else
         s.selected = 3;
         // check selected item

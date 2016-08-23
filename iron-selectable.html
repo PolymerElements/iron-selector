@@ -145,7 +145,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         type: Object,
         value: function() {
           return {
-            'template': 1
+            'template': 1,
+            'dom-bind': 1,
+            'dom-if': 1,
+            'dom-repeat': 1,
+            'content': 1,
+            'slot': 1,
           };
         }
       }
@@ -158,8 +163,119 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     ],
 
     created: function() {
+      this._isReady = false;
       this._bindFilterItem = this._filterItem.bind(this);
       this._selection = new Polymer.IronSelection(this._applySelection.bind(this));
+    },
+
+    ready: function() {
+      function getPropertyDescriptor(target, name) {
+        for (/* target */; !!target; target = Object.getPrototypeOf(target)) {
+          var descriptor = Object.getOwnPropertyDescriptor(target, name);
+          if (descriptor) {
+            return descriptor;
+          }
+        }
+      }
+
+      function monitorChanges(target, propertyName, propertyDefault) {
+        var descriptor = getPropertyDescriptor(target, propertyName);
+        var isAccessorDescriptor = descriptor.get || descriptor.set;
+        var info = {
+          wasChanged: false,
+          restoreValue: isAccessorDescriptor,
+          descriptor: descriptor,
+          value: propertyDefault,
+        };
+
+        if (isAccessorDescriptor) {
+          Object.defineProperty(target, propertyName, {
+            configurable: true,
+            enumerable: descriptor.enumerable,
+            get: (function(original) {
+              return function() {
+                if (original !== undefined) {
+                  return original.apply(this, arguments);
+                } else {
+                  return undefined;
+                }
+              };
+            })(descriptor.get),
+            set: (function(original) {
+              return function(newValue) {
+                info.wasChanged = true;
+                if (original !== undefined) {
+                  return original.apply(this, arguments);
+                } else {
+                  return newValue;
+                }
+              };
+            })(descriptor.set),
+          });
+        } else {
+          Object.defineProperty(target, propertyName, {
+            configurable: true,
+            enumerable: descriptor.enumerable,
+            get: function() {
+              return info.value;
+            },
+            set: function(newValue) {
+              info.wasChanged = true;
+              info.value = newValue;
+              return info.value;
+            },
+          });
+        }
+
+        return info;
+      }
+
+      var properties = [
+        'attrForSelected',
+        'activateEvent',
+        'selectedClass',
+        'selectedAttribute',
+        'fallbackSelection',
+        'items',
+        '_excludedLocalNames',
+        'multi',
+        'selected',
+        'selectedItems',
+        'selectedValues'
+      ].filter((function(name) {
+        return getPropertyDescriptor(this, name) !== undefined;
+      }).bind(this));
+
+      properties = properties.map((function(name) {
+        var def = this[name];
+        this[name] = undefined;
+        return {
+          name: name,
+          "default": def,
+        };
+      }).bind(this));
+
+      properties.forEach((function(propertyInfo) {
+        propertyInfo.changeInfo = monitorChanges(this, propertyInfo.name, propertyInfo["default"]);
+      }).bind(this));
+
+      // Allow observers to run.
+      this._isReady = true;
+
+      for (var i = 0; i < properties.length; i++) {
+        var propertyInfo = properties[i];
+        if (!propertyInfo.changeInfo.wasChanged && propertyInfo["default"] !== undefined) {
+          this[propertyInfo.name] = propertyInfo["default"];
+        }
+      }
+
+      properties.forEach((function(propertyInfo) {
+        var descriptor = Object.getOwnPropertyDescriptor(this, propertyInfo.name);
+        delete this[propertyInfo.name];
+        if (!propertyInfo.changeInfo.restoreValue) {
+          this[propertyInfo.name] = propertyInfo.changeInfo.value;
+        }
+      }).bind(this));
     },
 
     attached: function() {
@@ -250,6 +366,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _checkFallback: function() {
+      if (!this._isReady) return;
+
       if (this._shouldUpdateSelection) {
         this._updateSelected();
       }
@@ -264,6 +382,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _activateEventChanged: function(eventName, old) {
+      if (!this._isReady) return;
+
       this._removeListener(old);
       this._addListener(eventName);
     },
@@ -275,12 +395,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateAttrForSelected: function() {
+      if (!this._isReady) return;
+
       if (this._shouldUpdateSelection) {
         this.selected = this._indexToValue(this.indexOf(this.selectedItem));
       }
     },
 
     _updateSelected: function() {
+      if (!this._isReady) return;
+
       this._selectSelected(this.selected);
     },
 
