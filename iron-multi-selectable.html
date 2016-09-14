@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="property-initializer.html">
 <link rel="import" href="iron-selectable.html">
 
 <script>
@@ -45,6 +46,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     },
 
+    _PROPERTY_INIT_ORDER: [
+      'attrForSelected',
+      'activateEvent',
+      'selectedClass',
+      'selectedAttribute',
+      'fallbackSelection',
+      'items',
+      '_excludedLocalNames',
+      'multi',
+      'selected',
+      'selectedItems',
+      'selectedValues'
+    ],
+
     observers: [
       '_updateSelected(selectedValues.splices)'
     ],
@@ -68,20 +83,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    multiChanged: function(multi) {
-      if (!this._isReady) return;
-
+    multiChanged: Polymer.PropertyInitializer.observer(function(multi) {
       this._selection.multi = multi;
-    },
+    }),
 
     get _shouldUpdateSelection() {
       return this.selected != null ||
         (this.selectedValues != null && this.selectedValues.length);
     },
 
-    _updateAttrForSelected: function(attrForSelected) {
-      if (!this._isReady) return;
-
+    _updateAttrForSelected: Polymer.PropertyInitializer.observer(function(attrForSelected) {
       if (!this.multi) {
         Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
       } else if (this._shouldUpdateSelection) {
@@ -91,17 +102,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return unfilteredValue != null;
         }, this);
       }
-    },
+    }),
 
-    _updateSelected: function(selected) {
-      if (!this._isReady) return;
-
+    _updateSelected: Polymer.PropertyInitializer.observer(function(selected) {
       if (this.multi) {
         this._selectMulti(this.selectedValues);
       } else {
         this._selectSelected(this.selected);
       }
-    },
+    }),
 
     _selectMulti: function(values) {
       if (values) {

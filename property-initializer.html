@@ -1,0 +1,177 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+(function() {
+
+  /** 
+   * Finds the shallowest property descriptor for a property named `name` on the
+   * object `target`.
+   */
+  function getPropertyDescriptor(target, name) {
+    for (/* target */; !!target; target = Object.getPrototypeOf(target)) {
+      var descriptor = Object.getOwnPropertyDescriptor(target, name);
+      if (descriptor) {
+        return descriptor;
+      }
+    }
+  }
+
+  /**
+   * Patch the property named `propertyName` on object `target` with descriptors
+   * that watch for changes.
+   */
+  function monitorChanges(target, propertyName, propertyDefault) {
+    var descriptor = getPropertyDescriptor(target, propertyName);
+    var isAccessorDescriptor = descriptor.get || descriptor.set;
+    var info = {
+      wasChanged: false,
+      isAccessorDescriptor: isAccessorDescriptor,
+      descriptor: descriptor,
+      value: propertyDefault,
+    };
+
+    if (isAccessorDescriptor) {
+      Object.defineProperty(target, propertyName, {
+        configurable: true,
+        enumerable: descriptor.enumerable,
+        get: (function(original) {
+          return function() {
+            if (original !== undefined) {
+              return original.apply(this, arguments);
+            } else {
+              return undefined;
+            }
+          };
+        })(descriptor.get),
+        set: (function(original) {
+          return function(newValue) {
+            info.wasChanged = true;
+            if (original !== undefined) {
+              return original.apply(this, arguments);
+            } else {
+              return newValue;
+            }
+          };
+        })(descriptor.set),
+      });
+    } else {
+      Object.defineProperty(target, propertyName, {
+        configurable: true,
+        enumerable: descriptor.enumerable,
+        get: function() {
+          return info.value;
+        },
+        set: function(newValue) {
+          info.wasChanged = true;
+          info.value = newValue;
+          return info.value;
+        },
+      });
+    }
+
+    return info;
+  }
+
+  /**
+   * ```javascript
+   * Polymer({
+   *   // ...
+   *
+   *   observers: [
+   *     'myObserver(x, y, z)',
+   *   ],
+   *
+   *   created: Polymer.PropertyInitializer.created(function() {
+   *     // ...
+   *   });
+   *
+   *   ready: Polymer.PropertyInitializer.ready(function() {
+   *     // ...
+   *   });
+   *
+   *   myObserver: Polymer.PropertyInitializer.observer(function(x, y, z) {
+   *     // ...
+   *   }),
+   * });
+   * ```
+   */
+  Polymer.PropertyInitializer = {
+    observer: function(fn) {
+      return function() {
+        if (this._runObservers) {
+          return fn.apply(this, arguments);
+        }
+      };
+    },
+
+    created: function(fn) {
+      return function() {
+        this._runObservers = false;
+
+        if (typeof fn === "function") {
+          fn.apply(this, arguments);
+        }
+      };
+    },
+
+    ready: function(fn) {
+      return function() {
+        // Gather defaults and reset managed properties to `undefined`.
+        var properties = this._PROPERTY_INIT_ORDER.map((function(name) {
+          var def = this[name];
+          this[name] = undefined;
+          return {
+            name: name,
+            "default": def,
+          };
+        }).bind(this));
+
+        // Add descriptors to watch for changes to the managed properties.
+        properties.forEach((function(propertyInfo) {
+          propertyInfo.changeInfo = monitorChanges(this, propertyInfo.name, propertyInfo["default"]);
+        }).bind(this));
+
+        // Allow marked observers to run.
+        this._runObservers = true;
+
+        // Set all properties in the provided order.
+        // However, if any property defaults to `undefined` or was set while a
+        // previous property was being set, skip that property.
+        for (var i = 0; i < properties.length; i++) {
+          var propertyInfo = properties[i];
+          if (!propertyInfo.changeInfo.wasChanged && propertyInfo["default"] !== undefined) {
+            this[propertyInfo.name] = propertyInfo["default"];
+          }
+        }
+
+        // Restore the property to its original state.
+        properties.forEach((function(propertyInfo) {
+          // Remove the added descriptor.
+          delete this[propertyInfo.name];
+
+          if (!propertyInfo.changeInfo.isAccessorDescriptor) {
+            // The descriptor was a *data* descriptor, restore the value.
+            this[propertyInfo.name] = propertyInfo.changeInfo.value;
+          }
+        }).bind(this));
+
+        // Call original `ready` implementation.
+        if (typeof fn === "function") {
+          fn.apply(this, arguments);
+        }
+      };
+    },
+  };
+
+})();
+</script>
