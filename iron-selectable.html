@@ -338,6 +338,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       this._selectionChange();
       this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      // Check for callback function in the selected / deselected item and call it if it exists.
+      if(typeof item[isSelected ? 'selected' : 'deselected']  === 'function') {
+        item[isSelected ? 'selected' : 'deselected']();
+      }
     },
 
     _selectionChange: function() {
