@@ -57,12 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <!--
-  NOTE(cdata): Enable test-fixture when polymer/polymer#2495 is resolved
-  -->
-  <!--<test-fixture id="repeatedItems">
-    <template>-->
-      <iron-selector multi id="repeatedItems">
+  <test-fixture id="repeatedItems">
+    <template>
+      <iron-selector multi>
         <dom-repeat items='["foo", "bar", "baz"]'>
           <template is="dom-repeat">
             <div>[[item]]</div>
@@ -70,8 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </dom-repeat>
         <div>vim</div>
       </iron-selector>
-    <!--</template>
-  </test-fixture>-->
+    </template>
+  </test-fixture>
 
   <script>
 
@@ -271,19 +268,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('selects from items created by dom-repeat', function(done) {
-        var selectEventCounter = 0;
-        var firstChild;
+        s = fixture('repeatedItems');
 
-        s = document.querySelector('#repeatedItems');
-        s.addEventListener('iron-select', function(e) {
-          selectEventCounter++;
-        });
+        s.querySelector('dom-repeat').render();
 
-        // NOTE(cdata): I guess `dom-repeat` doesn't stamp synchronously..
-        Polymer.Base.async(function() {
-          firstChild = Polymer.dom(s).querySelector('div');
-          MockInteractions.tap(firstChild);
-
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          MockInteractions.tap(s.items[0]);
           assert.equal(s.selectedItems[0].textContent, 'foo');
           done();
         });
@@ -294,25 +285,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         s = fixture('test');
 
-        Polymer.Base.async(function() {
-          var firstChild = Polymer.dom(s).querySelector(':first-child');
-          var lastChild = Polymer.dom(s).querySelector(':last-child');
+        var firstChild = s.firstElementChild;
+        var lastChild = s.lastElementChild;
 
-          MockInteractions.tap(firstChild);
-          MockInteractions.tap(lastChild);
+        MockInteractions.tap(firstChild);
+        MockInteractions.tap(lastChild);
 
-          expect(s.selectedItems.length).to.be.equal(2);
+        expect(s.selectedItems.length).to.be.equal(2);
 
-          Polymer.dom(s).removeChild(lastChild);
-
-          Polymer.dom.flush();
-
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
           expect(s.selectedItems.length).to.be.equal(1);
           expect(s.selectedItems[0]).to.be.equal(firstChild);
-
           done();
         });
 
+        Polymer.dom(s).removeChild(lastChild);
       });
 
       suite('`select()` and `selectIndex()`', function() {

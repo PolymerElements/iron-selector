@@ -60,7 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
       <test-content-element id="selector3" selected="item0">
         <dom-repeat id="t">
-          <template is="dom-repeat">
+          <template>
             <div id$="[[item.name]]">[[item.name]]</div>
           </template>
         </dom-repeat>
@@ -71,16 +71,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
 
     suite('content', function() {
+      function promiseIronItemsChanged(selector) {
+        var resolve = undefined;
+
+        selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          if (resolve === undefined) {
+            resolve = true;
+          } else {
+            resolve();
+          }
+        });
+
+        return new Promise(function(resolveCallback) {
+          if (resolve === undefined) {
+            resolve = resolveCallback;
+          } else {
+            resolveCallback();
+          }
+        });
+      }
+
       var s1;
       var s2;
       var s3;
       var t;
 
-      setup(function() {
+      setup(function(done) {
         s1 = fixture('selector1');
         s2 = fixture('selector2');
         s3 = fixture('selector3');
         t = s3.querySelector('#t');
+
+        Promise.all([
+          promiseIronItemsChanged(s1.$.selector),
+          promiseIronItemsChanged(s2.$.selector),
+          promiseIronItemsChanged(s3.$.selector)
+        ]).then(function() {
+          done();
+        });
+
+        t.render();
       });
 
       suite('content', function() {
@@ -108,18 +139,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.isTrue(item.classList.contains('iron-selected'));
         });
 
-        test('add item dynamically', function() {
+        test('add item dynamically', function(done) {
           var item = document.createElement('div');
           item.id = 'item4';
           item.textContent = 'item4';
-          Polymer.dom(s1).appendChild(item);
-          Polymer.dom.flush();
-          // set selected
-          s1.selected = 'item4';
-          // check items length
-          assert.equal(s1.$.selector.items.length, 5);
-          // check selected class
-          assert.isTrue(s1.querySelector('#item4').classList.contains('iron-selected'));
+          s1.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            s1.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+            // set selected
+            s1.selected = 'item4';
+            // check items length
+            assert.equal(s1.$.selector.items.length, 5);
+            // check selected class
+            assert.isTrue(item.classList.contains('iron-selected'));
+            done();
+          });
+          s1.appendChild(item);
         });
 
       });
@@ -149,18 +183,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.isTrue(item.classList.contains('iron-selected'));
         });
 
-        test('add item dynamically', function() {
+        test('add item dynamically', function(done) {
           var item = document.createElement('item');
           item.id = 'item4';
           item.textContent = 'item4';
+
+          s2.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            s2.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+            // set selected
+            s2.selected = 'item4';
+            // check items length
+            assert.equal(s2.$.selector.items.length, 5);
+            // check selected class
+            assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
+            done();
+          });
+
           Polymer.dom(s2).appendChild(item);
-          Polymer.dom.flush();
-          // set selected
-          s2.selected = 'item4';
-          // check items length
-          assert.equal(s2.$.selector.items.length, 5);
-          // check selected class
-          assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
         });
 
       });
@@ -168,9 +207,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suite('content with dom-repeat', function() {
 
         test('supports repeated children', function(done) {
-          t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
-          t.render();
-          setTimeout(function() {
+          s3.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            s3.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
             // check selected
             assert.equal(s3.selected, 'item0');
             // check selected class
@@ -181,6 +219,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isTrue(s3.querySelector('#item2').classList.contains('iron-selected'));
             done();
           });
+
+          t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+          t.render();
         });
       });
     });

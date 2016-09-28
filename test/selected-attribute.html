@@ -93,12 +93,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s;
 
-      setup(function () {
+      setup(function (done) {
         s = fixture('test-attr-change');
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
       });
 
       test('changing selectedAttribute', function() {
-        Polymer.dom.flush();
         s.attrForSelected = 'data-y';
         assert.equal(s.selected, 'y-1');
       });
@@ -109,12 +112,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s;
 
-      setup(function () {
+      setup(function (done) {
         s = fixture('test-attr-change-multi');
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
       });
 
       test('changing selectedAttribute', function() {
-        Polymer.dom.flush();
         s.attrForSelected = 'data-y';
         assert.equal(s.selectedValues.length, 2);
         assert.equal(s.selectedValues[0],'y-1');

@@ -63,13 +63,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
+    function promiseIronItemsChanged(selector) {
+      var resolve = undefined;
+
+      selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+        selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+        if (resolve === undefined) {
+          resolve = true;
+        } else {
+          resolve();
+        }
+      });
+
+      return new Promise(function(resolveCallback) {
+        if (resolve === undefined) {
+          resolve = resolveCallback;
+        } else {
+          resolveCallback();
+        }
+      });
+    }
 
     suite('defaults', function() {
 
       var s1;
 
-      setup(function () {
+      setup(function (done) {
         s1 = fixture('defaults');
+        promiseIronItemsChanged(s1).then(done);
       });
 
       test('to nothing selected', function() {
@@ -101,17 +122,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s2;
 
-      setup(function () {
+      setup(function (done) {
         s2 = fixture('basic');
+        promiseIronItemsChanged(s2).then(done);
       });
 
       test('honors the attrForSelected attribute', function(done) {
-        Polymer.Base.async(function() {
+        Promise.resolve().then(function() {
           assert.equal(s2.attrForSelected, 'id');
           assert.equal(s2.selected, 'item2');
           assert.equal(s2.selectedItem, document.querySelector('#item2'));
-          done();
-        });
+        }).then(done, done);
       });
 
       test('allows assignment to selected', function() {
@@ -167,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('`selectIndex()` selects an item with the given index', function() {
-          assert.equal(s2.selectedItem, undefined);
+          assert.equal(s2.selectedItem, s2.items[2]);
 
           s2.selectIndex(1);
           assert.equal(s2.selected, 'item1');
@@ -240,19 +261,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suite('dynamic selector', function() {
         test('selects dynamically added child automatically', function(done) {
           var selector = document.createElement('iron-selector');
-          var child = document.createElement('div');
-
           selector.selected = '0';
-          child.textContent = 'Item 0';
-
-          Polymer.dom(selector).appendChild(child);
           document.body.appendChild(selector);
 
-          Polymer.Base.async(function() {
+          var child = document.createElement('div');
+          child.textContent = 'Item 0';
+
+          selector.addEventListener('iron-select', function onIronSelect(e) {
+            selector.removeEventListener('iron-select', onIronSelect);
+
             assert.equal(child.className, 'iron-selected');
             document.body.removeChild(selector);
             done();
-          }, 1);
+          });
+
+          Polymer.dom(selector).appendChild(child);
         });
       });
     });

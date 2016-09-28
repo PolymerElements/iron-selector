@@ -18,6 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../iron-selector.html">
 
@@ -30,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <dom-bind id="scope">
+  <test-fixture id="repeat">
     <template>
       <iron-selector id="selector" selected="1">
         <dom-repeat id="t">
@@ -40,26 +41,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </dom-repeat>
       </iron-selector>
     </template>
-  </dom-bind>
+  </test-fixture>
 
   <script>
 
     suite('dom-repeat', function() {
 
-      var scope, s, t;
+      var s, t;
 
-      setup(function() {
-        scope = document.getElementById('scope');
-        s = scope.$.selector;
-        t = scope.$.t;
-
+      setup(function(done) {
+        s = fixture('repeat');
+        t = s.querySelector('#t');
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         t.render();
-        Polymer.dom.flush();
-      });
-
-      teardown(function() {
-        t.items = [];
       });
 
       test('supports repeated items', function() {
@@ -74,21 +72,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isTrue(item.classList.contains('iron-selected'));
       });
 
-      test('update items', function() {
+      test('update items', function(done) {
         // check items
         assert.equal(s.items.length, 4);
         // check selected
         assert.equal(s.selected, 1);
+
+        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          // check items
+          assert.equal(s.items.length, 2);
+          // check selected (should still honor the selected)
+          assert.equal(s.selected, 1);
+          // check selected class
+          assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));
+          done();
+        });
+
         // update items
         t.items = [{name:'foo'}, {name: 'bar'}];
         t.render();
-        Polymer.dom.flush();
-        // check items
-        assert.equal(s.items.length, 2);
-        // check selected (should still honor the selected)
-        assert.equal(s.selected, 1);
-        // check selected class
-        assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));
       });
 
       test('set selected to something else', function() {
