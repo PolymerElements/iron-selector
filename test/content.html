@@ -143,6 +143,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var item = document.createElement('div');
           item.id = 'item4';
           item.textContent = 'item4';
+
           s1.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
             s1.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
             // set selected
@@ -153,6 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isTrue(item.classList.contains('iron-selected'));
             done();
           });
+
           s1.appendChild(item);
         });
 
@@ -199,7 +201,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           });
 
-          Polymer.dom(s2).appendChild(item);
+          s2.appendChild(item);
         });
 
       });
