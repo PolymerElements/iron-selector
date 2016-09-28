@@ -32,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <test-fixture id="selector1">
+  <test-fixture id="container1">
     <template>
       <test-content-element selected="item0">
         <div id="item0">item0</div>
@@ -43,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <test-fixture id="selector2">
+  <test-fixture id="container2">
     <template>
       <test-content-element selected="item0" selectable="item">
         <item id="item0">item0</item>
@@ -56,9 +56,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <test-fixture id="selector3">
+  <test-fixture id="container3">
     <template>
-      <test-content-element id="selector3" selected="item0">
+      <test-content-element selected="item0">
         <dom-repeat id="t">
           <template>
             <div id$="[[item.name]]">[[item.name]]</div>
@@ -92,48 +92,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-      var s1;
-      var s2;
-      var s3;
-      var t;
-
-      setup(function(done) {
-        s1 = fixture('selector1');
-        s2 = fixture('selector2');
-        s3 = fixture('selector3');
-        t = s3.querySelector('#t');
-
-        Promise.all([
-          promiseIronItemsChanged(s1.$.selector),
-          promiseIronItemsChanged(s2.$.selector),
-          promiseIronItemsChanged(s3.$.selector)
-        ]).then(function() {
-          done();
-        });
-
-        t.render();
-      });
-
       suite('content', function() {
+        var container;
+
+        setup(function(done) {
+          container = fixture('container1');
+          promiseIronItemsChanged(container.$.selector).then(done);
+        });
 
         test('attribute selected', function() {
           // check selected class
-          assert.isTrue(s1.querySelector('#item0').classList.contains('iron-selected'));
+          assert.isTrue(container.querySelector('#item0').classList.contains('iron-selected'));
         });
 
         test('set selected', function() {
           // set selected
-          s1.selected = 'item1';
+          container.selected = 'item1';
           // check selected class
-          assert.isTrue(s1.querySelector('#item1').classList.contains('iron-selected'));
+          assert.isTrue(container.querySelector('#item1').classList.contains('iron-selected'));
         });
 
         test('get items', function() {
-          assert.equal(s1.$.selector.items.length, 4);
+          assert.equal(container.$.selector.items.length, 4);
         });
 
         test('activate event', function() {
-          var item = s1.querySelector('#item2');
+          var item = container.querySelector('#item2');
           item.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
           // check selected class
           assert.isTrue(item.classList.contains('iron-selected'));
@@ -144,42 +128,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           item.id = 'item4';
           item.textContent = 'item4';
 
-          s1.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
-            s1.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          container.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            container.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
             // set selected
-            s1.selected = 'item4';
+            container.selected = 'item4';
             // check items length
-            assert.equal(s1.$.selector.items.length, 5);
+            assert.equal(container.$.selector.items.length, 5);
             // check selected class
             assert.isTrue(item.classList.contains('iron-selected'));
             done();
           });
 
-          s1.appendChild(item);
+          container.appendChild(item);
         });
 
       });
 
       suite('content with selectable', function() {
+        var container;
+
+        setup(function(done) {
+          container = fixture('container2');
+          promiseIronItemsChanged(container.$.selector).then(done);
+        });
 
         test('attribute selected', function() {
           // check selected class
-          assert.isTrue(s2.querySelector('#item0').classList.contains('iron-selected'));
+          assert.isTrue(container.querySelector('#item0').classList.contains('iron-selected'));
         });
 
         test('set selected', function() {
           // set selected
-          s2.selected = 'item1';
+          container.selected = 'item1';
           // check selected class
-          assert.isTrue(s2.querySelector('#item1').classList.contains('iron-selected'));
+          assert.isTrue(container.querySelector('#item1').classList.contains('iron-selected'));
         });
 
         test('get items', function() {
-          assert.equal(s2.$.selector.items.length, 4);
+          assert.equal(container.$.selector.items.length, 4);
         });
 
         test('activate event', function() {
-          var item = s2.querySelector('#item2');
+          var item = container.querySelector('#item2');
           item.dispatchEvent(new CustomEvent('tap', {bubbles: true}));
           // check selected class
           assert.isTrue(item.classList.contains('iron-selected'));
@@ -190,40 +180,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           item.id = 'item4';
           item.textContent = 'item4';
 
-          s2.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
-            s2.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          container.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            container.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
             // set selected
-            s2.selected = 'item4';
+            container.selected = 'item4';
             // check items length
-            assert.equal(s2.$.selector.items.length, 5);
+            assert.equal(container.$.selector.items.length, 5);
             // check selected class
-            assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
+            assert.isTrue(item.classList.contains('iron-selected'));
             done();
           });
 
-          s2.appendChild(item);
+          container.appendChild(item);
         });
 
       });
 
       suite('content with dom-repeat', function() {
+        var container, domRepeat;
+
+        setup(function(done) {
+          container = fixture('container3');
+          domRepeat = container.querySelector('dom-repeat');
+          promiseIronItemsChanged(container.$.selector).then(done);
+        });
 
         test('supports repeated children', function(done) {
-          s3.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
-            s3.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          container.$.selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+            container.$.selector.removeEventListener('iron-items-changed', onIronItemsChanged);
             // check selected
-            assert.equal(s3.selected, 'item0');
+            assert.equal(container.selected, 'item0');
             // check selected class
-            assert.isTrue(s3.querySelector('#item0').classList.contains('iron-selected'));
+            assert.isTrue(container.querySelector('#item0').classList.contains('iron-selected'));
             // set selected
-            s3.selected = 'item2';
+            container.selected = 'item2';
             // check selected class
-            assert.isTrue(s3.querySelector('#item2').classList.contains('iron-selected'));
+            assert.isTrue(container.querySelector('#item2').classList.contains('iron-selected'));
             done();
           });
 
-          t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
-          t.render();
+          domRepeat.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+          domRepeat.render();
         });
       });
     });

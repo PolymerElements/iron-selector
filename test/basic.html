@@ -229,7 +229,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               assert.equal(mutation.addedNodes.length, 0);
               assert.equal(mutation.removedNodes.length, 1);
               assert.equal(mutation.removedNodes[0], newItem);
-
               done();
             });
 
@@ -252,7 +251,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var firstElementChild = s1.firstElementChild;
             assert.equal(firstElementChild, s1.selectedItem);
             assert(firstElementChild.classList.contains('iron-selected'));
-
             done();
           });
 
@@ -266,17 +264,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           selector.selected = '0';
           document.body.appendChild(selector);
 
+          var child = document.createElement('div');
+          child.textContent = 'Item 0';
+
           selector.addEventListener('iron-select', function onIronSelect(e) {
             selector.removeEventListener('iron-select', onIronSelect);
 
             assert.equal(child.className, 'iron-selected');
             document.body.removeChild(selector);
-
             done();
           });
 
-          var child = document.createElement('div');
-          child.textContent = 'Item 0';
           selector.appendChild(child);
         });
       });

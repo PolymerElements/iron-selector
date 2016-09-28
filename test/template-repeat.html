@@ -32,10 +32,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <test-fixture id="repeat">
+  <test-fixture id="selector">
     <template>
-      <iron-selector id="selector" selected="1">
-        <dom-repeat id="t">
+      <iron-selector selected="1">
+        <dom-repeat>
           <template>
             <div id$="[[item.name]]">{{item.name}}</div>
           </template>
@@ -48,59 +48,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     suite('dom-repeat', function() {
 
-      var s, t;
+      var selector, domRepeat;
 
       setup(function(done) {
-        s = fixture('repeat');
-        t = s.querySelector('#t');
-        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
-          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+        selector = fixture('selector');
+        domRepeat = selector.querySelector('dom-repeat');
+
+        selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
           done();
         });
-        t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
-        t.render();
+
+        domRepeat.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        domRepeat.render();
       });
 
       test('supports repeated items', function() {
         // check items
-        assert.equal(s.items.length, 4);
+        assert.equal(selector.items.length, 4);
         // check selected
-        assert.equal(s.selected, 1);
+        assert.equal(selector.selected, 1);
         // check selected item
-        var item = s.selectedItem;
-        assert.equal(s.items[1], item);
+        var item = selector.selectedItem;
+        assert.equal(selector.items[1], item);
         // check selected class
         assert.isTrue(item.classList.contains('iron-selected'));
       });
 
       test('update items', function(done) {
         // check items
-        assert.equal(s.items.length, 4);
+        assert.equal(selector.items.length, 4);
         // check selected
-        assert.equal(s.selected, 1);
+        assert.equal(selector.selected, 1);
 
-        s.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
-          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+        selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
           // check items
-          assert.equal(s.items.length, 2);
+          assert.equal(selector.items.length, 2);
           // check selected (should still honor the selected)
-          assert.equal(s.selected, 1);
+          assert.equal(selector.selected, 1);
           // check selected class
-          assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));
+          assert.isTrue(selector.querySelector('#bar').classList.contains('iron-selected'));
           done();
         });
 
         // update items
-        t.items = [{name:'foo'}, {name: 'bar'}];
-        t.render();
+        domRepeat.items = [{name:'foo'}, {name: 'bar'}];
+        domRepeat.render();
       });
 
       test('set selected to something else', function() {
         // set selected to something else
-        s.selected = 3;
+        selector.selected = 3;
         // check selected item
-        var item = s.selectedItem;
-        assert.equal(s.items[3], item);
+        var item = selector.selectedItem;
+        assert.equal(selector.items[3], item);
         // check selected class
         assert.isTrue(item.classList.contains('iron-selected'));
       });
