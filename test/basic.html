@@ -63,13 +63,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
+    function promiseIronItemsChanged(selector) {
+      var resolve = undefined;
+
+      selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+        selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+        if (resolve === undefined) {
+          resolve = true;
+        } else {
+          resolve();
+        }
+      });
+
+      return new Promise(function(resolveCallback) {
+        if (resolve === undefined) {
+          resolve = resolveCallback;
+        } else {
+          resolveCallback();
+        }
+      });
+    }
 
     suite('defaults', function() {
 
       var s1;
 
-      setup(function () {
+      setup(function (done) {
         s1 = fixture('defaults');
+        promiseIronItemsChanged(s1).then(done);
       });
 
       test('to nothing selected', function() {
@@ -101,17 +122,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s2;
 
-      setup(function () {
+      setup(function (done) {
         s2 = fixture('basic');
+        promiseIronItemsChanged(s2).then(done);
       });
 
-      test('honors the attrForSelected attribute', function(done) {
-        Polymer.Base.async(function() {
-          assert.equal(s2.attrForSelected, 'id');
-          assert.equal(s2.selected, 'item2');
-          assert.equal(s2.selectedItem, document.querySelector('#item2'));
-          done();
-        });
+      test('honors the attrForSelected attribute', function() {
+        assert.equal(s2.attrForSelected, 'id');
+        assert.equal(s2.selected, 'item2');
+        assert.equal(s2.selectedItem, document.querySelector('#item2'));
       });
 
       test('allows assignment to selected', function() {
@@ -148,7 +167,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('force synchronous item update', function() {
         expect(s2.items.length).to.be.equal(5);
-        Polymer.dom(s2).appendChild(document.createElement('div'));
+        s2.appendChild(document.createElement('div'));
         expect(s2.items.length).to.be.equal(5);
         s2.forceSynchronousItemUpdate();
         expect(s2.items.length).to.be.equal(6);
@@ -167,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('`selectIndex()` selects an item with the given index', function() {
-          assert.equal(s2.selectedItem, undefined);
+          assert.equal(s2.selectedItem, s2.items[2]);
 
           s2.selectIndex(1);
           assert.equal(s2.selected, 'item1');
@@ -186,73 +205,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suite('items changing', function() {
         var s1;
 
-        setup(function() {
+        setup(function(done) {
           s1 = fixture('defaults');
+          promiseIronItemsChanged(s1).then(done);
         });
 
         test('cause iron-items-changed to fire', function(done) {
           var newItem = document.createElement('div');
-          var changeCount = 0;
-
           newItem.id = 'item999';
 
-          s2.addEventListener('iron-items-changed', function(event) {
-            changeCount++;
-            var mutation = event.detail;
-            assert.notEqual(mutation, undefined);
-            assert.notEqual(mutation.addedNodes, undefined);
-            assert.notEqual(mutation.removedNodes, undefined);
+          s2.addEventListener('iron-items-changed', function onIronItemsChanged1(e) {
+            s2.removeEventListener('iron-items-changed', onIronItemsChanged1);
+
+            var mutation = e.detail;
+            assert.equal(mutation.addedNodes.length, 1);
+            assert.equal(mutation.addedNodes[0], newItem);
+            assert.equal(mutation.removedNodes.length, 0);
+
+            s2.addEventListener('iron-items-changed', function onIronItemsChanged2(e) {
+              s2.removeEventListener('iron-items-changed', onIronItemsChanged2);
+
+              var mutation = e.detail;
+              assert.equal(mutation.addedNodes.length, 0);
+              assert.equal(mutation.removedNodes.length, 1);
+              assert.equal(mutation.removedNodes[0], newItem);
+              done();
+            });
+
+            s2.removeChild(newItem);
           });
 
-          Polymer.dom(s2).appendChild(newItem);
-
-          Polymer.Base.async(function() {
-            Polymer.dom(s2).removeChild(newItem);
-
-            Polymer.Base.async(function() {
-              expect(changeCount).to.be.equal(2);
-              done();
-            }, 1);
-          }, 1);
+          s2.appendChild(newItem);
         });
 
         test('updates selected item', function(done) {
-          s1.addEventListener('iron-items-changed', function firstListener() {
-            s1.removeEventListener('iron-items-changed', firstListener);
-            var firstElementChild = Polymer.dom(s1).firstElementChild;
-            expect(firstElementChild).to.be.equal(s1.selectedItem);
-            expect(firstElementChild.classList.contains('iron-selected'))
-                .to.be.eql(true);
-            Polymer.dom(s1).removeChild(s1.selectedItem);
-
-            s1.addEventListener('iron-items-changed', function() {
-              firstElementChild = Polymer.dom(s1).firstElementChild;
-              expect(firstElementChild).to.be.equal(s1.selectedItem);
-              expect(firstElementChild.classList.contains('iron-selected'))
-                  .to.be.eql(true);
-              done();
-            });
-          });
           s1.selected = 0;
+
+          var firstElementChild = s1.firstElementChild;
+          assert.equal(firstElementChild, s1.selectedItem);
+          assert(firstElementChild.classList.contains('iron-selected'));
+
+          s1.addEventListener('iron-items-changed', function onIronItemsChanged2() {
+            s1.removeEventListener('iron-items-changed', onIronItemsChanged2);
+
+            var firstElementChild = s1.firstElementChild;
+            assert.equal(firstElementChild, s1.selectedItem);
+            assert(firstElementChild.classList.contains('iron-selected'));
+            done();
+          });
+
+          s1.removeChild(s1.selectedItem);
         });
       });
 
       suite('dynamic selector', function() {
         test('selects dynamically added child automatically', function(done) {
           var selector = document.createElement('iron-selector');
-          var child = document.createElement('div');
-
           selector.selected = '0';
-          child.textContent = 'Item 0';
-
-          Polymer.dom(selector).appendChild(child);
           document.body.appendChild(selector);
 
-          Polymer.Base.async(function() {
+          var child = document.createElement('div');
+          child.textContent = 'Item 0';
+
+          selector.addEventListener('iron-select', function onIronSelect(e) {
+            selector.removeEventListener('iron-select', onIronSelect);
+
             assert.equal(child.className, 'iron-selected');
             document.body.removeChild(selector);
             done();
-          }, 1);
+          });
+
+          selector.appendChild(child);
         });
       });
     });
