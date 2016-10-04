@@ -73,13 +73,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
+    var t = repeatedItems.querySelector('[is="dom-repeat"]');
+    if (Polymer.Element && !(t instanceof Polymer.Element)) {
+      template = t;
+      t = document.createElement('dom-repeat');
+      template.parentNode.replaceChild(t, template);
+      t.appendChild(template);
+      t.setAttribute('items', template.getAttribute('items'));
+    }
+
     suite('multi', function() {
 
       var s;
 
       setup(function () {
         s = fixture('test');
-        t = Polymer.dom(s).querySelector('[is="dom-repeat"]');
       });
 
       test('honors the multi attribute', function() {
@@ -303,12 +311,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           Polymer.dom(s).removeChild(lastChild);
 
-          Polymer.dom.flush();
-
-          expect(s.selectedItems.length).to.be.equal(1);
-          expect(s.selectedItems[0]).to.be.equal(firstChild);
-
-          done();
+          setTimeout(function() {
+            expect(s.selectedItems.length).to.be.equal(1);
+            expect(s.selectedItems[0]).to.be.equal(firstChild);
+            done();
+          })
         });
 
       });

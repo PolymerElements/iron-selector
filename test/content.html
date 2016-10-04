@@ -61,6 +61,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var s3 = document.querySelector('#selector3');
 
     var t = document.querySelector('#t');
+    if (Polymer.Element && !(t instanceof Polymer.Element)) {
+      template = t;
+      t = document.createElement('dom-repeat');
+      template.parentNode.replaceChild(t, template);
+      t.appendChild(template);
+      t.setAttribute('items', template.getAttribute('items'));
+    }
 
     suite('content', function() {
 
@@ -147,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     suite('content with dom-repeat', function() {
 
       test('supports repeated children', function(done) {
-        t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        t.items = t.parentNode.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         setTimeout(function() {
           // check selected
           assert.equal(s3.selected, 'item0');

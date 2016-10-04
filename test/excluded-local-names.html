@@ -74,8 +74,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('items', function(done) {
         test1._excludedLocalNames.span = 1;
         test2._excludedLocalNames.div = 1;
-        test1._updateItems();
-        test2._updateItems();
+        test1.forceSynchronousItemUpdate();
+        test2.forceSynchronousItemUpdate();
 
         Polymer.Base.async(function() {
           var NOT_FOUND = -1;

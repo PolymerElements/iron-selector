@@ -30,13 +30,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <template is="dom-bind">
-    <iron-selector id="selector" selected="1">
-      <template id="t" is="dom-repeat">
-        <div id$="[[item.name]]">{{item.name}}</div>
-      </template>
-    </iron-selector>
-  </template>
+  <dom-bind>
+    <template is="dom-bind">
+      <iron-selector id="selector" selected="1">
+        <template id="t" is="dom-repeat">
+          <div id$="[[item.name]]">{{item.name}}</div>
+        </template>
+      </iron-selector>
+    </template>
+  </dom-bind>
 
   <script>
 
@@ -44,11 +46,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var scope, s, t;
 
-      setup(function() {
-        scope = document.querySelector('template[is="dom-bind"]');
+      setup(function(done) {
+        scope = document.querySelector('dom-bind');
+        if (!scope.$) {
+          scope = document.querySelector('template[is="dom-bind"]');
+        }
         s = scope.$.selector;
         t = scope.$.t;
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        t.render();
+        //TODO(kschaaf): flushing dom-repeat used to indirectly flush observeNodes
+        setTimeout(done);
       });
 
       teardown(function() {
@@ -56,7 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('supports repeated items', function() {
-        t.render();
         // check items
         assert.equal(s.items.length, 4);
         // check selected
@@ -65,28 +72,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var item = s.selectedItem;
         assert.equal(s.items[1], item);
         // check selected class
-        assert.isTrue(item.classList.contains('iron-selected'));
+        assert.isTrue(item.classList.contains('iron-selected'));          
       });
 
-      test('update items', function() {
-        t.render();
-        // check items
+      test('update items', function(done) {
         assert.equal(s.items.length, 4);
         // check selected
         assert.equal(s.selected, 1);
         // update items
         t.items = [{name:'foo'}, {name: 'bar'}];
         t.render();
-        // check items
-        assert.equal(s.items.length, 2);
-        // check selected (should still honor the selected)
-        assert.equal(s.selected, 1);
-        // check selected class
-        assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));
+        //TODO(kschaaf): flushing dom-repeat used to indirectly flush observeNodes
+        setTimeout(function() {
+          // check items
+          assert.equal(s.items.length, 2);
+          // check selected (should still honor the selected)
+          assert.equal(s.selected, 1);
+          // check selected class
+          assert.isTrue(s.querySelector('#bar').classList.contains('iron-selected'));          
+          done();
+        });
       });
 
       test('set selected to something else', function() {
-        t.render();
         // set selected to something else
         s.selected = 3;
         // check selected item

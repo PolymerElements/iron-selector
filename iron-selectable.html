@@ -272,10 +272,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       nodes = Array.prototype.filter.call(nodes, this._bindFilterItem);
       this._setItems(nodes);
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
     },
 
     _updateAttrForSelected: function() {
-      if (this._shouldUpdateSelection) {
+      if (this._shouldUpdateSelection && this.selectedItem) {
         this.selected = this._indexToValue(this.indexOf(this.selectedItem));
       }
     },
@@ -348,11 +351,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _observeItems: function(node) {
       return Polymer.dom(node).observeNodes(function(mutation) {
         this._updateItems();
-
-        if (this._shouldUpdateSelection) {
-          this._updateSelected();
-        }
-
         // Let other interested parties know about the change so that
         // we don't have to recreate mutation observers everywhere.
         this.fire('iron-items-changed', mutation, {
