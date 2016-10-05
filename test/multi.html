@@ -63,9 +63,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!--<test-fixture id="repeatedItems">
     <template>-->
       <iron-selector multi id="repeatedItems">
-        <template is="dom-repeat" items='["foo", "bar", "baz"]'>
-          <div>[[item]]</div>
-        </template>
+        <dom-repeat items='["foo", "bar", "baz"]'>
+          <template>
+            <div>[[item]]</div>
+          </template>
+        </dom-repeat>
         <div>vim</div>
       </iron-selector>
     <!--</template>
@@ -79,7 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       setup(function () {
         s = fixture('test');
-        t = Polymer.dom(s).querySelector('[is="dom-repeat"]');
       });
 
       test('honors the multi attribute', function() {
