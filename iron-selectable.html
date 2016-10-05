@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="property-initializer.html">
 <link rel="import" href="iron-selection.html">
 
 <script>
@@ -145,11 +146,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         type: Object,
         value: function() {
           return {
-            'template': 1
+            'template': 1,
+            'dom-bind': 1,
+            'dom-if': 1,
+            'dom-repeat': 1,
+            'content': 1,
+            'slot': 1,
           };
         }
       }
     },
+
+    _PROPERTY_INIT_ORDER: [
+      'attrForSelected',
+      'activateEvent',
+      'selectedClass',
+      'selectedAttribute',
+      'fallbackSelection',
+      'items',
+      '_excludedLocalNames',
+      'selected',
+    ],
 
     observers: [
       '_updateAttrForSelected(attrForSelected)',
@@ -157,10 +174,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       '_checkFallback(fallbackSelection)'
     ],
 
-    created: function() {
+    created: Polymer.PropertyInitializer.created(function() {
       this._bindFilterItem = this._filterItem.bind(this);
       this._selection = new Polymer.IronSelection(this._applySelection.bind(this));
-    },
+    }),
+
+    ready: Polymer.PropertyInitializer.ready(),
 
     attached: function() {
       this._observer = this._observeItems(this);
@@ -249,11 +268,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       return this.selected != null;
     },
 
-    _checkFallback: function() {
+    _checkFallback: Polymer.PropertyInitializer.observer(function() {
       if (this._shouldUpdateSelection) {
         this._updateSelected();
       }
-    },
+    }),
 
     _addListener: function(eventName) {
       this.listen(this, eventName, '_activateHandler');
@@ -263,10 +282,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.unlisten(this, eventName, '_activateHandler');
     },
 
-    _activateEventChanged: function(eventName, old) {
+    _activateEventChanged: Polymer.PropertyInitializer.observer(function(eventName, old) {
       this._removeListener(old);
       this._addListener(eventName);
-    },
+    }),
 
     _updateItems: function() {
       var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
@@ -274,15 +293,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this._setItems(nodes);
     },
 
-    _updateAttrForSelected: function() {
+    _updateAttrForSelected: Polymer.PropertyInitializer.observer(function() {
       if (this._shouldUpdateSelection) {
         this.selected = this._indexToValue(this.indexOf(this.selectedItem));
       }
-    },
+    }),
 
-    _updateSelected: function() {
+    _updateSelected: Polymer.PropertyInitializer.observer(function() {
       this._selectSelected(this.selected);
-    },
+    }),
 
     _selectSelected: function(selected) {
       this._selection.select(this._valueToItem(this.selected));
@@ -384,5 +403,4 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   };
-
 </script>

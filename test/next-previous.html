@@ -54,77 +54,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
-    var s;
-
-    function assertAndSelect(method, expectedIndex) {
-      assert.equal(s.selected, expectedIndex);
-      s[method]();
+    function assertAndSelect(selector, method, expectedIndex) {
+      assert.equal(selector.selected, expectedIndex);
+      selector[method]();
     }
 
     suite('next/previous', function() {
+      var selector;
 
       setup(function () {
-        s = fixture('test1');
+        selector = fixture('test1');
       });
 
       test('selectNext', function() {
-        assert.equal(s.selected, 0);
-        assertAndSelect('selectNext', 0);
-        assertAndSelect('selectNext', 1);
-        assertAndSelect('selectNext', 2);
-        assert.equal(s.selected, 0);
+        assert.equal(selector.selected, 0);
+        assertAndSelect(selector, 'selectNext', 0);
+        assertAndSelect(selector, 'selectNext', 1);
+        assertAndSelect(selector, 'selectNext', 2);
+        assert.equal(selector.selected, 0);
       });
 
       test('selectPrevious', function() {
-        assert.equal(s.selected, 0);
-        assertAndSelect('selectPrevious', 0);
-        assertAndSelect('selectPrevious', 2);
-        assertAndSelect('selectPrevious', 1);
-        assert.equal(s.selected, 0);
+        assert.equal(selector.selected, 0);
+        assertAndSelect(selector, 'selectPrevious', 0);
+        assertAndSelect(selector, 'selectPrevious', 2);
+        assertAndSelect(selector, 'selectPrevious', 1);
+        assert.equal(selector.selected, 0);
       });
 
       test('selectNext/Previous', function() {
-        assert.equal(s.selected, 0);
-        assertAndSelect('selectNext', 0);
-        assertAndSelect('selectNext', 1);
-        assertAndSelect('selectPrevious', 2);
-        assertAndSelect('selectNext', 1);
-        assertAndSelect('selectPrevious', 2);
-        assert.equal(s.selected, 1);
+        assert.equal(selector.selected, 0);
+        assertAndSelect(selector, 'selectNext', 0);
+        assertAndSelect(selector, 'selectNext', 1);
+        assertAndSelect(selector, 'selectPrevious', 2);
+        assertAndSelect(selector, 'selectNext', 1);
+        assertAndSelect(selector, 'selectPrevious', 2);
+        assert.equal(selector.selected, 1);
       });
 
     });
 
     suite('next/previous attrForSelected', function() {
+      var selector;
 
       setup(function () {
-        s = fixture('test2');
+        selector = fixture('test2');
       });
 
       test('selectNext', function() {
-        assert.equal(s.selected, 'foo');
-        assertAndSelect('selectNext', 'foo');
-        assertAndSelect('selectNext', 'bar');
-        assertAndSelect('selectNext', 'zot');
-        assert.equal(s.selected, 'foo');
+        assert.equal(selector.selected, 'foo');
+        assertAndSelect(selector, 'selectNext', 'foo');
+        assertAndSelect(selector, 'selectNext', 'bar');
+        assertAndSelect(selector, 'selectNext', 'zot');
+        assert.equal(selector.selected, 'foo');
       });
 
       test('selectPrevious', function() {
-        assert.equal(s.selected, 'foo');
-        assertAndSelect('selectPrevious', 'foo');
-        assertAndSelect('selectPrevious', 'zot');
-        assertAndSelect('selectPrevious', 'bar');
-        assert.equal(s.selected, 'foo');
+        assert.equal(selector.selected, 'foo');
+        assertAndSelect(selector, 'selectPrevious', 'foo');
+        assertAndSelect(selector, 'selectPrevious', 'zot');
+        assertAndSelect(selector, 'selectPrevious', 'bar');
+        assert.equal(selector.selected, 'foo');
       });
 
       test('selectNext/Previous', function() {
-        assert.equal(s.selected, 'foo');
-        assertAndSelect('selectNext', 'foo');
-        assertAndSelect('selectNext', 'bar');
-        assertAndSelect('selectPrevious', 'zot');
-        assertAndSelect('selectNext', 'bar');
-        assertAndSelect('selectPrevious', 'zot');
-        assert.equal(s.selected, 'bar');
+        assert.equal(selector.selected, 'foo');
+        assertAndSelect(selector, 'selectNext', 'foo');
+        assertAndSelect(selector, 'selectNext', 'bar');
+        assertAndSelect(selector, 'selectPrevious', 'zot');
+        assertAndSelect(selector, 'selectNext', 'bar');
+        assertAndSelect(selector, 'selectPrevious', 'zot');
+        assert.equal(selector.selected, 'bar');
       });
 
     });

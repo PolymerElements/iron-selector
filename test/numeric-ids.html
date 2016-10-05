@@ -18,7 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
+  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../iron-selector.html">
 
   <style>
@@ -30,39 +32,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <template is="dom-bind">
-    <iron-selector id="selector" attr-for-selected="name">
-      <template id="t" is="dom-repeat">
-        <div name="[[item.id]]">{{item.name}}</div>
-      </template>
-    </iron-selector>
-  </template>
+  <test-fixture id="selector">
+    <template>
+      <iron-selector attr-for-selected="name">
+        <dom-repeat>
+          <template>
+            <div name="[[item.id]]">{{item.name}}</div>
+          </template>
+        </dom-repeat>
+      </iron-selector>
+    </template>
+  </test-fixture>
 
   <script>
 
     suite('select by a numeric property', function() {
 
-      var scope, s, t;
+      var selector, domRepeat;
 
       setup(function() {
-        scope = document.querySelector('template[is="dom-bind"]');
-        s = scope.$.selector;
-        t = scope.$.t;
-        t.items = [{ id: 0, name:'item0'}, {id: 1, name: 'item1'}, {id: 2, name: 'item2'}];
+        selector = fixture('selector');
+        domRepeat = selector.querySelector('dom-repeat');
+
+        domRepeat.items = [{ id: 0, name:'item0'}, {id: 1, name: 'item1'}, {id: 2, name: 'item2'}];
+        domRepeat.render();
       });
 
       teardown(function() {
-        t.items = [];
+        domRepeat.items = [];
       });
 
-      test('select a value of zero', function() {
-        t.render();
-        s.selected = 1;
-        assert.equal(s.selected, '1');
+      test('select a value of zero', function(done) {
+        selector.addEventListener('iron-items-changed', function onIronItemsChanged(e) {
+          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          selector.selected = 1;
+          assert.equal(selector.selected, '1');
 
-        // select item with a name value of 0
-        s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-        assert.equal(s.selected, 0);
+          // select item with a name value of 0
+          selector.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+          assert.equal(selector.selected, 0);
+          done();
+        });
+
+        domRepeat.render();
       });
 
     });
