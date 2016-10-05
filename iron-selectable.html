@@ -145,7 +145,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         type: Object,
         value: function() {
           return {
-            'template': 1
+            'template': 1,
+            'dom-bind': 1,
+            'dom-if': 1,
+            'dom-repeat': 1,
           };
         }
       }
@@ -157,6 +160,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       '_checkFallback(fallbackSelection)'
     ],
 
+    // -- LIFECYCLE -- //
+
     created: function() {
       this._bindFilterItem = this._filterItem.bind(this);
       this._selection = new Polymer.IronSelection(this._applySelection.bind(this));
@@ -165,68 +170,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     attached: function() {
       this._observer = this._observeItems(this);
       this._updateItems();
-      if (this._shouldUpdateSelection) {
-        this._updateSelected();
-      }
-      this._addListener(this.activateEvent);
+      this._updateSelected();
     },
 
     detached: function() {
       if (this._observer) {
         Polymer.dom(this).unobserveNodes(this._observer);
       }
-      this._removeListener(this.activateEvent);
     },
 
-    /**
-     * Returns the index of the given item.
-     *
-     * @method indexOf
-     * @param {Object} item
-     * @returns Returns the index of the item
-     */
-    indexOf: function(item) {
-      return this.items.indexOf(item);
-    },
 
-    /**
-     * Selects the given value.
-     *
-     * @method select
-     * @param {string|number} value the value to select.
-     */
-    select: function(value) {
-      this.selected = value;
-    },
+    // -- CHILD OBSERVATION -- //
 
-    /**
-     * Selects the previous item.
-     *
-     * @method selectPrevious
-     */
-    selectPrevious: function() {
-      var length = this.items.length;
-      var index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
-      this.selected = this._indexToValue(index);
-    },
+    // observe items change under the given node.
+    _observeItems: function(node) {
+      return Polymer.dom(node).observeNodes(function(mutation) {
+        this._updateItems();
+        this._updateSelected();
 
-    /**
-     * Selects the next item.
-     *
-     * @method selectNext
-     */
-    selectNext: function() {
-      var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
-      this.selected = this._indexToValue(index);
-    },
-
-    /**
-     * Selects the item at the given index.
-     *
-     * @method selectIndex
-     */
-    selectIndex: function(index) {
-      this.select(this._indexToValue(index));
+        // Let other interested parties know about the change so that
+        // we don't have to recreate mutation observers everywhere.
+        this.fire('iron-items-changed', mutation, {
+          bubbles: false,
+          cancelable: false
+        });
+      });
     },
 
     /**
@@ -245,60 +213,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this._updateItems();
     },
 
-    get _shouldUpdateSelection() {
-      return this.selected != null;
-    },
-
-    _checkFallback: function() {
-      if (this._shouldUpdateSelection) {
-        this._updateSelected();
-      }
-    },
-
-    _addListener: function(eventName) {
-      this.listen(this, eventName, '_activateHandler');
-    },
-
-    _removeListener: function(eventName) {
-      this.unlisten(this, eventName, '_activateHandler');
-    },
-
-    _activateEventChanged: function(eventName, old) {
-      this._removeListener(old);
-      this._addListener(eventName);
-    },
-
     _updateItems: function() {
       var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       nodes = Array.prototype.filter.call(nodes, this._bindFilterItem);
       this._setItems(nodes);
     },
 
-    _updateAttrForSelected: function() {
-      if (this._shouldUpdateSelection) {
-        this.selected = this._indexToValue(this.indexOf(this.selectedItem));
-      }
-    },
-
-    _updateSelected: function() {
-      this._selectSelected(this.selected);
-    },
-
-    _selectSelected: function(selected) {
-      this._selection.select(this._valueToItem(this.selected));
-      // Check for items, since this array is populated only when attached
-      // Since Number(0) is falsy, explicitly check for undefined
-      if (this.fallbackSelection && this.items.length && (this._selection.get() === undefined)) {
-        this.selected = this.fallbackSelection;
-      }
-    },
-
     _filterItem: function(node) {
       return !this._excludedLocalNames[node.localName];
     },
 
+
+    // -- VALUE/INDEX/ITEM CONVERSION -- //
+
     _valueToItem: function(value) {
-      return (value == null) ? null : this.items[this._valueToIndex(value)];
+      if (value === null || value === undefined) {
+        return null;
+      } else {
+        return this.items[this._valueToIndex(value)];
+      }
     },
 
     _valueToIndex: function(value) {
@@ -325,41 +258,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _valueForItem: function(item) {
-      var propValue = item[Polymer.CaseMap.dashToCamelCase(this.attrForSelected)];
-      return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
-    },
-
-    _applySelection: function(item, isSelected) {
-      if (this.selectedClass) {
-        this.toggleClass(this.selectedClass, isSelected, item);
+      if (item === null || item === undefined) {
+        return null;
       }
-      if (this.selectedAttribute) {
-        this.toggleAttribute(this.selectedAttribute, isSelected, item);
+
+      var propertyName = Polymer.CaseMap.dashToCamelCase(this.attrForSelected);
+      return item[propertyName] || item.getAttribute(this.attrForSelected);
+    },
+
+
+    // -- ITEM ACTIVATION PATH -- //
+
+    _activateEventChanged: function(eventName, old) {
+      if (old) {
+        this._removeListener(old);
       }
-      this._selectionChange();
-      this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      if (eventName) {
+        this._addListener(eventName);
+      }
     },
 
-    _selectionChange: function() {
-      this._setSelectedItem(this._selection.get());
+    _addListener: function(eventName) {
+      this.listen(this, eventName, '_activateHandler');
     },
 
-    // observe items change under the given node.
-    _observeItems: function(node) {
-      return Polymer.dom(node).observeNodes(function(mutation) {
-        this._updateItems();
-
-        if (this._shouldUpdateSelection) {
-          this._updateSelected();
-        }
-
-        // Let other interested parties know about the change so that
-        // we don't have to recreate mutation observers everywhere.
-        this.fire('iron-items-changed', mutation, {
-          bubbles: false,
-          cancelable: false
-        });
-      });
+    _removeListener: function(eventName) {
+      this.unlisten(this, eventName, '_activateHandler');
     },
 
     _activateHandler: function(e) {
@@ -381,8 +305,120 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           {selected: value, item: item}, {cancelable: true}).defaultPrevented) {
         this.select(value);
       }
-    }
+    },
 
+
+    // -- SELECTION API -- //
+
+    /**
+     * Selects the previous item.
+     *
+     * @method selectPrevious
+     */
+    selectPrevious: function() {
+      var length = this.items.length;
+      var index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
+      this.select(this._indexToValue(index));
+    },
+
+    /**
+     * Selects the next item.
+     *
+     * @method selectNext
+     */
+    selectNext: function() {
+      var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
+      this.select(this._indexToValue(index));
+    },
+
+    /**
+     * Selects the item at the given index.
+     *
+     * @method selectIndex
+     */
+    selectIndex: function(index) {
+      this.select(this._indexToValue(index));
+    },
+
+    /**
+     * Selects the given value.
+     *
+     * @method select
+     * @param {string|number} value the value to select.
+     */
+    select: function(value) {
+      this.selected = value;
+    },
+
+
+    // -- SELECTION PATH -- //
+
+    // OBSERVER: attrForSelected
+    _updateAttrForSelected: function() {
+      if (this.selectedItem) {
+        this.selected = this._valueForItem(this.selectedItem);
+      }
+    },
+
+    // OBSERVER: fallbackSelection
+    _checkFallback: function() {
+      this._updateSelected();
+    },
+
+    // OBSERVER: selected
+    _updateSelected: function() {
+      this._selectSelected(this.selected);
+    },
+
+    _selectSelected: function(selected) {
+      if (!this.items) {
+        return;
+      }
+
+      var item = this._valueToItem(this.selected);
+      if (item !== null && item !== undefined) {
+        this._selection.select(this._valueToItem(this.selected));
+      } else {
+        this._selection.clear();
+      }
+      // Check for items, since this array is populated only when attached
+      // Since Number(0) is falsy, explicitly check for undefined
+      if (this.fallbackSelection && !this._selection.get()) {
+        var fallback = this._valueToItem(this.fallbackSelection);
+        if (fallback) {
+          this.select(this.fallbackSelection);
+        }
+      }
+    },
+
+    _applySelection: function(item, isSelected) {
+      if (this.selectedClass) {
+        this.toggleClass(this.selectedClass, isSelected, item);
+      }
+      if (this.selectedAttribute) {
+        this.toggleAttribute(this.selectedAttribute, isSelected, item);
+      }
+      this._selectionChange();
+      this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+    },
+
+    _selectionChange: function() {
+      this._setSelectedItem(this._selection.get());
+    },
+
+
+    // -- MISCELLANEOUS -- //
+
+    /**
+     * Returns the index of the given item.
+     *
+     * @method indexOf
+     * @param {Object} item
+     * @returns Returns the index of the item
+     */
+    indexOf: function(item) {
+      return this.items.indexOf(item);
+    },
   };
 
 </script>

@@ -186,8 +186,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('setting non-existing value sets default', function() {
         selector.multi = true;
-        selector.select(['non-existing-value']);
-        assert.deepEqual(selector.selectedValues, ['default']);
+        selector.select('non-existing-value');
+        assert.deepEqual(selector.selectedValues, ['default', 'non-existing-value']);
         assert.deepEqual(selector.selectedItems, [items[2]]);
       });
 

@@ -57,12 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <!--
-  NOTE(cdata): Enable test-fixture when polymer/polymer#2495 is resolved
-  -->
-  <!--<test-fixture id="repeatedItems">
-    <template>-->
-      <iron-selector multi id="repeatedItems">
+  <test-fixture id="repeatedItems">
+    <template>
+      <iron-selector multi>
         <dom-repeat items='["foo", "bar", "baz"]'>
           <template>
             <div>[[item]]</div>
@@ -70,8 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </dom-repeat>
         <div>vim</div>
       </iron-selector>
-    <!--</template>
-  </test-fixture>-->
+    </template>
+  </test-fixture>
 
   <script>
 
@@ -273,7 +270,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var selectEventCounter = 0;
         var firstChild;
 
-        s = document.querySelector('#repeatedItems');
+        var s = fixture('repeatedItems');
         s.addEventListener('iron-select', function(e) {
           selectEventCounter++;
         });
