@@ -31,7 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       selectedValues: {
         type: Array,
-        notify: true
+        notify: true,
+        value: function() {
+          return [];
+        },
       },
 
       /**
@@ -40,7 +43,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectedItems: {
         type: Array,
         readOnly: true,
-        notify: true
+        notify: true,
+        value: function() {
+          return [];
+        },
       },
 
     },

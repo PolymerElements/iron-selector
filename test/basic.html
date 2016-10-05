@@ -167,7 +167,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('`selectIndex()` selects an item with the given index', function() {
-          assert.equal(s2.selectedItem, undefined);
+          // This selector has attributes `selected` and `attr-for-selected`
+          // matching this item.
+          assert.equal(s2.selectedItem, s2.items[2]);
 
           s2.selectIndex(1);
           assert.equal(s2.selected, 'item1');
