@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('has sane defaults', function() {
-        assert.equal(s.selectedValues, undefined);
+        assert.deepEqual(s.selectedValues, []);
         assert.equal(s.selectedClass, 'iron-selected');
         assert.equal(s.items.length, 5);
       });
