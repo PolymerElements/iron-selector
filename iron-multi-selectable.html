@@ -162,6 +162,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
     },
+
+    // -- UNUSED, FOR API COMPATIBILITY -- //
+
+    get _shouldUpdateSelection() {
+      return this.selected != null ||
+        (this.selectedValues != null && this.selectedValues.length);
+    },
   };
 
   /** @polymerBehavior */

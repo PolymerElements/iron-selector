@@ -419,6 +419,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     indexOf: function(item) {
       return this.items.indexOf(item);
     },
+
+    // -- UNUSED, FOR API COMPATIBILITY -- //
+
+    get _shouldUpdateSelection() {
+      return this.selected != null;
+    },
   };
 
 </script>
