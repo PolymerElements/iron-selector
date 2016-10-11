@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notify: true,
         value: function() {
           return [];
-        },
+        }
       },
 
       /**
@@ -46,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notify: true,
         value: function() {
           return [];
-        },
+        }
       },
 
     },
@@ -54,16 +54,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     observers: [
       '_updateSelected(selectedValues.splices)'
     ],
-
-    // -- VALUE/INDEX/ITEM CONVERSION -- //
-
-    _valuesToItems: function(values) {
-      return (values == null) ? null : values.map(function(value) {
-        return this._valueToItem(value);
-      }, this);
-    },
-
-    // -- SELECTION API -- //
 
     /**
      * Selects the given value. If the `multi` property is true, then the selected state of the
@@ -80,25 +70,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    _toggleSelected: function(value) {
-      var i = this.selectedValues.indexOf(value);
-      var unselected = i < 0;
-      if (unselected) {
-        this.push('selectedValues', value);
-      } else {
-        this.splice('selectedValues', i, 1);
-      }
-    },
-
-    // -- SELECTION PATH -- //
-
-    // OBSERVER: multi
     multiChanged: function(multi) {
       this._selection.multi = multi;
       this._updateSelected();
     },
 
-    // OBSERVER: attrForSelected
+    // UNUSED, FOR API COMPATIBILITY
+    get _shouldUpdateSelection() {
+      return this.selected != null ||
+        (this.selectedValues != null && this.selectedValues.length);
+    },
+
     _updateAttrForSelected: function() {
       if (!this.multi) {
         Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
@@ -113,8 +95,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    // OBSERVER (inherited): selected
-    // OBSERVER: selectedValues.splices
     _updateSelected: function() {
       if (this.multi) {
         this._selectMulti(this.selectedValues);
@@ -163,12 +143,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    // -- UNUSED, FOR API COMPATIBILITY -- //
-
-    get _shouldUpdateSelection() {
-      return this.selected != null ||
-        (this.selectedValues != null && this.selectedValues.length);
+    _toggleSelected: function(value) {
+      var i = this.selectedValues.indexOf(value);
+      var unselected = i < 0;
+      if (unselected) {
+        this.push('selectedValues',value);
+      } else {
+        this.splice('selectedValues',i,1);
+      }
     },
+
+    _valuesToItems: function(values) {
+      return (values == null) ? null : values.map(function(value) {
+        return this._valueToItem(value);
+      }, this);
+    }
   };
 
   /** @polymerBehavior */
