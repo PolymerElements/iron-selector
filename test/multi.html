@@ -275,6 +275,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           selectEventCounter++;
         });
 
+        s.querySelector('dom-repeat').render();
+        s.forceSynchronousItemUpdate();
+
         // NOTE(cdata): I guess `dom-repeat` doesn't stamp synchronously..
         Polymer.Base.async(function() {
           firstChild = Polymer.dom(s).querySelector('div');
@@ -302,6 +305,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(s).removeChild(lastChild);
 
           Polymer.dom.flush();
+          s.forceSynchronousItemUpdate();
 
           expect(s.selectedItems.length).to.be.equal(1);
           expect(s.selectedItems[0]).to.be.equal(firstChild);

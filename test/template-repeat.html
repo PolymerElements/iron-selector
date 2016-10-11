@@ -61,6 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('supports repeated items', function() {
         t.render();
+        s.forceSynchronousItemUpdate();
         // check items
         assert.equal(s.items.length, 4);
         // check selected
@@ -74,6 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('update items', function() {
         t.render();
+        s.forceSynchronousItemUpdate();
         // check items
         assert.equal(s.items.length, 4);
         // check selected
@@ -81,6 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // update items
         t.items = [{name:'foo'}, {name: 'bar'}];
         t.render();
+        s.forceSynchronousItemUpdate();
         // check items
         assert.equal(s.items.length, 2);
         // check selected (should still honor the selected)
@@ -91,6 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('set selected to something else', function() {
         t.render();
+        s.forceSynchronousItemUpdate();
         // set selected to something else
         s.selected = 3;
         // check selected item

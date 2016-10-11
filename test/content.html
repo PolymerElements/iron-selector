@@ -95,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         item.textContent = 'item4';
         Polymer.dom(s1).appendChild(item);
         Polymer.dom.flush();
+        s1.$.selector.forceSynchronousItemUpdate();
         // set selected
         s1.selected = 'item4';
         // check items length
@@ -136,6 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         item.textContent = 'item4';
         Polymer.dom(s2).appendChild(item);
         Polymer.dom.flush();
+        s2.$.selector.forceSynchronousItemUpdate();
         // set selected
         s2.selected = 'item4';
         // check items length

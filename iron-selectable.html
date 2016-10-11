@@ -243,7 +243,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * on its own to reflect selectable items in the DOM.
      */
     forceSynchronousItemUpdate: function() {
-      this._updateItems();
+      if (this._observer && typeof this._observer.flush === "function") {
+        this._observer.flush();
+      } else {
+        this._updateItems();
+      }
     },
 
     // UNUSED, FOR API COMPATIBILITY
