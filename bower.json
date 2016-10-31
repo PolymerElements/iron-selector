@@ -32,13 +32,12 @@
     "iron-test-helpers": "polymerelements/iron-test-helpers#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#custom-elements-v1",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "^5.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "resolutions": {
     "test-fixture": "custom-elements-v1",
     "webcomponentsjs": "v1",
-    "polymer": "2.0-preview",
-    "iron-a11y-keys-behavior": "2.0-preview"
+    "polymer": "2.0-preview"
   }
 }
