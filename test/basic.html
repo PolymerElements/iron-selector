@@ -240,15 +240,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       suite('dynamic selector', function() {
+        // NOTE(bicknellr): This test has been changed to append the connect the
+        // selector to the document (so that Polymer 2.0 will upgrade it) before
+        // appending the new item.
         test('selects dynamically added child automatically', function(done) {
+          // Create the selector, set selected, connect to force upgrade.
           var selector = document.createElement('iron-selector');
-          var child = document.createElement('div');
-
           selector.selected = '0';
-          child.textContent = 'Item 0';
-
-          Polymer.dom(selector).appendChild(child);
           document.body.appendChild(selector);
+
+          // Create and append a new item which should become selected.
+          var child = document.createElement('div');
+          child.textContent = 'Item 0';
+          Polymer.dom(selector).appendChild(child);
 
           Polymer.Base.async(function() {
             assert.equal(child.className, 'iron-selected');
