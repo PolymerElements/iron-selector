@@ -16,28 +16,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <script>
-    WCT.loadSuites([
+    var pages = [
       'activate-event.html',
-      'activate-event.html?wc-shadydom=true',
       'attr-for-selected.html',
-      'attr-for-selected.html?wc-shadydom=true',
       'basic.html',
-      'basic.html?wc-shadydom=true',
       'content.html',
-      'content.html?wc-shadydom=true',
       'excluded-local-names.html',
-      'excluded-local-names.html?wc-shadydom=true',
       'multi.html',
-      'multi.html?wc-shadydom=true',
       'next-previous.html',
-      'next-previous.html?wc-shadydom=true',
       'numeric-ids.html',
-      'numeric-ids.html?wc-shadydom=true',
       'selected-attribute.html',
-      'selected-attribute.html?wc-shadydom=true',
       'template-repeat.html',
-      'template-repeat.html?wc-shadydom=true',
-    ]);
+    ];
+    var suites = [];
+    for (var i = 0; i < pages.length; i++) {
+      suites.push(pages[i]);
+      suites.push(pages[i] + '?dom=shadow');
+      suites.push(pages[i] + '?wc-shadydom=true&wc-register=true');
+    }
+    WCT.loadSuites(suites);
   </script>
 
 
