@@ -151,8 +151,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     suite('content with dom-repeat', function() {
 
       test('supports repeated children', function(done) {
+        // TODO(bicknellr): Remove when webcomponents/shadydom#7 is resolved.
+        if (window.ShadyDOM) {
+          ShadyDOM.patch(t);
+        }
+
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         setTimeout(function() {
+          s3.$.selector.forceSynchronousItemUpdate();
           // check selected
           assert.equal(s3.selected, 'item0');
           // check selected class
