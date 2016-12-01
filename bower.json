@@ -35,6 +35,21 @@
     "web-component-tester": "^5.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "polymer": "Polymer/polymer#^1.2.0"
+      },
+      "devDependencies": {
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+        "iron-test-helpers": "polymerelements/iron-test-helpers#^1.0.0",
+        "paper-styles": "PolymerElements/paper-styles#^1.0.4",
+        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "web-component-tester": "^4.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+      }
+    }
+  },
   "resolutions": {
     "test-fixture": "custom-elements-v1",
     "webcomponentsjs": "v1",
