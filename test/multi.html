@@ -57,7 +57,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <test-fixture id="repeatedItems">
+  <test-fixture id="repeatedItems-polymer1">
+    <template>
+      <iron-selector multi>
+        <template is="dom-repeat" items='["foo", "bar", "baz"]'>
+          <div>[[item]]</div>
+        </template>
+        <div>vim</div>
+      </iron-selector>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="repeatedItems-polymer2">
     <template>
       <iron-selector multi>
         <dom-repeat items='["foo", "bar", "baz"]'>
@@ -267,31 +278,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('selects from items created by dom-repeat', function(done) {
-        var selectEventCounter = 0;
-        var firstChild;
+        var selector;
+        var domRepeat;
+        if (Polymer.Element) {
+          selector = fixture('repeatedItems-polymer2');
+          // `observeNodes` callbacks in Polymer 2.x are no longer called
+          // synchronously after a DOM change / upgrade.
+          selector.forceSynchronousItemUpdate();
+          domRepeat = selector.querySelector('dom-repeat');
+        } else {
+          selector = fixture('repeatedItems-polymer1');
+          domRepeat = selector.querySelector('template[is=dom-repeat]');
+        }
 
-        var s = fixture('repeatedItems');
-        s.addEventListener('iron-select', function(e) {
-          selectEventCounter++;
-        });
-
-        s.querySelector('dom-repeat').render();
+        domRepeat.render();
         // See the note in `forceSynchronousItemUpdate`.
-        s.forceSynchronousItemUpdate();
+        selector.forceSynchronousItemUpdate();
 
         // NOTE(cdata): I guess `dom-repeat` doesn't stamp synchronously..
         Polymer.Base.async(function() {
-          firstChild = Polymer.dom(s).querySelector('div');
+          var firstChild = Polymer.dom(selector).querySelector('div');
           MockInteractions.tap(firstChild);
 
-          assert.equal(s.selectedItems[0].textContent, 'foo');
+          assert.equal(selector.selectedItems[0].textContent, 'foo');
           done();
         });
       });
 
       test('updates selection when dom changes', function(done) {
-        var selectEventCounter = 0;
-
         s = fixture('test');
 
         Polymer.Base.async(function() {
