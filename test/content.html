@@ -32,39 +32,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <test-content-element id="selector1" selected="item0">
-    <div id="item0">item0</div>
-    <div id="item1">item1</div>
-    <div id="item2">item2</div>
-    <div id="item3">item3</div>
-  </test-content-element>
+  <test-fixture id="selector1">
+    <template>
+      <test-content-element selected="item0">
+        <div id="item0">item0</div>
+        <div id="item1">item1</div>
+        <div id="item2">item2</div>
+        <div id="item3">item3</div>
+      </test-content-element>
+    </template>
+  </test-fixture>
 
-  <test-content-element id="selector2" selected="item0" selectable="item">
-    <item id="item0">item0</item>
-    <hr>
-    <item id="item1">item1</item>
-    <item id="item2">item2</item>
-    <hr>
-    <item id="item3">item3</item>
-  </test-content-element>
+  <test-fixture id="selector2">
+    <template>
+      <test-content-element selected="item0" selectable="item">
+        <item id="item0">item0</item>
+        <hr>
+        <item id="item1">item1</item>
+        <item id="item2">item2</item>
+        <hr>
+        <item id="item3">item3</item>
+      </test-content-element>
+    </template>
+  </test-fixture>
 
-  <test-content-element id="selector3" selected="item0">
-    <dom-repeat id="t">
-      <template>
-        <div id$="[[item.name]]">[[item.name]]</div>
-      </template>
-    </dom-repeat>
-  </test-content-element>
+  <test-fixture id="selector3-polymer1">
+    <template>
+      <test-content-element selected="item0">
+        <template is="dom-repeat">
+          <div id$="[[item.name]]">[[item.name]]</div>
+        </template>
+      </test-content-element>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="selector3-polymer2">
+    <template>
+      <test-content-element selected="item0">
+        <dom-repeat>
+          <template>
+            <div id$="[[item.name]]">[[item.name]]</div>
+          </template>
+        </dom-repeat>
+      </test-content-element>
+    </template>
+  </test-fixture>
 
   <script>
 
-    var s1 = document.querySelector('#selector1');
-    var s2 = document.querySelector('#selector2');
-    var s3 = document.querySelector('#selector3');
-
-    var t = document.querySelector('#t');
-
     suite('content', function() {
+      var s1;
+
+      setup(function() {
+        s1 = fixture('selector1');
+        // `observeNodes` callbacks in Polymer 2.x are no longer called
+        // synchronously after a DOM change / upgrade.
+        s1.$.selector.forceSynchronousItemUpdate();
+      });
 
       test('attribute selected', function() {
         // check selected class
@@ -108,6 +132,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     suite('content with selectable', function() {
+      var s2;
+
+      setup(function() {
+        s2 = fixture('selector2');
+        // `observeNodes` callbacks in Polymer 2.x are no longer called
+        // synchronously after a DOM change / upgrade.
+        s2.$.selector.forceSynchronousItemUpdate();
+      });
 
       test('attribute selected', function() {
         // check selected class
@@ -151,27 +183,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     suite('content with dom-repeat', function() {
+      var s3;
+      var domRepeat;
 
-      test('supports repeated children', function(done) {
+      setup(function() {
+        if (Polymer.Element) {
+          s3 = fixture('selector3-polymer2');
+          domRepeat = s3.querySelector('dom-repeat');
+        } else {
+          s3 = fixture('selector3-polymer1');
+          domRepeat = s3.querySelector('template[is=dom-repeat]');
+        }
+      });
+
+      test('supports repeated children', function() {
         // TODO(bicknellr): Remove when webcomponents/shadydom#7 is resolved.
         if (window.ShadyDOM) {
-          ShadyDOM.patch(t);
+          ShadyDOM.patch(domRepeat);
         }
 
-        t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
-        setTimeout(function() {
-          // See the note in `forceSynchronousItemUpdate`.
-          s3.$.selector.forceSynchronousItemUpdate();
-          // check selected
-          assert.equal(s3.selected, 'item0');
-          // check selected class
-          assert.isTrue(s3.querySelector('#item0').classList.contains('iron-selected'));
-          // set selected
-          s3.selected = 'item2';
-          // check selected class
-          assert.isTrue(s3.querySelector('#item2').classList.contains('iron-selected'));
-          done();
-        });
+        domRepeat.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        domRepeat.render();
+        // See the note in `forceSynchronousItemUpdate`.
+        s3.$.selector.forceSynchronousItemUpdate();
+        // check selected
+        assert.equal(s3.selected, 'item0');
+        // check selected class
+        assert.isTrue(s3.querySelector('#item0').classList.contains('iron-selected'));
+        // set selected
+        s3.selected = 'item2';
+        // check selected class
+        assert.isTrue(s3.querySelector('#item2').classList.contains('iron-selected'));
       });
 
     });
