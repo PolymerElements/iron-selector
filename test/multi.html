@@ -276,6 +276,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         s.querySelector('dom-repeat').render();
+        // See the note in `forceSynchronousItemUpdate`.
         s.forceSynchronousItemUpdate();
 
         // NOTE(cdata): I guess `dom-repeat` doesn't stamp synchronously..
@@ -305,6 +306,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(s).removeChild(lastChild);
 
           Polymer.dom.flush();
+          // See the note in `forceSynchronousItemUpdate`.
           s.forceSynchronousItemUpdate();
 
           expect(s.selectedItems.length).to.be.equal(1);

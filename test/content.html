@@ -95,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         item.textContent = 'item4';
         Polymer.dom(s1).appendChild(item);
         Polymer.dom.flush();
+        // See the note in `forceSynchronousItemUpdate`.
         s1.$.selector.forceSynchronousItemUpdate();
         // set selected
         s1.selected = 'item4';
@@ -137,6 +138,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         item.textContent = 'item4';
         Polymer.dom(s2).appendChild(item);
         Polymer.dom.flush();
+        // See the note in `forceSynchronousItemUpdate`.
         s2.$.selector.forceSynchronousItemUpdate();
         // set selected
         s2.selected = 'item4';
@@ -158,6 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         setTimeout(function() {
+          // See the note in `forceSynchronousItemUpdate`.
           s3.$.selector.forceSynchronousItemUpdate();
           // check selected
           assert.equal(s3.selected, 'item0');
