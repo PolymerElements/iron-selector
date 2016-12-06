@@ -33,17 +33,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="scope-polymer2">
     <template>
-      <dom-bind>
-        <template>
-          <iron-selector attr-for-selected="name">
-            <dom-repeat>
-              <template>
-                <div name="[[item.id]]">{{item.name}}</div>
-              </template>
-            </dom-repeat>
-          </iron-selector>
-        </template>
-      </dom-bind>
+      <div>
+        <dom-bind>
+          <template>
+            <iron-selector attr-for-selected="name">
+              <dom-repeat>
+                <template>
+                  <div name="[[item.id]]">{{item.name}}</div>
+                </template>
+              </dom-repeat>
+            </iron-selector>
+          </template>
+        </dom-bind>
+      </div>
     </template>
   </test-fixture>
 
