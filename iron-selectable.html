@@ -115,6 +115,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
+       * The value of the property to set when an item is selected. The name
+       * of the property is this.selectedAttribute.
+       */
+      selectedPropertyValue: {
+        type: Object,
+        value: null
+      },
+
+      /**
        * Default fallback if the selection based on selected with `attrForSelected`
        * is not found.
        */
@@ -154,7 +163,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     observers: [
       '_updateAttrForSelected(attrForSelected)',
       '_updateSelected(selected)',
-      '_checkFallback(fallbackSelection)'
+      '_checkFallback(fallbackSelection)',
+      '_updatePropertyValue(selectedItem, selectedAttribute, selectedPropertyValue)'
     ],
 
     created: function() {
@@ -336,8 +346,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.selectedAttribute) {
         this.toggleAttribute(this.selectedAttribute, isSelected, item);
       }
+      if (this.selectedPropertyValue) {
+        item[this.selectedAttribute] = this.selectedPropertyValue;
+      }
       this._selectionChange();
       this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+    },
+
+    _updatePropertyValue: function(selectedItem, selectedAttribute, propertyValue) {
+      if (selectedAttribute && propertyValue) {
+        selectedItem[selectedAttribute] = propertyValue;
+      }
     },
 
     _selectionChange: function() {
