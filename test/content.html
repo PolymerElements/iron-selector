@@ -197,11 +197,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('supports repeated children', function() {
-        // TODO(bicknellr): Remove when webcomponents/shadydom#7 is resolved.
-        if (window.ShadyDOM) {
-          ShadyDOM.patch(domRepeat);
-        }
-
         domRepeat.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         domRepeat.render();
         // See the note in `forceSynchronousItemUpdate`.
