@@ -71,7 +71,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var selector;
       var domRepeat;
 
-      setup(function() {
+      setup(function(done) {
         if (Polymer.Element) {
           scope = fixture('scope-polymer2');
           selector = scope.querySelector('iron-selector');
@@ -81,10 +81,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           selector = scope.querySelector('iron-selector');
           domRepeat = scope.querySelector('template[is=dom-repeat]');
         }
-        domRepeat.items = [{ id: 0, name:'item0'}, {id: 1, name: 'item1'}, {id: 2, name: 'item2'}];
-        domRepeat.render();
-        // See the note in `forceSynchronousItemUpdate`.
-        selector.forceSynchronousItemUpdate();
+
+        // Wait for the initial iron-items-changed.
+        selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+
+          domRepeat.items = [{ id: 0, name:'item0'}, {id: 1, name: 'item1'}, {id: 2, name: 'item2'}];
+          domRepeat.render();
+          selector.forceSynchronousItemUpdate();
+
+          done();
+        });
       });
 
       test('select a value of zero', function() {
@@ -92,7 +99,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(selector.selected, '1');
 
         // select item with a name value of 0
-        MockInteractions.tap(selector.children[0]);
+        debugger;
+        MockInteractions.tap(selector.items[0]);
         assert.equal(selector.selected, 0);
       });
 

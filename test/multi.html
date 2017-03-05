@@ -87,8 +87,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s;
 
-      setup(function () {
+      setup(function(done) {
         s = fixture('test');
+
+        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
       });
 
       test('honors the multi attribute', function() {
@@ -305,37 +310,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       });
 
-      test('updates selection when dom changes', function(done) {
-        s = fixture('test');
+      test('updates selection when dom changes', function() {
+        var firstChild = Polymer.dom(s).querySelector(':first-child');
+        var lastChild = Polymer.dom(s).querySelector(':last-child');
 
-        Polymer.Base.async(function() {
-          var firstChild = Polymer.dom(s).querySelector(':first-child');
-          var lastChild = Polymer.dom(s).querySelector(':last-child');
+        MockInteractions.tap(firstChild);
+        MockInteractions.tap(lastChild);
 
-          MockInteractions.tap(firstChild);
-          MockInteractions.tap(lastChild);
+        expect(s.selectedItems.length).to.be.equal(2);
 
-          expect(s.selectedItems.length).to.be.equal(2);
+        Polymer.dom(s).removeChild(lastChild);
 
-          Polymer.dom(s).removeChild(lastChild);
+        Polymer.dom.flush();
+        // See the note in `forceSynchronousItemUpdate`.
+        s.forceSynchronousItemUpdate();
 
-          Polymer.dom.flush();
-          // See the note in `forceSynchronousItemUpdate`.
-          s.forceSynchronousItemUpdate();
-
-          expect(s.selectedItems.length).to.be.equal(1);
-          expect(s.selectedItems[0]).to.be.equal(firstChild);
-
-          done();
-        });
-
+        expect(s.selectedItems.length).to.be.equal(1);
+        expect(s.selectedItems[0]).to.be.equal(firstChild);
       });
 
       suite('`select()` and `selectIndex()`', function() {
         var selector;
 
-        setup(function() {
+        setup(function(done) {
           selector = fixture('valueById');
+
+          selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
+            selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+            done();
+          });
         });
 
         test('`select()` selects an item with the given value', function() {

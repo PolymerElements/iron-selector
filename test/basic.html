@@ -68,8 +68,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s1;
 
-      setup(function () {
+      setup(function(done) {
         s1 = fixture('defaults');
+
+        s1.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s1.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
       });
 
       test('to nothing selected', function() {
@@ -101,8 +106,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var s2;
 
-      setup(function () {
+      setup(function(done) {
         s2 = fixture('basic');
+
+        s2.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s2.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
       });
 
       test('honors the attrForSelected attribute', function(done) {
@@ -188,8 +198,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suite('items changing', function() {
         var s1;
 
-        setup(function() {
+        setup(function(done) {
           s1 = fixture('defaults');
+
+          s1.addEventListener('iron-items-changed', function onIronItemsChanged() {
+            s1.removeEventListener('iron-items-changed', onIronItemsChanged);
+            done();
+          });
         });
 
         test('cause iron-items-changed to fire', function(done) {
@@ -219,23 +234,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('updates selected item', function(done) {
-          s1.addEventListener('iron-items-changed', function firstListener() {
-            s1.removeEventListener('iron-items-changed', firstListener);
-            var firstElementChild = Polymer.dom(s1).firstElementChild;
+          s1.selected = 0;
+
+          var firstElementChild = Polymer.dom(s1).firstElementChild;
+          expect(firstElementChild).to.be.equal(s1.selectedItem);
+          expect(firstElementChild.classList.contains('iron-selected'))
+              .to.be.eql(true);
+
+          s1.addEventListener('iron-items-changed', function() {
+            firstElementChild = Polymer.dom(s1).firstElementChild;
             expect(firstElementChild).to.be.equal(s1.selectedItem);
             expect(firstElementChild.classList.contains('iron-selected'))
                 .to.be.eql(true);
-            Polymer.dom(s1).removeChild(s1.selectedItem);
-
-            s1.addEventListener('iron-items-changed', function() {
-              firstElementChild = Polymer.dom(s1).firstElementChild;
-              expect(firstElementChild).to.be.equal(s1.selectedItem);
-              expect(firstElementChild.classList.contains('iron-selected'))
-                  .to.be.eql(true);
-              done();
-            });
+            done();
           });
-          s1.selected = 0;
+
+          Polymer.dom(s1).removeChild(s1.selectedItem);
         });
       });
 
@@ -254,11 +268,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           child.textContent = 'Item 0';
           Polymer.dom(selector).appendChild(child);
 
-          Polymer.Base.async(function() {
+          selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
+            selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+
             assert.equal(child.className, 'iron-selected');
             document.body.removeChild(selector);
             done();
-          }, 1);
+          });
         });
       });
     });
