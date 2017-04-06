@@ -92,14 +92,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _updateAttrForSelected: function() {
       if (!this.multi) {
         Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
-      } else {
-        if (this.selectedItems && this.selectedItems.length > 0) {
-          this.selectedValues = this.selectedItems.map(function(selectedItem) {
-            return this._indexToValue(this.indexOf(selectedItem));
-          }, this).filter(function(unfilteredValue) {
-            return unfilteredValue != null;
-          }, this);
-        }
+      } else if (this.selectedItems && this.selectedItems.length > 0) {
+        this.selectedValues = this.selectedItems.map(function(selectedItem) {
+          return this._indexToValue(this.indexOf(selectedItem));
+        }, this).filter(function(unfilteredValue) {
+          return unfilteredValue != null;
+        }, this);
       }
     },
 
