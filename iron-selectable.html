@@ -96,7 +96,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * This is a CSS selector string.  If this is set, only items that match the CSS selector
        * are selectable.
        */
-      selectable: String,
+      selectable: {
+        type: String,
+        observer: '_selectableChanged'
+      },
 
       /**
        * The class to set on elements when selected.
@@ -266,6 +269,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _activateEventChanged: function(eventName, old) {
       this._removeListener(old);
       this._addListener(eventName);
+    },
+
+    _selectableChanged: function() {
+      this._updateItems();
+      if (this._shouldUpdateSelection) {
+        this._updateSelected();
+      }
     },
 
     _updateItems: function() {
