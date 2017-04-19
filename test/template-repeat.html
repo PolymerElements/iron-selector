@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <template is="dom-bind">
-    <iron-selector id="selector" selected="1">
+    <iron-selector id="selector">
       <template id="t" is="dom-repeat">
         <div id$="[[item.name]]">{{item.name}}</div>
       </template>
@@ -47,6 +47,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       setup(function() {
         scope = document.querySelector('template[is="dom-bind"]');
         s = scope.$.selector;
+        s.multi = false;
+        s.attrForSelected = null;
+        s.selected = 1;
         t = scope.$.t;
         t.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
       });
@@ -96,6 +99,84 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isTrue(item.classList.contains('iron-selected'));
       });
 
+      test('dom-change triggers selected item update (select by index)', function() {
+        t.items = [
+          t.items[3],
+          t.items[0],
+          t.items[2],
+          t.items[1]
+        ];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(1);
+        expect(selected[0].id).to.equal('item0');
+      });
+
+      test('dom-change triggers selected item update (select by attribute)', function() {
+        s.attrForSelected = 'id';
+        s.selected = 'item1';
+        t.items = [
+          t.items[3],
+          t.items[0],
+          t.items[2],
+          t.items[1]
+        ];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(1);
+        expect(selected[0].id).to.equal('item1');
+      });
+
+      test('dom-change triggers selected item update (multi, select by index)', function() {
+        s.multi = true;
+        s.selectedValues = [0, 3];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(2);
+        expect(selected[0].id).to.equal('item0');
+        expect(selected[1].id).to.equal('item3');
+
+        t.items = [
+          t.items[3],
+          t.items[0],
+          t.items[2],
+          t.items[1]
+        ];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(2);
+        expect(selected[0].id).to.equal('item3');
+        expect(selected[1].id).to.equal('item1');
+      });
+
+      test('dom-change triggers selected item update (multi, select by attribute)', function() {
+        s.multi = true;
+        s.attrForSelected = 'id';
+        s.selectedValues = ['item1', 'item2'];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(2);
+        expect(selected[0].id).to.equal('item1');
+        expect(selected[1].id).to.equal('item2');
+
+        t.items = [
+          t.items[3],
+          t.items[0],
+          t.items[2],
+          t.items[1]
+        ];
+        Polymer.dom.flush();
+
+        var selected = Polymer.dom(s).querySelectorAll('.iron-selected');
+        expect(selected.length).to.equal(2);
+        expect(selected[0].id).to.equal('item2');
+        expect(selected[1].id).to.equal('item1');
+      });
     });
 
   </script>
