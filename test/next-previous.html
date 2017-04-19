@@ -52,6 +52,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="test3">
+    <template>
+      <iron-selector selected="0">
+        <div>Item 0</div>
+        <div disabled>Item 1</div>
+        <div>Item 2</div>
+      </iron-selector>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="test4">
+    <template>
+      <iron-selector>
+        <div disabled>Item 0</div>
+        <div disabled>Item 1</div>
+        <div disabled>Item 2</div>
+      </iron-selector>
+    </template>
+  </test-fixture>
+
   <script>
 
     var s;
@@ -125,6 +145,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assertAndSelect('selectNext', 'bar');
         assertAndSelect('selectPrevious', 'zot');
         assert.equal(s.selected, 'bar');
+      });
+
+    });
+
+    suite('next/previous one item disabled', function() {
+
+      setup(function () {
+        s = fixture('test3');
+      });
+
+      test('selectNext', function() {
+        assert.equal(s.selected, 0);
+        var nextResult = s.selectNext();
+        assert.isTrue(nextResult);
+        assert.equal(s.selected, 2);
+        nextResult = s.selectNext();
+        assert.isTrue(nextResult);
+        assert.equal(s.selected, 0);
+      });
+
+      test('selectPrevious', function() {
+        assert.equal(s.selected, 0);
+        var previousResult = s.selectPrevious();
+        assert.isTrue(previousResult);
+        assert.equal(s.selected, 2);
+        previousResult = s.selectPrevious();
+        assert.isTrue(previousResult);
+        assert.equal(s.selected, 0);
+      });
+
+      test('selectNext/Previous', function() {
+        assert.equal(s.selected, 0);
+        var nextResult = s.selectNext();
+        assert.isTrue(nextResult);
+        assert.equal(s.selected, 2);
+        var previousResult = s.selectPrevious();
+        assert.isTrue(previousResult);
+        assert.equal(s.selected, 0);
+      });
+
+    });
+
+    suite('next/previous all items disabled', function() {
+
+      setup(function () {
+        s = fixture('test4');
+      });
+
+      test('selectNext/Previous', function() {
+        assert.isUndefined(s.selected);
+        var nextResult = s.selectNext();
+        assert.isFalse(nextResult);
+        assert.isUndefined(s.selected);
+        var previousResult = s.selectPrevious();
+        assert.isFalse(previousResult);
+        assert.isUndefined(s.selected);
       });
 
     });

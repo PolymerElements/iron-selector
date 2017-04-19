@@ -50,13 +50,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     ],
 
     /**
-     * Selects the given value. If the `multi` property is true, then the selected state of the
-     * `value` will be toggled; otherwise the `value` will be selected.
+     * Selects the given value if it's item is not disabled.
+     * If the `multi` property is true, then the selected state of the `value` will be toggled;
+     * otherwise the `value` will be selected.
      *
      * @method select
      * @param {string|number} value the value to select.
+     * @returns Returns true if `value` could be selected or toggled.
      */
     select: function(value) {
+      if (this._isIneligibleForSelection(this._valueToItem(value))) {
+        return false;
+      }
+
       if (this.multi) {
         if (this.selectedValues) {
           this._toggleSelected(value);
@@ -66,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       } else {
         this.selected = value;
       }
+      return true;
     },
 
     multiChanged: function(multi) {
