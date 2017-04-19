@@ -108,6 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         // Check for items, since this array is populated only when attached
         if (this.fallbackSelection && this.items.length && !this._selection.get().length) {
+          this.fire('iron-fallback-selection-triggered', this.fallbackSelection);
           var fallback = this._valueToItem(this.fallbackSelection);
           if (fallback) {
             this.selectedValues = [this.fallbackSelection];
