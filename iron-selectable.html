@@ -336,6 +336,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.selectedAttribute) {
         this.toggleAttribute(this.selectedAttribute, isSelected, item);
       }
+
+      if (isSelected) {
+        item.setAttribute('aria-selected', 'true');
+      } else {
+        item.removeAttribute('aria-selected');
+      }
       this._selectionChange();
       this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
     },
