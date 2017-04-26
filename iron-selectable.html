@@ -358,12 +358,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.selectedAttribute) {
         this.toggleAttribute(this.selectedAttribute, isSelected, item);
       }
-      this._selectionChange();
+      this._selectionChange(isSelected, item);
       this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
     },
 
-    _selectionChange: function() {
-      this._setSelectedItem(this._selection.get());
+    _selectionChange: function(isSelected, item) {
+      this._setSelectedItem(isSelected ? item : undefined);
     },
 
     // observe items change under the given node.
