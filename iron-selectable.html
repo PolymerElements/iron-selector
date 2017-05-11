@@ -96,7 +96,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * This is a CSS selector string.  If this is set, only items that match the CSS selector
        * are selectable.
        */
-      selectable: String,
+      selectable: {
+        type: String,
+        value: null
+      },
 
       /**
        * The class to set on elements when selected.
