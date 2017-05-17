@@ -290,6 +290,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateSelected: function() {
+      if (!this.items) return;
       this._selectSelected(this.selected);
     },
 
