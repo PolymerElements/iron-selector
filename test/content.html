@@ -184,6 +184,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
       });
 
+      test('selectable property changes', function() {
+        s2.selectable = 'hr';
+        // check items length
+        assert.equal(s2.$.selector.items.length, 2);
+
+        s2.selectable = 'item';
+        s2.selected = 'item4';
+        // check items length
+        assert.equal(s2.$.selector.items.length, 5);
+        // check selected class
+        assert.isTrue(s2.querySelector('#item4').classList.contains('iron-selected'));
+      });
     });
 
     suite('content with dom-repeat', function() {
