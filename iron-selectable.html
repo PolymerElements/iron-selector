@@ -284,7 +284,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateAttrForSelected: function() {
-      if (this.selectedItem) {
+      // Keep current selection if attrForSelected was reset to null.
+      if (this.selectedItem && this.attrForSelected) {
         this.selected = this._valueForItem(this.selectedItem);
       }
     },
@@ -343,7 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _valueForItem: function(item) {
-      if (!item || !this.attrForSelected) {
+      if (!item) {
         return null;
       }
 
