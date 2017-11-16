@@ -108,6 +108,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           done();
         });
       });
+
+      test('setting attr-for-selected to null resets selection', function() {
+        selector.select('value0');
+        assert.equal(selector.selectedItem, items[0]);
+        selector.attrForSelected = null;
+        assert.isNull(selector.selected);
+      });
     });
 
     suite('reflected properties as attributes', function() {
