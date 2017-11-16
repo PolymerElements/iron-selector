@@ -346,8 +346,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (!item) {
         return null;
       }
-
-      var propValue = item[Polymer.CaseMap.dashToCamelCase(this.attrForSelected)];
+      var propValue = undefined;
+      if (this.attrForSelected) {
+        propValue = item[Polymer.CaseMap.dashToCamelCase(this.attrForSelected)];
+      }
       return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
     },
 
