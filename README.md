@@ -48,7 +48,7 @@ _[Demo and API docs](https://elements.polymer-project.org/elements/iron-selector
     </iron-selector>
 ```
 
-  Note: When the selector is multi, the selection will set to `fallbackSelection` iff
+  Note: When the selector is multi, the selection will set to `fallbackSelection` if
   the number of matching elements is zero.
 
   `iron-selector` is not styled. Use the `iron-selected` CSS class to style the selected element.
