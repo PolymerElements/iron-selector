@@ -1,0 +1,10 @@
+{
+  "name": "@polymer/iron-selector",
+  "private": true,
+  "description": "Manages a set of elements that can be selected",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-selector.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt"
+}
