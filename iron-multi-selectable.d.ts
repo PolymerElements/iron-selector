@@ -13,7 +13,7 @@
 
 declare namespace Polymer {
 
-  interface IronMultiSelectableBehavior {
+  interface IronMultiSelectableBehavior extends Polymer.IronSelectableBehavior {
 
     /**
      * If true, multiple selections are allowed.
