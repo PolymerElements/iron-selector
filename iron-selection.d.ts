@@ -9,4 +9,5 @@
  */
 
 /// <reference path="../polymer/types/polymer.d.ts" />
+/// <reference path="iron-selection-extra.d.ts" />
 
