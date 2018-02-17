@@ -16,6 +16,11 @@ declare namespace Polymer {
   interface IronMultiSelectableBehavior extends Polymer.IronSelectableBehavior {
 
     /**
+     *  UNUSED, FOR API COMPATIBILITY
+     */
+    readonly _shouldUpdateSelection: any;
+
+    /**
      * If true, multiple selections are allowed.
      */
     multi: boolean|null|undefined;
@@ -37,18 +42,13 @@ declare namespace Polymer {
      *
      * @param value the value to select.
      */
-    select(value: string|number): any;
-
-    /**
-     * UNUSED, FOR API COMPATIBILITY
-     */
-    _shouldUpdateSelection(): any;
-    _updateAttrForSelected(): any;
-    _updateSelected(): any;
-    _selectionChange(): any;
-    multiChanged(multi: any): any;
-    _selectMulti(values: any): any;
-    _toggleSelected(value: any): any;
+    select(value: string|number): void;
+    _updateAttrForSelected(): void;
+    _updateSelected(): void;
+    _selectionChange(): void;
+    multiChanged(multi: any): void;
+    _selectMulti(values: any): void;
+    _toggleSelected(value: any): void;
     _valuesToItems(values: any): any;
   }
 

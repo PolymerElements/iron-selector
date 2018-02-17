@@ -76,9 +76,14 @@ declare namespace Polymer {
      * of the element that will be ignored from the item list.
      */
     _excludedLocalNames: object|null|undefined;
-    created(): any;
-    attached(): any;
-    detached(): any;
+
+    /**
+     *  UNUSED, FOR API COMPATIBILITY
+     */
+    readonly _shouldUpdateSelection: any;
+    created(): void;
+    attached(): void;
+    detached(): void;
 
     /**
      * Returns the index of the given item.
@@ -92,22 +97,22 @@ declare namespace Polymer {
      *
      * @param value the value to select.
      */
-    select(value: string|number): any;
+    select(value: string|number): void;
 
     /**
      * Selects the previous item.
      */
-    selectPrevious(): any;
+    selectPrevious(): void;
 
     /**
      * Selects the next item.
      */
-    selectNext(): any;
+    selectNext(): void;
 
     /**
      * Selects the item at the given index.
      */
-    selectIndex(index: any): any;
+    selectIndex(index: any): void;
 
     /**
      * Force a synchronous update of the `items` property.
@@ -121,34 +126,29 @@ declare namespace Polymer {
      * slow for many use cases. The `items` property will update asynchronously
      * on its own to reflect selectable items in the DOM.
      */
-    forceSynchronousItemUpdate(): any;
-
-    /**
-     * UNUSED, FOR API COMPATIBILITY
-     */
-    _shouldUpdateSelection(): any;
-    _checkFallback(): any;
-    _addListener(eventName: any): any;
-    _removeListener(eventName: any): any;
-    _activateEventChanged(eventName: any, old: any): any;
-    _updateItems(): any;
-    _updateAttrForSelected(): any;
-    _updateSelected(): any;
-    _selectSelected(selected: any): any;
+    forceSynchronousItemUpdate(): void;
+    _checkFallback(): void;
+    _addListener(eventName: any): void;
+    _removeListener(eventName: any): void;
+    _activateEventChanged(eventName: any, old: any): void;
+    _updateItems(): void;
+    _updateAttrForSelected(): void;
+    _updateSelected(): void;
+    _selectSelected(selected: any): void;
     _filterItem(node: any): any;
     _valueToItem(value: any): any;
     _valueToIndex(value: any): any;
     _indexToValue(index: any): any;
     _valueForItem(item: any): any;
-    _applySelection(item: any, isSelected: any): any;
-    _selectionChange(): any;
+    _applySelection(item: any, isSelected: any): void;
+    _selectionChange(): void;
 
     /**
      * observe items change under the given node.
      */
     _observeItems(node: any): any;
-    _activateHandler(e: any): any;
-    _itemActivate(value: any, item: any): any;
+    _activateHandler(e: any): void;
+    _itemActivate(value: any, item: any): void;
   }
 
   const IronSelectableBehavior: object;
