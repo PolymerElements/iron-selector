@@ -21,15 +21,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /**
        * If true, multiple selections are allowed.
        */
-      multi: {
-        type: Boolean,
-        value: false,
-        observer: 'multiChanged'
-      },
+      multi: {type: Boolean, value: false, observer: 'multiChanged'},
 
       /**
-       * Gets or sets the selected elements. This is used instead of `selected` when `multi`
-       * is true.
+       * Gets or sets the selected elements. This is used instead of `selected`
+       * when `multi` is true.
        */
       selectedValues: {
         type: Array,
@@ -53,13 +49,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     },
 
-    observers: [
-      '_updateSelected(selectedValues.splices)'
-    ],
+    observers: ['_updateSelected(selectedValues.splices)'],
 
     /**
-     * Selects the given value. If the `multi` property is true, then the selected state of the
-     * `value` will be toggled; otherwise the `value` will be selected.
+     * Selects the given value. If the `multi` property is true, then the selected
+     * state of the `value` will be toggled; otherwise the `value` will be
+     * selected.
      *
      * @method select
      * @param {string|number} value the value to select.
@@ -80,18 +75,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // UNUSED, FOR API COMPATIBILITY
     get _shouldUpdateSelection() {
       return this.selected != null ||
-        (this.selectedValues != null && this.selectedValues.length);
+          (this.selectedValues != null && this.selectedValues.length);
     },
 
     _updateAttrForSelected: function() {
       if (!this.multi) {
         Polymer.IronSelectableBehavior._updateAttrForSelected.apply(this);
       } else if (this.selectedItems && this.selectedItems.length > 0) {
-        this.selectedValues = this.selectedItems.map(function(selectedItem) {
-          return this._indexToValue(this.indexOf(selectedItem));
-        }, this).filter(function(unfilteredValue) {
-          return unfilteredValue != null;
-        }, this);
+        this.selectedValues =
+            this.selectedItems
+                .map(
+                    function(selectedItem) {
+                      return this._indexToValue(this.indexOf(selectedItem));
+                    },
+                    this)
+                .filter(function(unfilteredValue) {
+                  return unfilteredValue != null;
+                }, this);
       }
     },
 
@@ -106,9 +106,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _selectMulti: function(values) {
       values = values || [];
 
-      var selectedItems = (this._valuesToItems(values) || []).filter(function(item) {
-        return item !== null && item !== undefined;
-      });
+      var selectedItems =
+          (this._valuesToItems(values) || []).filter(function(item) {
+            return item !== null && item !== undefined;
+          });
 
       // clear all but the current selected items
       this._selection.clear(selectedItems);
@@ -147,9 +148,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var i = this.selectedValues.indexOf(value);
       var unselected = i < 0;
       if (unselected) {
-        this.push('selectedValues',value);
+        this.push('selectedValues', value);
       } else {
-        this.splice('selectedValues',i,1);
+        this.splice('selectedValues', i, 1);
       }
     },
 
@@ -161,9 +162,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   /** @polymerBehavior */
-  Polymer.IronMultiSelectableBehavior = [
-    Polymer.IronSelectableBehavior,
-    Polymer.IronMultiSelectableBehaviorImpl
-  ];
-
+  Polymer.IronMultiSelectableBehavior =
+      [Polymer.IronSelectableBehavior, Polymer.IronMultiSelectableBehaviorImpl];
 </script>

@@ -12,7 +12,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 
 <script>
-
   /**
    * @param {!Function} selectCallback
    * @constructor
@@ -72,7 +71,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     setItemSelected: function(item, isSelected) {
       if (item != null) {
         if (isSelected !== this.isSelected(item)) {
-          // proceed to update selection only if requested state differs from current
+          // proceed to update selection only if requested state differs from
+          // current
           if (isSelected) {
             this.selection.push(item);
           } else {
@@ -116,5 +116,4 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   };
-
 </script>

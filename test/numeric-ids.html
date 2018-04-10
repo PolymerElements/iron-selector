@@ -64,9 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('select by a numeric property', function() {
-
       var scope;
       var selector;
       var domRepeat;
@@ -83,15 +81,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         // Wait for the initial iron-items-changed.
-        selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
-          selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+        selector.addEventListener(
+            'iron-items-changed', function onIronItemsChanged() {
+              selector.removeEventListener(
+                  'iron-items-changed', onIronItemsChanged);
 
-          domRepeat.items = [{ id: 0, name:'item0'}, {id: 1, name: 'item1'}, {id: 2, name: 'item2'}];
-          domRepeat.render();
-          selector.forceSynchronousItemUpdate();
+              domRepeat.items = [
+                {id: 0, name: 'item0'},
+                {id: 1, name: 'item1'},
+                {id: 2, name: 'item2'}
+              ];
+              domRepeat.render();
+              selector.forceSynchronousItemUpdate();
 
-          done();
-        });
+              done();
+            });
       });
 
       test('select a value of zero', function() {
@@ -102,9 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         MockInteractions.tap(selector.items[0]);
         assert.equal(selector.selected, 0);
       });
-
     });
-
   </script>
 
 </body>

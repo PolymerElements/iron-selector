@@ -64,9 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('dom-repeat', function() {
-
       var scope;
       var selector;
       var domRepeat;
@@ -81,7 +79,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           selector = scope.querySelector('iron-selector');
           domRepeat = scope.querySelector('template[is=dom-repeat]');
         }
-        domRepeat.items = [{name:'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
+        domRepeat.items =
+            [{name: 'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         domRepeat.render();
         // See the note in `forceSynchronousItemUpdate`.
         selector.forceSynchronousItemUpdate();
@@ -105,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check selected
         assert.equal(selector.selected, 1);
         // update items
-        domRepeat.items = [{name:'foo'}, {name: 'bar'}];
+        domRepeat.items = [{name: 'foo'}, {name: 'bar'}];
         domRepeat.render();
         // See the note in `forceSynchronousItemUpdate`.
         selector.forceSynchronousItemUpdate();
@@ -114,7 +113,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check selected (should still honor the selected)
         assert.equal(selector.selected, 1);
         // check selected class
-        assert.isTrue(selector.querySelector('#bar').classList.contains('iron-selected'));
+        assert.isTrue(
+            selector.querySelector('#bar').classList.contains('iron-selected'));
       });
 
       test('set selected to something else', function() {
@@ -126,9 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // check selected class
         assert.isTrue(item.classList.contains('iron-selected'));
       });
-
     });
-
   </script>
 
 </body>

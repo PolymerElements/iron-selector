@@ -63,9 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('defaults', function() {
-
       var s1;
 
       setup(function(done) {
@@ -103,7 +101,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     suite('basic', function() {
-
       var s2;
 
       setup(function(done) {
@@ -268,17 +265,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           child.textContent = 'Item 0';
           Polymer.dom(selector).appendChild(child);
 
-          selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
-            selector.removeEventListener('iron-items-changed', onIronItemsChanged);
+          selector.addEventListener(
+              'iron-items-changed', function onIronItemsChanged() {
+                selector.removeEventListener(
+                    'iron-items-changed', onIronItemsChanged);
 
-            assert.equal(child.className, 'iron-selected');
-            document.body.removeChild(selector);
-            done();
-          });
+                assert.equal(child.className, 'iron-selected');
+                document.body.removeChild(selector);
+                done();
+              });
         });
       });
     });
-
   </script>
 
 </body>
