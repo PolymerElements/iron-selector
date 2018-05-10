@@ -82,9 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('multi', function() {
-
       var s;
 
       setup(function(done) {
@@ -131,77 +129,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selectedItems[1], s.children[2]);
       });
 
-      test('fire iron-select/deselect events when selectedValues changes', function() {
-        // setup listener for iron-select/deselect events
-        var items = [s.children[0], s.children[1], s.children[2]], 
-            selectEventCounters = [0, 0, 0], 
-            deselectEventCounters = [0, 0, 0];
+      test(
+          'fire iron-select/deselect events when selectedValues changes',
+          function() {
+            // setup listener for iron-select/deselect events
+            var items = [s.children[0], s.children[1], s.children[2]],
+                selectEventCounters = [0, 0, 0], deselectEventCounters = [0, 0, 0];
 
-        s.addEventListener('iron-select', function(e) {
-          selectEventCounters[items.indexOf(e.detail.item)]++;
-        });
-        s.addEventListener('iron-deselect', function(e) {
-          deselectEventCounters[items.indexOf(e.detail.item)]++;
-        });
+            s.addEventListener('iron-select', function(e) {
+              selectEventCounters[items.indexOf(e.detail.item)]++;
+            });
+            s.addEventListener('iron-deselect', function(e) {
+              deselectEventCounters[items.indexOf(e.detail.item)]++;
+            });
 
-        // programatically select values 0 and 1 (both fire select)
-        s.selectedValues = [0, 1];
+            // programatically select values 0 and 1 (both fire select)
+            s.selectedValues = [0, 1];
 
-        // programatically select values 1 and 2 (2 fires select, 0 fires deselect)
-        s.selectedValues = [1, 2];
+            // programatically select values 1 and 2 (2 fires select, 0 fires
+            // deselect)
+            s.selectedValues = [1, 2];
 
-        // programatically deselect all values (1 and 2 fire deselect)
-        s.selectedValues = [];
+            // programatically deselect all values (1 and 2 fire deselect)
+            s.selectedValues = [];
 
-        // check events
-        assert.equal(selectEventCounters[0], 1);
-        assert.equal(deselectEventCounters[0], 1);
-        assert.equal(selectEventCounters[1], 1);
-        assert.equal(deselectEventCounters[1], 1);
-        assert.equal(selectEventCounters[2], 1);
-        assert.equal(deselectEventCounters[2], 1);
-      });
+            // check events
+            assert.equal(selectEventCounters[0], 1);
+            assert.equal(deselectEventCounters[0], 1);
+            assert.equal(selectEventCounters[1], 1);
+            assert.equal(deselectEventCounters[1], 1);
+            assert.equal(selectEventCounters[2], 1);
+            assert.equal(deselectEventCounters[2], 1);
+          });
 
-      test('fire iron-select/deselect events when selectedValues is modified', function() {
-        // setup listener for iron-select/deselect events
-        var items = [s.children[0], s.children[1], s.children[2]],
-            selectEventCounters = [0, 0, 0],
-            deselectEventCounters = [0, 0, 0];
+      test(
+          'fire iron-select/deselect events when selectedValues is modified',
+          function() {
+            // setup listener for iron-select/deselect events
+            var items = [s.children[0], s.children[1], s.children[2]],
+                selectEventCounters = [0, 0, 0], deselectEventCounters = [0, 0, 0];
 
-        s.addEventListener('iron-select', function(e) {
-          selectEventCounters[items.indexOf(e.detail.item)]++;
-        });
-        s.addEventListener('iron-deselect', function(e) {
-          deselectEventCounters[items.indexOf(e.detail.item)]++;
-        });
+            s.addEventListener('iron-select', function(e) {
+              selectEventCounters[items.indexOf(e.detail.item)]++;
+            });
+            s.addEventListener('iron-deselect', function(e) {
+              deselectEventCounters[items.indexOf(e.detail.item)]++;
+            });
 
-        s.selectedValues = []
+            s.selectedValues = []
 
-        // programatically select value 0
-        s.push('selectedValues', 0, 1);
+            // programatically select value 0
+            s.push('selectedValues', 0, 1);
 
-        // programatically deselect value 0
-        s.shift('selectedValues');
+            // programatically deselect value 0
+            s.shift('selectedValues');
 
-        // programatically select value 2
-        s.push('selectedValues', 2);
+            // programatically select value 2
+            s.push('selectedValues', 2);
 
-        // programatically deselect value 1
-        s.shift('selectedValues');
+            // programatically deselect value 1
+            s.shift('selectedValues');
 
-        assert.equal(selectEventCounters[0], 1);
-        assert.equal(deselectEventCounters[0], 1);
-        assert.equal(selectEventCounters[1], 1);
-        assert.equal(deselectEventCounters[1], 1);
-        assert.equal(selectEventCounters[2], 1);
-        assert.equal(deselectEventCounters[2], 0);
-      });
+            assert.equal(selectEventCounters[0], 1);
+            assert.equal(deselectEventCounters[0], 1);
+            assert.equal(selectEventCounters[1], 1);
+            assert.equal(deselectEventCounters[1], 1);
+            assert.equal(selectEventCounters[2], 1);
+            assert.equal(deselectEventCounters[2], 0);
+          });
 
       test('fire iron-select/deselect events when toggling items', function() {
         // setup listener for iron-select/deselect events
-        var items = [s.children[0], s.children[1], s.children[2]], 
-            selectEventCounters = [0, 0, 0], 
-            deselectEventCounters = [0, 0, 0];
+        var items = [s.children[0], s.children[1], s.children[2]],
+            selectEventCounters = [0, 0, 0], deselectEventCounters = [0, 0, 0];
 
         s.addEventListener('iron-select', function(e) {
           selectEventCounters[items.indexOf(e.detail.item)]++;
@@ -213,7 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // tap to select items 0 and 1 (both fire select)
         MockInteractions.tap(items[0]);
         MockInteractions.tap(items[1]);
-        
+
         // programatically select values 1 and 2 (2 fires select, 0 fires deselect)
         s.selectedValues = [1, 2];
 
@@ -242,16 +242,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isFalse(item1.classList.contains('iron-selected'));
-        
+
         // tap to select item 1 (add iron-selected class)
         MockInteractions.tap(item1);
-        
+
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isTrue(item1.classList.contains('iron-selected'));
 
         // tap to deselect item 1 (remove iron-selected class)
         MockInteractions.tap(item1);
-        
+
         assert.isTrue(item0.classList.contains('iron-selected'));
         assert.isFalse(item1.classList.contains('iron-selected'));
 
@@ -263,7 +263,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // programatically deselect all values (both removes iron-selected class)
         s.selectedValues = [];
-        
+
         assert.isFalse(item0.classList.contains('iron-selected'));
         assert.isFalse(item1.classList.contains('iron-selected'));
       });
@@ -335,10 +335,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         setup(function(done) {
           selector = fixture('valueById');
 
-          selector.addEventListener('iron-items-changed', function onIronItemsChanged() {
-            selector.removeEventListener('iron-items-changed', onIronItemsChanged);
-            done();
-          });
+          selector.addEventListener(
+              'iron-items-changed', function onIronItemsChanged() {
+                selector.removeEventListener(
+                    'iron-items-changed', onIronItemsChanged);
+                done();
+              });
         });
 
         test('`select()` selects an item with the given value', function() {
@@ -387,9 +389,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // selected should be the first value from the old array
         assert.equal(s.selected, first);
       }); */
-
     });
-
   </script>
 
 </body>

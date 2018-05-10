@@ -15,8 +15,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script>
   /**
   `iron-selector` is an element which can be used to manage a list of elements
-  that can be selected.  Tapping on the item will make the item selected.  The `selected` indicates
-  which item is being selected.  The default is to use the index of the item.
+  that can be selected.  Tapping on the item will make the item selected.  The
+  `selected` indicates which item is being selected.  The default is to use the
+  index of the item.
 
   Example:
 
@@ -26,9 +27,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div>Item 3</div>
       </iron-selector>
 
-  If you want to use the attribute value of an element for `selected` instead of the index,
-  set `attrForSelected` to the name of the attribute.  For example, if you want to select item by
-  `name`, set `attrForSelected` to `name`.
+  If you want to use the attribute value of an element for `selected` instead of
+  the index, set `attrForSelected` to the name of the attribute.  For example, if
+  you want to select item by `name`, set `attrForSelected` to `name`.
 
   Example:
 
@@ -38,8 +39,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div name="zot">Zot</div>
       </iron-selector>
 
-  You can specify a default fallback with `fallbackSelection` in case the `selected` attribute does
-  not match the `attrForSelected` attribute of any elements.
+  You can specify a default fallback with `fallbackSelection` in case the
+  `selected` attribute does not match the `attrForSelected` attribute of any
+  elements.
 
   Example:
 
@@ -50,10 +52,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div name="default">Default</div>
         </iron-selector>
 
-  Note: When the selector is multi, the selection will set to `fallbackSelection` iff
-  the number of matching elements is zero.
+  Note: When the selector is multi, the selection will set to `fallbackSelection`
+  iff the number of matching elements is zero.
 
-  `iron-selector` is not styled. Use the `iron-selected` CSS class to style the selected element.
+  `iron-selector` is not styled. Use the `iron-selected` CSS class to style the
+  selected element.
 
   Example:
 
@@ -78,10 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     is: 'iron-selector',
 
-    behaviors: [
-      Polymer.IronMultiSelectableBehavior
-    ]
+    behaviors: [Polymer.IronMultiSelectableBehavior]
 
   });
-
 </script>

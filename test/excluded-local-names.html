@@ -48,12 +48,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('excluded local names', function() {
-
       var test1, test2;
 
-      setup(function () {
+      setup(function() {
         test1 = fixture('test1');
         test2 = fixture('test2');
       });
@@ -79,17 +77,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         Polymer.Base.async(function() {
           var NOT_FOUND = -1;
-          var items1 = test1.items.map(function(el) { return el.localName; });
-          var items2 = test2.items.map(function(el) { return el.localName; });
+          var items1 = test1.items.map(function(el) {
+            return el.localName;
+          });
+          var items2 = test2.items.map(function(el) {
+            return el.localName;
+          });
 
           assert.equal(items1.indexOf('span'), NOT_FOUND);
           assert.equal(items2.indexOf('div'), NOT_FOUND);
           done();
         });
       });
-
     });
-
   </script>
 
 </body>

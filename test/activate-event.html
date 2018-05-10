@@ -44,9 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('activate event', function() {
-
       var s;
 
       setup(function(done) {
@@ -70,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selected, '0');
 
         // attach iron-activate listener
-        s.addEventListener("iron-activate", function(event) {
+        s.addEventListener('iron-activate', function(event) {
           assert.equal(event.detail.selected, '1');
           assert.equal(event.detail.item, s.children[1]);
           done();
@@ -84,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(s.selected, '0');
 
         // attach iron-activate listener
-        s.addEventListener("iron-activate", function(event) {
+        s.addEventListener('iron-activate', function(event) {
           assert.equal(event.detail.selected, '0');
           assert.equal(event.detail.item, s.children[0]);
           done();
@@ -104,7 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('activates on mousedown and fires iron-activate', function(done) {
         // attach iron-activate listener
-        s.addEventListener("iron-activate", function(event) {
+        s.addEventListener('iron-activate', function(event) {
           assert.equal(event.detail.selected, '2');
           assert.equal(event.detail.item, s.children[2]);
           done();
@@ -127,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('activates on tap and preventDefault', function() {
         // attach iron-activate listener
-        s.addEventListener("iron-activate", function(event) {
+        s.addEventListener('iron-activate', function(event) {
           event.preventDefault();
         });
         // select Item 2
@@ -141,14 +139,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var parent = s.parentNode;
         parent.removeChild(s);
         parent.appendChild(s);
-        
+
         // select Item 2
         s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
         assert.equal(s.selected, '2');
       });
-
     });
-
   </script>
 
 </body>

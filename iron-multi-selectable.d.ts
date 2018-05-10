@@ -26,8 +26,8 @@ declare namespace Polymer {
     multi: boolean|null|undefined;
 
     /**
-     * Gets or sets the selected elements. This is used instead of `selected` when `multi`
-     * is true.
+     * Gets or sets the selected elements. This is used instead of `selected`
+     * when `multi` is true.
      */
     selectedValues: any[]|null|undefined;
 
@@ -37,8 +37,9 @@ declare namespace Polymer {
     readonly selectedItems: any[]|null|undefined;
 
     /**
-     * Selects the given value. If the `multi` property is true, then the selected state of the
-     * `value` will be toggled; otherwise the `value` will be selected.
+     * Selects the given value. If the `multi` property is true, then the selected
+     * state of the `value` will be toggled; otherwise the `value` will be
+     * selected.
      *
      * @param value the value to select.
      */

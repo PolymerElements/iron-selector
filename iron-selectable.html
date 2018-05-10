@@ -17,33 +17,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    */
   Polymer.IronSelectableBehavior = {
 
-      /**
-       * Fired when iron-selector is activated (selected or deselected).
-       * It is fired before the selected items are changed.
-       * Cancel the event to abort selection.
-       *
-       * @event iron-activate
-       */
+    /**
+     * Fired when iron-selector is activated (selected or deselected).
+     * It is fired before the selected items are changed.
+     * Cancel the event to abort selection.
+     *
+     * @event iron-activate
+     */
 
-      /**
-       * Fired when an item is selected
-       *
-       * @event iron-select
-       */
+    /**
+     * Fired when an item is selected
+     *
+     * @event iron-select
+     */
 
-      /**
-       * Fired when an item is deselected
-       *
-       * @event iron-deselect
-       */
+    /**
+     * Fired when an item is deselected
+     *
+     * @event iron-deselect
+     */
 
-      /**
-       * Fired when the list of selectable items changes (e.g., items are
-       * added or removed). The detail of the event is a mutation record that
-       * describes what changed.
-       *
-       * @event iron-items-changed
-       */
+    /**
+     * Fired when the list of selectable items changes (e.g., items are
+     * added or removed). The detail of the event is a mutation record that
+     * describes what changed.
+     *
+     * @event iron-items-changed
+     */
 
     properties: {
 
@@ -57,72 +57,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * selection works in both cases. (Use `attr-or-property-name` instead of
        * `attrOrPropertyName`.)
        */
-      attrForSelected: {
-        type: String,
-        value: null
-      },
+      attrForSelected: {type: String, value: null},
 
       /**
-       * Gets or sets the selected element. The default is to use the index of the item.
+       * Gets or sets the selected element. The default is to use the index of the
+       * item.
        * @type {string|number}
        */
-      selected: {
-        type: String,
-        notify: true
-      },
+      selected: {type: String, notify: true},
 
       /**
        * Returns the currently selected item.
        *
        * @type {?Object}
        */
-      selectedItem: {
-        type: Object,
-        readOnly: true,
-        notify: true
-      },
+      selectedItem: {type: Object, readOnly: true, notify: true},
 
       /**
        * The event that fires from items when they are selected. Selectable
        * will listen for this event from items and update the selection state.
        * Set to empty string to listen to no events.
        */
-      activateEvent: {
-        type: String,
-        value: 'tap',
-        observer: '_activateEventChanged'
-      },
+      activateEvent:
+          {type: String, value: 'tap', observer: '_activateEventChanged'},
 
       /**
-       * This is a CSS selector string.  If this is set, only items that match the CSS selector
-       * are selectable.
+       * This is a CSS selector string.  If this is set, only items that match the
+       * CSS selector are selectable.
        */
       selectable: String,
 
       /**
        * The class to set on elements when selected.
        */
-      selectedClass: {
-        type: String,
-        value: 'iron-selected'
-      },
+      selectedClass: {type: String, value: 'iron-selected'},
 
       /**
        * The attribute to set on elements when selected.
        */
-      selectedAttribute: {
-        type: String,
-        value: null
-      },
+      selectedAttribute: {type: String, value: null},
 
       /**
-       * Default fallback if the selection based on selected with `attrForSelected`
-       * is not found.
+       * Default fallback if the selection based on selected with
+       * `attrForSelected` is not found.
        */
-      fallbackSelection: {
-        type: String,
-        value: null
-      },
+      fallbackSelection: {type: String, value: null},
 
       /**
        * The list of items from which a selection can be made.
@@ -163,7 +142,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     created: function() {
       this._bindFilterItem = this._filterItem.bind(this);
-      this._selection = new Polymer.IronSelection(this._applySelection.bind(this));
+      this._selection =
+          new Polymer.IronSelection(this._applySelection.bind(this));
     },
 
     attached: function() {
@@ -206,7 +186,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     selectPrevious: function() {
       var length = this.items.length;
-      var index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
+      var index =
+          (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
       this.selected = this._indexToValue(index);
     },
 
@@ -216,7 +197,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @method selectNext
      */
     selectNext: function() {
-      var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
+      var index =
+          (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
       this.selected = this._indexToValue(index);
     },
 
@@ -242,7 +224,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * on its own to reflect selectable items in the DOM.
      */
     forceSynchronousItemUpdate: function() {
-      if (this._observer && typeof this._observer.flush === "function") {
+      if (this._observer && typeof this._observer.flush === 'function') {
         // NOTE(bicknellr): `Polymer.dom.flush` above is no longer sufficient to
         // trigger `observeNodes` callbacks. Polymer 2.x returns an object from
         // `observeNodes` with a `flush` that synchronously gives the callback
@@ -278,7 +260,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _updateItems: function() {
-      var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
+      var nodes =
+          Polymer.dom(this).queryDistributedElements(this.selectable || '*');
       nodes = Array.prototype.filter.call(nodes, this._bindFilterItem);
       this._setItems(nodes);
     },
@@ -306,7 +289,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       // Check for items, since this array is populated only when attached
       // Since Number(0) is falsy, explicitly check for undefined
-      if (this.fallbackSelection && this.items.length && (this._selection.get() === undefined)) {
+      if (this.fallbackSelection && this.items.length &&
+          (this._selection.get() === undefined)) {
         this.selected = this.fallbackSelection;
       }
     },
@@ -351,7 +335,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return i === -1 ? null : i;
       }
       var propValue = item[Polymer.CaseMap.dashToCamelCase(this.attrForSelected)];
-      return propValue != undefined ? propValue : item.getAttribute(this.attrForSelected);
+      return propValue != undefined ? propValue :
+                                      item.getAttribute(this.attrForSelected);
     },
 
     _applySelection: function(item, isSelected) {
@@ -377,10 +362,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // Let other interested parties know about the change so that
         // we don't have to recreate mutation observers everywhere.
-        this.fire('iron-items-changed', mutation, {
-          bubbles: false,
-          cancelable: false
-        });
+        this.fire(
+            'iron-items-changed', mutation, {bubbles: false, cancelable: false});
       });
     },
 
@@ -399,12 +382,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _itemActivate: function(value, item) {
-      if (!this.fire('iron-activate',
-          {selected: value, item: item}, {cancelable: true}).defaultPrevented) {
+      if (!this.fire('iron-activate', {selected: value, item: item}, {
+                 cancelable: true
+               })
+               .defaultPrevented) {
         this.select(value);
       }
     }
 
   };
-
 </script>

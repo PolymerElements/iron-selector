@@ -67,9 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-
     suite('selected attributes', function() {
-
       var s;
 
       setup(function(done) {
@@ -91,11 +89,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // now selected attribute should be there
         assert.isTrue(s.children[4].hasAttribute('myattr'));
       });
-
     });
 
     suite('changing attrForSelected', function() {
-
       var s;
 
       setup(function(done) {
@@ -112,11 +108,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         s.attrForSelected = 'data-y';
         assert.equal(s.selected, 'y-1');
       });
-
     });
 
     suite('changing attrForSelected in multi', function() {
-
       var s;
 
       setup(function(done) {
@@ -132,12 +126,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer.dom.flush();
         s.attrForSelected = 'data-y';
         assert.equal(s.selectedValues.length, 2);
-        assert.equal(s.selectedValues[0],'y-1');
-        assert.equal(s.selectedValues[1],'y-2');
+        assert.equal(s.selectedValues[0], 'y-1');
+        assert.equal(s.selectedValues[1], 'y-2');
       });
-
     });
-
   </script>
 
 </body>
