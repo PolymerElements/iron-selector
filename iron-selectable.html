@@ -186,8 +186,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     selectPrevious: function() {
       var length = this.items.length;
-      var index =
-          (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
+      var index = length - 1;
+      if (this.selected !== undefined) {
+        index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
+      }
       this.selected = this._indexToValue(index);
     },
 
@@ -197,8 +199,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @method selectNext
      */
     selectNext: function() {
-      var index =
-          (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
+      var index = 0;
+      if (this.selected !== undefined) {
+        index =
+            (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
+      }
       this.selected = this._indexToValue(index);
     },
 
