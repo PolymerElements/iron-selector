@@ -20,6 +20,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   Polymer.IronSelection = function(selectCallback) {
     this.selection = [];
     this.selectCallback = selectCallback;
+    // Assign a map to `__callbackBuffer` to skip calls to `selectCallback` and,
+    // instead, have the new item / selection state pairs recorded in the map.
+    this.__callbackBuffer = undefined;
   };
 
   Polymer.IronSelection.prototype = {
@@ -81,7 +84,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               this.selection.splice(i, 1);
             }
           }
-          if (this.selectCallback) {
+
+          if (this.__callbackBuffer) {
+            this.__callbackBuffer.set(item, isSelected);
+          } else if (this.selectCallback) {
             this.selectCallback(item, isSelected);
           }
         }
@@ -100,8 +106,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.multi) {
         this.toggle(item);
       } else if (this.get() !== item) {
+        const useBuffer = Boolean(this.selectCallback);
+        if (useBuffer) {
+          this.__callbackBuffer = new Map();
+        }
+
         this.setItemSelected(this.get(), false);
         this.setItemSelected(item, true);
+
+        if (useBuffer) {
+          var changes = this.__callbackBuffer;
+          this.__callbackBuffer = undefined;
+
+          var selection = this;
+          changes.forEach(function(value, item) {
+            selection.selectCallback(item, value);
+          });
+        }
       }
     },
 
