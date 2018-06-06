@@ -1,5 +1,5 @@
 language: node_js
-sudo: required
+sudo: 'false'
 before_script:
   - npm install -g polymer-cli
   - polymer install --variants
@@ -13,20 +13,19 @@ before_script:
 env:
   global:
     - secure: >-
-        SFfLw5U6C/7UFRyt/ho5AXNnf8E1d7bY6V9lPT2UnHjkNl4NldWyJEkBeaFTERChKmrYBNk33g748OGohL8snCRXCPxM9A/OKRWEGSFIvPmgLs8mkpbNodUAcpL6dbDLlZgcVDHXCn1uvVQgOgzg64FWW5ozphxD4u/nl5nA7aY=
+        PvOz43kV8DlzIyn1H9/dO/xK4P+3fE5Ei1o+6v7gv+Zs8KHraRrBzj7KtkXjqlv5c/M/tO0px+9ySNMtiP9MnMTXBK60Xkxd7k64EkkiqHQkkhPale1EfMlga7Mm8hQXQhv7h7Z1qrhMVLmDaiHas/ty7ZpeTkKMQbXS4D2ga1I=
     - secure: >-
-        a6YFcuIvE3PJ9C0F7cimJ/R8EGlKy2rlg7Re2ezpL85f4++cYnYBUrNnbwj+BNp5F9IXZxvD6T+kNr+1BJtqILFf54W5baBgB5PVCSt7dry+lrcRUf5yTIRl0yJ+73UJrEWR2UOXaXlGzbQ56k2TWAbnzVbq2jik1vdgSnxbjLE=
-node_js: "9"
+        jbtiEIANDipVCTdPBX70glFshED4LlRjTppwsO+I9QgJp8dRuvzpSDh3bl+VDaWav16/qeib/S0K01k7raggata1+ow+jcPJARi0zXHSy2C5Al3yiEsPJDrKCQYHUvI6P+Yw2Fd3PK1Jdetpku0D5RZvFUzvxMd+q1s9xF6D5D8=
+node_js: '9'
 addons:
   firefox: latest
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+  chrome: stable
 script:
   - xvfb-run polymer test
   - >-
     if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
     fi
 dist: trusty
+cache:
+  directories:
+    - node_modules
