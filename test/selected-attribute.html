@@ -16,12 +16,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../iron-selector.html">
+  <script type="module" src="../../test-fixture/test-fixture.js"></script>
+  <script type="module" src="../iron-selector.js"></script>
 
   <style>
     .iron-selected {
@@ -66,71 +66,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <script>
-    suite('selected attributes', function() {
-      var s;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import '../iron-selector.js';
+import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+suite('selected attributes', function() {
+  var s;
 
-      setup(function(done) {
-        s = fixture('test');
+  setup(function(done) {
+    s = fixture('test');
 
-        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-          s.removeEventListener('iron-items-changed', onIronItemsChanged);
-          done();
-        });
-      });
-
-      test('custom selectedAttribute', function() {
-        // set selectedAttribute
-        s.selectedAttribute = 'myattr';
-        // check selected attribute (should not be there)
-        assert.isFalse(s.children[4].hasAttribute('myattr'));
-        // set selected
-        s.selected = 4;
-        // now selected attribute should be there
-        assert.isTrue(s.children[4].hasAttribute('myattr'));
-      });
+    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+      s.removeEventListener('iron-items-changed', onIronItemsChanged);
+      done();
     });
+  });
 
-    suite('changing attrForSelected', function() {
-      var s;
+  test('custom selectedAttribute', function() {
+    // set selectedAttribute
+    s.selectedAttribute = 'myattr';
+    // check selected attribute (should not be there)
+    assert.isFalse(s.children[4].hasAttribute('myattr'));
+    // set selected
+    s.selected = 4;
+    // now selected attribute should be there
+    assert.isTrue(s.children[4].hasAttribute('myattr'));
+  });
+});
 
-      setup(function(done) {
-        s = fixture('test-attr-change');
+suite('changing attrForSelected', function() {
+  var s;
 
-        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-          s.removeEventListener('iron-items-changed', onIronItemsChanged);
-          done();
-        });
-      });
+  setup(function(done) {
+    s = fixture('test-attr-change');
 
-      test('changing selectedAttribute', function() {
-        Polymer.dom.flush();
-        s.attrForSelected = 'data-y';
-        assert.equal(s.selected, 'y-1');
-      });
+    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+      s.removeEventListener('iron-items-changed', onIronItemsChanged);
+      done();
     });
+  });
 
-    suite('changing attrForSelected in multi', function() {
-      var s;
+  test('changing selectedAttribute', function() {
+    flush();
+    s.attrForSelected = 'data-y';
+    assert.equal(s.selected, 'y-1');
+  });
+});
 
-      setup(function(done) {
-        s = fixture('test-attr-change-multi');
+suite('changing attrForSelected in multi', function() {
+  var s;
 
-        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-          s.removeEventListener('iron-items-changed', onIronItemsChanged);
-          done();
-        });
-      });
+  setup(function(done) {
+    s = fixture('test-attr-change-multi');
 
-      test('changing selectedAttribute', function() {
-        Polymer.dom.flush();
-        s.attrForSelected = 'data-y';
-        assert.equal(s.selectedValues.length, 2);
-        assert.equal(s.selectedValues[0], 'y-1');
-        assert.equal(s.selectedValues[1], 'y-2');
-      });
+    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+      s.removeEventListener('iron-items-changed', onIronItemsChanged);
+      done();
     });
-  </script>
+  });
+
+  test('changing selectedAttribute', function() {
+    flush();
+    s.attrForSelected = 'data-y';
+    assert.equal(s.selectedValues.length, 2);
+    assert.equal(s.selectedValues[0], 'y-1');
+    assert.equal(s.selectedValues[1], 'y-2');
+  });
+});
+</script>
 
 </body>
 </html>
