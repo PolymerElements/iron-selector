@@ -67,73 +67,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import '../iron-selector.js';
-import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-suite('selected attributes', function() {
-  var s;
+    import '@polymer/test-fixture/test-fixture.js';
+    import '../iron-selector.js';
+    import {flush} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+    suite('selected attributes', function() {
+      var s;
 
-  setup(function(done) {
-    s = fixture('test');
+      setup(function(done) {
+        s = fixture('test');
 
-    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-      s.removeEventListener('iron-items-changed', onIronItemsChanged);
-      done();
+        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
+      });
+
+      test('custom selectedAttribute', function() {
+        // set selectedAttribute
+        s.selectedAttribute = 'myattr';
+        // check selected attribute (should not be there)
+        assert.isFalse(s.children[4].hasAttribute('myattr'));
+        // set selected
+        s.selected = 4;
+        // now selected attribute should be there
+        assert.isTrue(s.children[4].hasAttribute('myattr'));
+      });
     });
-  });
 
-  test('custom selectedAttribute', function() {
-    // set selectedAttribute
-    s.selectedAttribute = 'myattr';
-    // check selected attribute (should not be there)
-    assert.isFalse(s.children[4].hasAttribute('myattr'));
-    // set selected
-    s.selected = 4;
-    // now selected attribute should be there
-    assert.isTrue(s.children[4].hasAttribute('myattr'));
-  });
-});
+    suite('changing attrForSelected', function() {
+      var s;
 
-suite('changing attrForSelected', function() {
-  var s;
+      setup(function(done) {
+        s = fixture('test-attr-change');
 
-  setup(function(done) {
-    s = fixture('test-attr-change');
+        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
+      });
 
-    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-      s.removeEventListener('iron-items-changed', onIronItemsChanged);
-      done();
+      test('changing selectedAttribute', function() {
+        flush();
+        s.attrForSelected = 'data-y';
+        assert.equal(s.selected, 'y-1');
+      });
     });
-  });
 
-  test('changing selectedAttribute', function() {
-    flush();
-    s.attrForSelected = 'data-y';
-    assert.equal(s.selected, 'y-1');
-  });
-});
+    suite('changing attrForSelected in multi', function() {
+      var s;
 
-suite('changing attrForSelected in multi', function() {
-  var s;
+      setup(function(done) {
+        s = fixture('test-attr-change-multi');
 
-  setup(function(done) {
-    s = fixture('test-attr-change-multi');
+        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
+      });
 
-    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-      s.removeEventListener('iron-items-changed', onIronItemsChanged);
-      done();
+      test('changing selectedAttribute', function() {
+        flush();
+        s.attrForSelected = 'data-y';
+        assert.equal(s.selectedValues.length, 2);
+        assert.equal(s.selectedValues[0], 'y-1');
+        assert.equal(s.selectedValues[1], 'y-2');
+      });
     });
-  });
-
-  test('changing selectedAttribute', function() {
-    flush();
-    s.attrForSelected = 'data-y';
-    assert.equal(s.selectedValues.length, 2);
-    assert.equal(s.selectedValues[0], 'y-1');
-    assert.equal(s.selectedValues[1], 'y-2');
-  });
-});
-</script>
+  </script>
 
 </body>
 </html>
