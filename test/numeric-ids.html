@@ -63,22 +63,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script type="module">
     import '@polymer/iron-test-helpers/iron-test-helpers.js';
     import '../iron-selector.js';
-    import {PolymerElement} from '@polymer/polymer/polymer-element.js';
     suite('select by a numeric property', function() {
       var scope;
       var selector;
       var domRepeat;
 
       setup(function(done) {
-        if (PolymerElement) {
-          scope = fixture('scope-polymer2');
-          selector = scope.querySelector('iron-selector');
-          domRepeat = scope.querySelector('dom-repeat');
-        } else {
-          scope = fixture('scope-polymer1');
-          selector = scope.querySelector('iron-selector');
-          domRepeat = scope.querySelector('template[is=dom-repeat]');
-        }
+        scope = fixture('scope-polymer2');
+        selector = scope.querySelector('iron-selector');
+        domRepeat = scope.querySelector('dom-repeat');
 
         // Wait for the initial iron-items-changed.
         selector.addEventListener(

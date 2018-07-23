@@ -81,7 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     import '@polymer/iron-test-helpers/iron-test-helpers.js';
     import '../iron-selector.js';
     import {dom, flush} from '@polymer/polymer/lib/legacy/polymer.dom.js';
-    import {PolymerElement} from '@polymer/polymer/polymer-element.js';
     import {Base} from '@polymer/polymer/polymer-legacy.js';
     suite('multi', function() {
       var s;
@@ -284,18 +283,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('selects from items created by dom-repeat', function(done) {
-        var selector;
-        var domRepeat;
-        if (PolymerElement) {
-          selector = fixture('repeatedItems-polymer2');
-          // `observeNodes` callbacks in Polymer 2.x are no longer called
-          // synchronously after a DOM change / upgrade.
-          selector.forceSynchronousItemUpdate();
-          domRepeat = selector.querySelector('dom-repeat');
-        } else {
-          selector = fixture('repeatedItems-polymer1');
-          domRepeat = selector.querySelector('template[is=dom-repeat]');
-        }
+        var selector = fixture('repeatedItems-polymer2');
+        // `observeNodes` callbacks in Polymer 2.x are no longer called
+        // synchronously after a DOM change / upgrade.
+        selector.forceSynchronousItemUpdate();
+        var domRepeat = selector.querySelector('dom-repeat');
 
         domRepeat.render();
         // See the note in `forceSynchronousItemUpdate`.

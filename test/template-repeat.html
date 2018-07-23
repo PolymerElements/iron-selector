@@ -63,22 +63,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script type="module">
     import '@polymer/iron-test-helpers/iron-test-helpers.js';
     import '../iron-selector.js';
-    import {PolymerElement} from '@polymer/polymer/polymer-element.js';
     suite('dom-repeat', function() {
       var scope;
       var selector;
       var domRepeat;
 
       setup(function() {
-        if (PolymerElement) {
-          scope = fixture('scope-polymer2');
-          selector = scope.querySelector('iron-selector');
-          domRepeat = scope.querySelector('dom-repeat');
-        } else {
-          scope = fixture('scope-polymer1');
-          selector = scope.querySelector('iron-selector');
-          domRepeat = scope.querySelector('template[is=dom-repeat]');
-        }
+        scope = fixture('scope-polymer2');
+        selector = scope.querySelector('iron-selector');
+        domRepeat = scope.querySelector('dom-repeat');
         domRepeat.items =
             [{name: 'item0'}, {name: 'item1'}, {name: 'item2'}, {name: 'item3'}];
         domRepeat.render();

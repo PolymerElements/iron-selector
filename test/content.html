@@ -78,7 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     import '@polymer/test-fixture/test-fixture.js';
     import './content-element.js';
     import {dom, flush} from '@polymer/polymer/lib/legacy/polymer.dom.js';
-    import {PolymerElement} from '@polymer/polymer/polymer-element.js';
     suite('content', function() {
       var s1;
 
@@ -198,13 +197,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var domRepeat;
 
       setup(function() {
-        if (PolymerElement) {
-          s3 = fixture('selector3-polymer2');
-          domRepeat = s3.querySelector('dom-repeat');
-        } else {
-          s3 = fixture('selector3-polymer1');
-          domRepeat = s3.querySelector('template[is=dom-repeat]');
-        }
+        s3 = fixture('selector3-polymer2');
+        domRepeat = s3.querySelector('dom-repeat');
       });
 
       test('supports repeated children', function() {
