@@ -13,7 +13,7 @@ import '@polymer/polymer/polymer-legacy.js';
 import {IronSelectableBehavior} from './iron-selectable.js';
 
 /**
- * @polymerBehavior Polymer.IronMultiSelectableBehavior
+ * @polymerBehavior IronMultiSelectableBehavior
  */
 export const IronMultiSelectableBehaviorImpl = {
   properties: {
