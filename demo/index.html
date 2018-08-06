@@ -17,46 +17,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
 
-    <script type="module" src="../iron-selector.js"></script>
-    <script type="module" src="../../paper-styles/color.js"></script>
-    <script type="module" src="../../iron-demo-helpers/demo-snippet.js"></script>
-    <script type="module" src="../../iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module">
+      import '../iron-selector.js';
+      import '@polymer/paper-styles/color.js';
+      import '@polymer/iron-demo-helpers/demo-snippet.js';
+      import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+    </script>
 
   </head>
   <body unresolved>
-    <!-- FIXME(polymer-modulizer):
-        These imperative modules that innerHTML your HTML are
-        a hacky way to be sure that any mixins in included style
-        modules are ready before any elements that reference them are
-        instantiated, otherwise the CSS @apply mixin polyfill won't be
-        able to expand the underlying CSS custom properties.
-        See: https://github.com/Polymer/polymer-modulizer/issues/154
-        -->
     <script type="module">
-const $_documentContainer = document.createElement('template');
+      import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
-$_documentContainer.innerHTML = `<custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-        iron-selector > * {
-          padding: 8px;
-        }
+      const template = html`
+        <custom-style>
+          <style is="custom-style" include="demo-pages-shared-styles">
+            iron-selector > * {
+              padding: 8px;
+            }
 
-        .iron-selected {
-          background-color: var(--google-blue-500);
-          color: white;
-        }
-      </style>
-    </custom-style>`;
+            .iron-selected {
+              background-color: var(--google-blue-500);
+              color: white;
+            }
+          </style>
+        </custom-style>
+      `;
 
-document.body.appendChild($_documentContainer.content);
-</script>
+      document.body.appendChild(template.content);
+    </script>
 
-    <script type="module">
-const $_documentContainer = document.createElement('template');
-
-$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
+    <div class="vertical-section-container centered">
       <h3>Basic</h3>
       <demo-snippet>
         <template>
@@ -73,7 +66,7 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
       <h3>Use <code>multi</code> to enable multiple selection.</h3>
       <demo-snippet>
         <template>
-          <iron-selector multi="" selected-values="[0,2]">
+          <iron-selector multi selected-values="[0,2]">
             <div>Item 0</div>
             <div>Item 1</div>
             <div>Item 2</div>
@@ -99,13 +92,17 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
         </template>
       </demo-snippet>
 
+      <!--
+      TODO(#176): This demo fails because it sets both the `multi` and
+      `fallback-selection` attributes in HTML.
+
       <h3>
         Use <code>fallback-selection</code> to provide an option to be selected
         when all options are deselected or all selected options are invalid.
       </h3>
       <demo-snippet>
         <template>
-          <iron-selector multi="" selected="an-unknown-key" attr-for-selected="name" fallback-selection="default">
+          <iron-selector multi selected="an-unknown-key" attr-for-selected="name" fallback-selection="default">
             <div name="foo">Foo</div>
             <div name="bar">Bar</div>
             <div name="baz">Baz</div>
@@ -115,10 +112,8 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
           </iron-selector>
         </template>
       </demo-snippet>
-    </div>`;
-
-document.body.appendChild($_documentContainer.content);
-</script>
+      -->
+    </div>
 
   </body>
 </html>

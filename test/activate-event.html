@@ -15,12 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>iron-selector-activate-event</title>
   <meta charset="UTF-8">
 
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-
-  <script type="module" src="../../test-fixture/test-fixture.js"></script>
-  <script type="module" src="../iron-selector.js"></script>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
   <style>
     .iron-selected {
@@ -44,110 +40,110 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import '../iron-selector.js';
-suite('activate event', function() {
-  var s;
+    import '@polymer/test-fixture/test-fixture.js';
+    import '../iron-selector.js';
+    suite('activate event', function() {
+      var s;
 
-  setup(function(done) {
-    s = fixture('test');
+      setup(function(done) {
+        s = fixture('test');
 
-    s.addEventListener('iron-items-changed', function onIronItemsChanged() {
-      s.removeEventListener('iron-items-changed', onIronItemsChanged);
-      done();
+        s.addEventListener('iron-items-changed', function onIronItemsChanged() {
+          s.removeEventListener('iron-items-changed', onIronItemsChanged);
+          done();
+        });
+      });
+
+      test('activates on tap', function() {
+        assert.equal(s.selected, '0');
+
+        // select Item 1
+        s.children[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        assert.equal(s.selected, '1');
+      });
+
+      test('activates on tap and fires iron-activate', function(done) {
+        assert.equal(s.selected, '0');
+
+        // attach iron-activate listener
+        s.addEventListener('iron-activate', function(event) {
+          assert.equal(event.detail.selected, '1');
+          assert.equal(event.detail.item, s.children[1]);
+          done();
+        });
+
+        // select Item 1
+        s.children[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+      });
+
+      test('tap on already selected and fires iron-activate', function(done) {
+        assert.equal(s.selected, '0');
+
+        // attach iron-activate listener
+        s.addEventListener('iron-activate', function(event) {
+          assert.equal(event.detail.selected, '0');
+          assert.equal(event.detail.item, s.children[0]);
+          done();
+        });
+
+        // select Item 0
+        s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+      });
+
+      test('activates on mousedown', function() {
+        // set activateEvent to mousedown
+        s.activateEvent = 'mousedown';
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
+        assert.equal(s.selected, '2');
+      });
+
+      test('activates on mousedown and fires iron-activate', function(done) {
+        // attach iron-activate listener
+        s.addEventListener('iron-activate', function(event) {
+          assert.equal(event.detail.selected, '2');
+          assert.equal(event.detail.item, s.children[2]);
+          done();
+        });
+
+        // set activateEvent to mousedown
+        s.activateEvent = 'mousedown';
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
+      });
+
+      test('no activation', function() {
+        assert.equal(s.selected, '0');
+        // set activateEvent to null
+        s.activateEvent = null;
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
+        assert.equal(s.selected, '0');
+      });
+
+      test('activates on tap and preventDefault', function() {
+        // attach iron-activate listener
+        s.addEventListener('iron-activate', function(event) {
+          event.preventDefault();
+        });
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        // shouldn't got selected since we preventDefault in iron-activate
+        assert.equal(s.selected, '0');
+      });
+
+      test('activates after detach and re-attach', function() {
+        // Detach and re-attach
+        var parent = s.parentNode;
+        parent.removeChild(s);
+        parent.appendChild(s);
+
+        // select Item 2
+        s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
+        assert.equal(s.selected, '2');
+      });
     });
-  });
-
-  test('activates on tap', function() {
-    assert.equal(s.selected, '0');
-
-    // select Item 1
-    s.children[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-    assert.equal(s.selected, '1');
-  });
-
-  test('activates on tap and fires iron-activate', function(done) {
-    assert.equal(s.selected, '0');
-
-    // attach iron-activate listener
-    s.addEventListener('iron-activate', function(event) {
-      assert.equal(event.detail.selected, '1');
-      assert.equal(event.detail.item, s.children[1]);
-      done();
-    });
-
-    // select Item 1
-    s.children[1].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-  });
-
-  test('tap on already selected and fires iron-activate', function(done) {
-    assert.equal(s.selected, '0');
-
-    // attach iron-activate listener
-    s.addEventListener('iron-activate', function(event) {
-      assert.equal(event.detail.selected, '0');
-      assert.equal(event.detail.item, s.children[0]);
-      done();
-    });
-
-    // select Item 0
-    s.children[0].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-  });
-
-  test('activates on mousedown', function() {
-    // set activateEvent to mousedown
-    s.activateEvent = 'mousedown';
-    // select Item 2
-    s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
-    assert.equal(s.selected, '2');
-  });
-
-  test('activates on mousedown and fires iron-activate', function(done) {
-    // attach iron-activate listener
-    s.addEventListener('iron-activate', function(event) {
-      assert.equal(event.detail.selected, '2');
-      assert.equal(event.detail.item, s.children[2]);
-      done();
-    });
-
-    // set activateEvent to mousedown
-    s.activateEvent = 'mousedown';
-    // select Item 2
-    s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
-  });
-
-  test('no activation', function() {
-    assert.equal(s.selected, '0');
-    // set activateEvent to null
-    s.activateEvent = null;
-    // select Item 2
-    s.children[2].dispatchEvent(new CustomEvent('mousedown', {bubbles: true}));
-    assert.equal(s.selected, '0');
-  });
-
-  test('activates on tap and preventDefault', function() {
-    // attach iron-activate listener
-    s.addEventListener('iron-activate', function(event) {
-      event.preventDefault();
-    });
-    // select Item 2
-    s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-    // shouldn't got selected since we preventDefault in iron-activate
-    assert.equal(s.selected, '0');
-  });
-
-  test('activates after detach and re-attach', function() {
-    // Detach and re-attach
-    var parent = s.parentNode;
-    parent.removeChild(s);
-    parent.appendChild(s);
-
-    // select Item 2
-    s.children[2].dispatchEvent(new CustomEvent('tap', {bubbles: true}));
-    assert.equal(s.selected, '2');
-  });
-});
-</script>
+  </script>
 
 </body>
 </html>
