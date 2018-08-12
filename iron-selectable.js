@@ -16,7 +16,7 @@ import {dashToCamelCase} from '@polymer/polymer/lib/utils/case-map.js';
 import {IronSelection} from './iron-selection.js';
 
 /**
- * @polymerBehavior Polymer.IronSelectableBehavior
+ * @polymerBehavior
  */
 export const IronSelectableBehavior = {
 
@@ -232,12 +232,12 @@ export const IronSelectableBehavior = {
    */
   forceSynchronousItemUpdate: function() {
     if (this._observer && typeof this._observer.flush === 'function') {
-      // NOTE(bicknellr): `Polymer.dom.flush` above is no longer sufficient to
-      // trigger `observeNodes` callbacks. Polymer 2.x returns an object from
-      // `observeNodes` with a `flush` that synchronously gives the callback
-      // any pending MutationRecords (retrieved with `takeRecords`). Any case
-      // where ShadyDOM flushes were expected to synchronously trigger item
-      // updates will now require calling `forceSynchronousItemUpdate`.
+      // NOTE(bicknellr): `dom.flush` above is no longer sufficient to trigger
+      // `observeNodes` callbacks. Polymer 2.x returns an object from
+      // `observeNodes` with a `flush` that synchronously gives the callback any
+      // pending MutationRecords (retrieved with `takeRecords`). Any case where
+      // ShadyDOM flushes were expected to synchronously trigger item updates
+      // will now require calling `forceSynchronousItemUpdate`.
       this._observer.flush();
     } else {
       this._updateItems();
