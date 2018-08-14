@@ -104,4 +104,4 @@ export class IronSelection {
   toggle(item) {
     this.setItemSelected(item, !this.isSelected(item));
   }
-}
+};
