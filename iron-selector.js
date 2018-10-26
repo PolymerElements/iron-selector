@@ -81,6 +81,7 @@ Example:
 Polymer({
 
   is: 'iron-selector',
+  _template: null,
 
   behaviors: [IronMultiSelectableBehavior]
 
