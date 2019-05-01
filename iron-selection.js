@@ -16,6 +16,7 @@ export class IronSelection {
    * @suppress {missingProvide}
    */
   constructor(selectCallback) {
+    this.multi = false;
     this.selection = [];
     this.selectCallback = selectCallback;
   }
