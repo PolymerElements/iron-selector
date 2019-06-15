@@ -24,7 +24,7 @@ export class IronSelection {
   /**
    * Retrieves the selected item(s).
    *
-   * @returns Returns the selected item(s). If the multi property is true,
+   * @return {*} Returns the selected item(s). If the multi property is true,
    * `get` will return an array, otherwise it will return
    * the selected item or undefined if there is no selection.
    */

@@ -165,7 +165,7 @@ export const IronSelectableBehavior = {
    *
    * @method indexOf
    * @param {Object} item
-   * @returns Returns the index of the item
+   * @return {number} Returns the index of the item
    */
   indexOf: function(item) {
     return this.items ? this.items.indexOf(item) : -1;
@@ -350,7 +350,13 @@ export const IronSelectableBehavior = {
       this.toggleClass(this.selectedClass, isSelected, item);
     }
     if (this.selectedAttribute) {
-      this.toggleAttribute(this.selectedAttribute, isSelected, item);
+      // Note that the third parameter `node` to LegacyElement.toggleAttribute
+      // does not exist on the native `toggleAttribute`, so we can't use that
+      // parameter while also keeping the Closure compiler happy. We also can't
+      // simply use `item.toggleAttribute` because if `item` isn't itself a
+      // legacy Polymer Element, it won't run some required ShadyCSS logic.
+      // Hence this hack to call our version on the other element.
+      this.toggleAttribute.call(item, this.selectedAttribute, isSelected);
     }
     this._selectionChange();
     this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
