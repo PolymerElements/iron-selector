@@ -143,16 +143,19 @@ export const IronSelectableBehavior = {
     '_checkFallback(fallbackSelection)'
   ],
 
+  /** @override */
   created: function() {
     this._bindFilterItem = this._filterItem.bind(this);
     this._selection = new IronSelection(this._applySelection.bind(this));
   },
 
+  /** @override */
   attached: function() {
     this._observer = this._observeItems(this);
     this._addListener(this.activateEvent);
   },
 
+  /** @override */
   detached: function() {
     if (this._observer) {
       dom(this).unobserveNodes(this._observer);
